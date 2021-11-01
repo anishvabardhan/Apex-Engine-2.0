@@ -7,7 +7,7 @@
 #include "Engine/Graphics/GLFunctions.h"
 #pragma comment(lib, "opengl32")
 
-Window* window = nullptr;
+Window* g_Window = nullptr;
 void* g_GLLibrary = NULL;
 
 Window::Window()
@@ -25,49 +25,49 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
 	case WM_CREATE:
 	{
-		window->OnCreate(hwnd);
+		g_Window->OnCreate(hwnd);
 		break;
 	}
 
 	case WM_DESTROY:
 	{
-		window->OnDestroy(window->GetRenderContext());
+		g_Window->OnDestroy(g_Window->GetRenderContext());
 		::PostQuitMessage(0);
 		break;
 	}
 	case WM_KEYDOWN:
 	{
-		window->GetKey[wparam] = true;
+		g_Window->GetKey[wparam] = true;
 		break;
 	}
 
 	case WM_KEYUP:
 	{
-		window->GetKey[wparam] = false;
+		g_Window->GetKey[wparam] = false;
 		break;
 	}
 
 	case WM_LBUTTONDOWN:
 	{
-		window->GetMouse[wparam] = true;
+		g_Window->GetMouse[wparam] = true;
 		break;
 	}
 
 	case WM_LBUTTONUP:
 	{
-		window->GetMouse[wparam] = false;
+		g_Window->GetMouse[wparam] = false;
 		break;
 	}
 
 	case WM_RBUTTONDOWN:
 	{
-		window->GetMouse[wparam] = true;
+		g_Window->GetMouse[wparam] = true;
 		break;
 	}
 
 	case WM_RBUTTONUP:
 	{
-		window->GetMouse[wparam] = false;
+		g_Window->GetMouse[wparam] = false;
 		break;
 	}
 
@@ -97,8 +97,8 @@ bool Window::Init()
 	if (!::RegisterClassEx(&wc))
 		return false;
 
-	if (!window)
-		window = this;
+	if (!g_Window)
+		g_Window = this;
 
 	m_Hwnd = ::CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"MyWindowClass", L"Apex2D", WS_OVERLAPPEDWINDOW, 0, 0, 1024, 1024, NULL, NULL, NULL, NULL);
 
@@ -122,7 +122,7 @@ bool Window::Broadcast()
 		DispatchMessage(&msg);
 	}
 
-	window->OnUpdate();
+	g_Window->OnUpdate();
 
 	Sleep(0);
 
@@ -281,5 +281,5 @@ void Window::OnDestroy(HGLRC rendercontext)
 
 Window* Window::GetInstance()
 {
-	return window;
+	return g_Window;
 }

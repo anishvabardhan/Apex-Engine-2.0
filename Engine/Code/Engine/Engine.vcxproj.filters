@@ -120,7 +120,7 @@
     <ClInclude Include="Graphics\Buffers\IndexBuffer.h" />
     <ClInclude Include="Graphics\Buffers\VertexArrayObject.h" />
     <ClInclude Include="Graphics\Buffers\VertexBuffer.h" />
-    <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Input\WinKeys.h" />
     <ClInclude Include="Maths\AABB2.h" />
     <ClInclude Include="Maths\Mat4.h" />
     <ClInclude Include="Maths\Maths.h" />
