@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="NewFilter1">
+      <UniqueIdentifier>{84860905-5e57-41ff-afe5-9130ca3500d1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Core\DebugSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Logger.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\LogMessage.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\StringTokenizer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Time.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\XMLParser.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Font.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Mesh.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\MeshBuilder.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Renderer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Shader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ShaderDefinition.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\SpriteAnimation.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\SpriteDefinition.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\SpriteSheet.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Texture.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Buffers\FrameBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Buffers\IndexBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Buffers\VertexArrayObject.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Buffers\VertexBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Maths\AABB2.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Maths\Mat4.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Maths\Random.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Maths\Vec2.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Maths\Vec3.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Maths\Vec4.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Maths\Disc2D.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\Window.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\GLFunctions.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\DebugSystem.h" />
+    <ClInclude Include="Core\EngineUtils.h" />
+    <ClInclude Include="Core\Logger.h" />
+    <ClInclude Include="Core\LogMessage.h" />
+    <ClInclude Include="Core\StringTokenizer.h" />
+    <ClInclude Include="Core\Time.h" />
+    <ClInclude Include="Core\XMLParser.h" />
+    <ClInclude Include="Graphics\Font.h" />
+    <ClInclude Include="Graphics\Mesh.h" />
+    <ClInclude Include="Graphics\MeshBuilder.h" />
+    <ClInclude Include="Graphics\Renderer.h" />
+    <ClInclude Include="Graphics\Shader.h" />
+    <ClInclude Include="Graphics\ShaderDefinition.h" />
+    <ClInclude Include="Graphics\SpriteAnimation.h" />
+    <ClInclude Include="Graphics\SpriteDefinition.h" />
+    <ClInclude Include="Graphics\SpriteSheet.h" />
+    <ClInclude Include="Graphics\Texture.h" />
+    <ClInclude Include="Graphics\Buffers\FrameBuffer.h" />
+    <ClInclude Include="Graphics\Buffers\IndexBuffer.h" />
+    <ClInclude Include="Graphics\Buffers\VertexArrayObject.h" />
+    <ClInclude Include="Graphics\Buffers\VertexBuffer.h" />
+    <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Maths\AABB2.h" />
+    <ClInclude Include="Maths\Mat4.h" />
+    <ClInclude Include="Maths\Maths.h" />
+    <ClInclude Include="Maths\Maths_Func.h" />
+    <ClInclude Include="Maths\Random.h" />
+    <ClInclude Include="Maths\Vec2.h" />
+    <ClInclude Include="Maths\Vec3.h" />
+    <ClInclude Include="Maths\Vec4.h" />
+    <ClInclude Include="Maths\Disc2D.h" />
+    <ClInclude Include="Window\Window.h" />
+    <ClInclude Include="Core\CoreIncludes.h" />
+    <ClInclude Include="Graphics\External\GL\glext.h" />
+    <ClInclude Include="Graphics\External\GL\glcorearb.h" />
+    <ClInclude Include="Graphics\External\GL\wglext.h" />
+    <ClInclude Include="Graphics\GLFunctions.h" />
+  </ItemGroup>
+</Project>
