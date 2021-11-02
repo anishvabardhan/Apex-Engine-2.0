@@ -67,7 +67,7 @@ void MeshBuilder::Push(VertexMaster vertex)
 template <typename FORMAT>
 Mesh* MeshBuilder::CreateMesh()
 {
-	int size = m_Vertices.size();
+	size_t size = m_Vertices.size();
 
 	Mesh* mesh = nullptr;
 

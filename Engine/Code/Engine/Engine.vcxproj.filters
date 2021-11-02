@@ -8,6 +8,9 @@
     <Filter Include="NewFilter1">
       <UniqueIdentifier>{84860905-5e57-41ff-afe5-9130ca3500d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External">
+      <UniqueIdentifier>{8dea42b7-113e-4156-9179-f9a37772e2f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\DebugSystem.cpp">
@@ -23,9 +26,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Core\Time.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\XMLParser.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Font.cpp">
@@ -94,6 +94,15 @@
     <ClCompile Include="Window\Window.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\External\stb_image.cpp">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\tinyxml2.cpp">
+      <Filter>External</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\XMLParser.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\GLFunctions.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -105,7 +114,6 @@
     <ClInclude Include="Core\LogMessage.h" />
     <ClInclude Include="Core\StringTokenizer.h" />
     <ClInclude Include="Core\Time.h" />
-    <ClInclude Include="Core\XMLParser.h" />
     <ClInclude Include="Graphics\Font.h" />
     <ClInclude Include="Graphics\Mesh.h" />
     <ClInclude Include="Graphics\MeshBuilder.h" />
@@ -132,9 +140,24 @@
     <ClInclude Include="Maths\Disc2D.h" />
     <ClInclude Include="Window\Window.h" />
     <ClInclude Include="Core\CoreIncludes.h" />
-    <ClInclude Include="Graphics\External\GL\glext.h" />
-    <ClInclude Include="Graphics\External\GL\glcorearb.h" />
-    <ClInclude Include="Graphics\External\GL\wglext.h" />
+    <ClInclude Include="Graphics\External\GL\glcorearb.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\External\GL\glext.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\External\GL\wglext.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\stb_image.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\tinyxml2.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\XMLParser.h" />
     <ClInclude Include="Graphics\GLFunctions.h" />
+    <ClInclude Include="Platform\WindowsH.h" />
+    <ClInclude Include="Core\tinyxmlH.h" />
   </ItemGroup>
 </Project>

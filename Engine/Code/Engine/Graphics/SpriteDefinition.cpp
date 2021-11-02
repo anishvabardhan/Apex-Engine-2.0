@@ -1,6 +1,8 @@
 #include "SpriteDefinition.h"
 
-SpriteDefinition::SpriteDefinition(const tinyxml2::XMLElement& element)
+#include "Engine/Core/tinyxmlH.h"
+
+SpriteDefinition::SpriteDefinition(const XMLElement& element)
 {
 	m_SpriteCoords = ParseXMLAttrib(element, "spriteCoords", Vec2(-1, -1));
 
@@ -15,12 +17,12 @@ SpriteDefinition::~SpriteDefinition()
 {
 }
 
-tinyxml2::XMLElement* SpriteDefinition::InitializeDef(const std::string& path)
+XMLElement* SpriteDefinition::InitializeDef(const std::string& path)
 {
-	tinyxml2::XMLDocument* doc = new tinyxml2::XMLDocument();
+	XMLDocument* doc = new XMLDocument();
        doc->LoadFile(path.c_str());
 	
-	tinyxml2::XMLElement* root = doc->FirstChildElement()->FirstChildElement();
+	XMLElement* root = doc->FirstChildElement()->FirstChildElement();
 
 	return root;
 }

@@ -1,10 +1,6 @@
-#define _CRT_SECURE_NO_WARNINGS
-#define WIN32_LEAN_AND_MEAN
-
 #include "Logger.h"
 
-#include <Windows.h>
-
+#include "Engine/Platform/WindowsH.h"
 #include "LogMessage.h"
 
 static Logger* s_Logger = nullptr;
@@ -31,7 +27,7 @@ void LogStartup()
 	{
 	}
 
-	s_LogFile = fopen("Log/Log.txt", "w");
+	fopen_s(&s_LogFile, "Log/Log.txt", "w");
 
 	s_Logger->AddSink(LogToIDE);
 	s_Logger->AddSink(s_Logger->LogToFile);

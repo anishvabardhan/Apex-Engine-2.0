@@ -1,8 +1,9 @@
 #include "XMLParser.h"
 
 #include "StringTokenizer.h"
+#include "tinyxmlH.h"
 
-int ParseXMLAttrib(const XMLelement& element, const std::string& attribName, int value)
+int ParseXMLAttrib(const XMLElement& element, const std::string& attribName, int value)
 {
 	int intValue = value;
 	const char* intText = element.Attribute(attribName.c_str());
@@ -16,7 +17,7 @@ int ParseXMLAttrib(const XMLelement& element, const std::string& attribName, int
 	return intValue;
 }
 
-std::string ParseXMLAttrib(const XMLelement& element, const std::string& attribName, std::string value)
+std::string ParseXMLAttrib(const XMLElement& element, const std::string& attribName, std::string value)
 {
 	std::string stringValue = value;
 	const char* charText = element.Attribute(attribName.c_str());
@@ -29,7 +30,7 @@ std::string ParseXMLAttrib(const XMLelement& element, const std::string& attribN
 	return stringValue;
 }
 
-float ParseXMLAttrib(const XMLelement& element, const std::string& attribName, float value)
+float ParseXMLAttrib(const XMLElement& element, const std::string& attribName, float value)
 {
 	float val = value;
 	const char* floatText = element.Attribute(attribName.c_str());
@@ -43,7 +44,7 @@ float ParseXMLAttrib(const XMLelement& element, const std::string& attribName, f
 	return val;
 }
 
-Vec2 ParseXMLAttrib(const XMLelement& element, const std::string& attribName, const Vec2& value)
+Vec2 ParseXMLAttrib(const XMLElement& element, const std::string& attribName, const Vec2& value)
 {
 	Vec2 vec2 = value;
 	const char* vecText = element.Attribute(attribName.c_str());
@@ -66,7 +67,7 @@ Vec2 ParseXMLAttrib(const XMLelement& element, const std::string& attribName, co
 	return vec2;
 }
 
-Vec3 ParseXMLAttrib(const XMLelement& element, const std::string& attribName, const Vec3& value)
+Vec3 ParseXMLAttrib(const XMLElement& element, const std::string& attribName, const Vec3& value)
 {
 	Vec3 vec3 = value;
 	const char* vecText = element.Attribute(attribName.c_str());
@@ -88,7 +89,7 @@ Vec3 ParseXMLAttrib(const XMLelement& element, const std::string& attribName, co
 	return vec3;
 }
 
-Vec4 ParseXMLAttrib(const XMLelement& element, const std::string& attribName, const Vec4& value)
+Vec4 ParseXMLAttrib(const XMLElement& element, const std::string& attribName, const Vec4& value)
 {
 	Vec4 vec4 = value;
 	const char* vecText = element.Attribute(attribName.c_str());

@@ -19,18 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\External\stb_image.cpp" />
+    <ClCompile Include="..\External\tinyxml2.cpp" />
     <ClCompile Include="Core\DebugSystem.cpp" />
     <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\LogMessage.cpp" />
     <ClCompile Include="Core\StringTokenizer.cpp" />
     <ClCompile Include="Core\Time.cpp" />
     <ClCompile Include="Core\XMLParser.cpp" />
-    <ClCompile Include="Graphics\GLFunctions.cpp" />
     <ClCompile Include="Graphics\Buffers\FrameBuffer.cpp" />
     <ClCompile Include="Graphics\Buffers\IndexBuffer.cpp" />
     <ClCompile Include="Graphics\Buffers\VertexArrayObject.cpp" />
     <ClCompile Include="Graphics\Buffers\VertexBuffer.cpp" />
     <ClCompile Include="Graphics\Font.cpp" />
+    <ClCompile Include="Graphics\GLFunctions.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
     <ClCompile Include="Graphics\MeshBuilder.cpp" />
     <ClCompile Include="Graphics\Renderer.cpp" />
@@ -50,6 +52,8 @@
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\External\stb_image.h" />
+    <ClInclude Include="..\External\tinyxml2.h" />
     <ClInclude Include="Core\CoreIncludes.h" />
     <ClInclude Include="Core\DebugSystem.h" />
     <ClInclude Include="Core\EngineUtils.h" />
@@ -57,8 +61,8 @@
     <ClInclude Include="Core\LogMessage.h" />
     <ClInclude Include="Core\StringTokenizer.h" />
     <ClInclude Include="Core\Time.h" />
+    <ClInclude Include="Core\tinyxmlH.h" />
     <ClInclude Include="Core\XMLParser.h" />
-    <ClInclude Include="Graphics\GLFunctions.h" />
     <ClInclude Include="Graphics\Buffers\FrameBuffer.h" />
     <ClInclude Include="Graphics\Buffers\IndexBuffer.h" />
     <ClInclude Include="Graphics\Buffers\VertexArrayObject.h" />
@@ -67,6 +71,7 @@
     <ClInclude Include="Graphics\External\GL\glext.h" />
     <ClInclude Include="Graphics\External\GL\wglext.h" />
     <ClInclude Include="Graphics\Font.h" />
+    <ClInclude Include="Graphics\GLFunctions.h" />
     <ClInclude Include="Graphics\Mesh.h" />
     <ClInclude Include="Graphics\MeshBuilder.h" />
     <ClInclude Include="Graphics\Renderer.h" />
@@ -86,6 +91,7 @@
     <ClInclude Include="Maths\Vec3.h" />
     <ClInclude Include="Maths\Vec4.h" />
     <ClInclude Include="Maths\Disc2D.h" />
+    <ClInclude Include="Platform\WindowsH.h" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -172,6 +178,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -194,6 +201,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -216,6 +224,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -238,6 +247,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Code/;$(SolutionDir)../Engine/Code/</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

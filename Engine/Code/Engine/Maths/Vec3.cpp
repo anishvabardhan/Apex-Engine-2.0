@@ -94,7 +94,6 @@
 
 	std::ostream& operator<<(std::ostream& stream, const Vec3& vector)
 	{
-		// TODO: insert return statement here
 		stream << "(" << vector.m_X << ", " << vector.m_Y << ", " << vector.m_Z << ")";
 		return stream;
 	}

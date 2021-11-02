@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Engine/Core/CoreIncludes.h"
-#include "Engine/Graphics/GLFunctions.h"
 #include "Buffers/FrameBuffer.h"
-#include "MeshBuilder.h"
 #include "Font.h"
 #include "Texture.h"
 #include "Shader.h"
+
+struct Mesh;
 
 enum APEX_BLEND_FACTOR {
 	APEX_ZERO                      =      GL_ZERO,
@@ -69,9 +69,6 @@ public:
 
 	void InitRender();
 
-	void Push();
-	void Pop();
-
 	void Drawtext(const Vec2& position, const Vec4& color, const std::string& asciiText, float quadHeight, Font* font, Shader shader);
 	void DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color, Shader shader);
 	void DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const std::string& path, Shader shader);
@@ -85,18 +82,10 @@ public:
 	Texture* GetOrCreateTexture(const std::string& path);
 	Shader* GetOrCreateShader(ShaderDefinition* shaderDef);
 
-	static void BeginLineLoop();
-	static void BeginLineStrip();
-	static void BeginPolygon();
-	static void BeginQuads();
-
 	static void CreateInstance();
 	static Renderer* GetInstance();
 	static void DestroyInstance();
 
 	static void EnableBlend(enum APEX_BLEND_FACTOR src, enum APEX_BLEND_FACTOR dest, enum APEX_BLEND_OP mode = APEX_BLEND_OP::APEX_FUNC_ADD);
 	static void DisableBlend();
-
-	static void End();
-	static void Flush();
 };

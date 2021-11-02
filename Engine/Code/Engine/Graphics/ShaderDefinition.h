@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Core/CoreIncludes.h"
+#include "Engine/Core/XMLParser.h"
 
 class ShaderDefinition
 {
@@ -10,8 +11,8 @@ public:
 	std::string m_BlendSRC;
 	std::string m_BlendDST;
 
-	ShaderDefinition(const tinyxml2::XMLElement& element);
+	ShaderDefinition(const XMLElement& element);
 	~ShaderDefinition();
 
-	static tinyxml2::XMLElement* InitializeDef(const std::string& path);
+	static XMLElement* InitializeDef(const std::string& path);
 };

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <Windows.h>
-#include <iostream>
-
 #include "Engine/Input/WinKeys.h"
 
 extern void* g_GLLibrary;
@@ -20,22 +17,22 @@ public:
 
 	void SwappingBuffers();
 	
-	BOOL MakeContextCurrent(HDC hdc, HGLRC hglrc);
-	HGLRC CreateOldRenderContext(HDC hdc);
-	HGLRC CreateRealRenderContext(HDC hdc, int major, int minor);
+	bool MakeContextCurrent(void* hdc, void* hglrc);
+	void* CreateOldRenderContext(void* hdc);
+	void* CreateRealRenderContext(void* hdc, int major, int minor);
 
-	virtual void OnCreate(HWND hwnd);
+	virtual void OnCreate(void* hwnd);
 	virtual void OnUpdate();
-	virtual void OnDestroy(HGLRC rendercontext);
+	virtual void OnDestroy(void* rendercontext);
 
-	inline HDC GetDeviceContext() const { return m_OurWindowHandleToDeviceContext; }
-	inline HGLRC GetRenderContext() const { return m_OurWindowHandleToRenderContext; }
+	inline void* GetDeviceContext() const { return m_OurWindowHandleToDeviceContext; }
+	inline void* GetRenderContext() const { return m_OurWindowHandleToRenderContext; }
 
 	static Window* GetInstance();
 protected:
-	HWND m_Hwnd;
-	HDC m_OurWindowHandleToDeviceContext;
-	HGLRC m_OurWindowHandleToRenderContext;
+	void* m_Hwnd;
+	void* m_OurWindowHandleToDeviceContext;
+	void* m_OurWindowHandleToRenderContext;
 
 	bool m_IsRun;
 public:

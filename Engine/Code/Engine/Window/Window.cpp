@@ -1,11 +1,9 @@
 #include "Window.h"
-
 #include <string>
-#include "Engine/Graphics/External/GL/glcorearb.h"
-#include "Engine/Graphics/External/GL/glext.h"
-#include "Engine/Graphics/External/GL/wglext.h"
-#include "Engine/Graphics/GLFunctions.h"
+#include <iostream>
 #pragma comment(lib, "opengl32")
+#include "Engine/Platform/WindowsH.h"
+#include "Engine/Graphics/GLFunctions.h"
 
 Window* g_Window = nullptr;
 void* g_GLLibrary = NULL;
@@ -105,7 +103,7 @@ bool Window::Init()
 	if (!m_Hwnd)
 		return false;
 
-	::ShowWindow(m_Hwnd, SW_SHOW);
+	::ShowWindow(reinterpret_cast<HWND>(m_Hwnd), SW_SHOW);
 
 	m_IsRun = true;
 
@@ -131,7 +129,7 @@ bool Window::Broadcast()
 
 bool Window::Release()
 {
-	if (!::DestroyWindow(m_Hwnd))
+	if (!::DestroyWindow(reinterpret_cast<HWND>(m_Hwnd)))
 		return false;
 
 	return true;
@@ -144,15 +142,15 @@ bool Window::IsRun()
 
 void Window::SwappingBuffers()
 {
-	SwapBuffers(GetInstance()->GetDeviceContext());
+	SwapBuffers(reinterpret_cast<HDC>(GetInstance()->GetDeviceContext()));
 }
 
-BOOL Window::MakeContextCurrent(HDC hdc, HGLRC hglrc)
+bool Window::MakeContextCurrent(void* hdc, void* hglrc)
 {
-	return wglMakeCurrent(hdc, hglrc);
+	return ::wglMakeCurrent(reinterpret_cast<HDC>(hdc), reinterpret_cast<HGLRC>(hglrc));
 }
 
-HGLRC Window::CreateOldRenderContext(HDC hdc)
+void* Window::CreateOldRenderContext(void* hdc)
 {
 	PIXELFORMATDESCRIPTOR pfd;
 	memset(&pfd, 0, sizeof(pfd));
@@ -165,21 +163,21 @@ HGLRC Window::CreateOldRenderContext(HDC hdc)
 	pfd.cStencilBits = 0;
 	pfd.iLayerType = PFD_MAIN_PLANE;
 
-	int pixel_format = ::ChoosePixelFormat(hdc, &pfd);
+	int pixel_format = ::ChoosePixelFormat(reinterpret_cast<HDC>(hdc), &pfd);
 	if (pixel_format == NULL)
 		return NULL;
 
-	if (!::SetPixelFormat(hdc, pixel_format, &pfd))
+	if (!::SetPixelFormat(reinterpret_cast<HDC>(hdc), pixel_format, &pfd))
 		return NULL;
 
-	HGLRC context = wglCreateContext(hdc);
+	void* context = ::wglCreateContext(reinterpret_cast<HDC>(hdc));
 	if (context == NULL)
 		return NULL;
 
 	return context;
 }
 
-HGLRC Window::CreateRealRenderContext(HDC hdc, int major, int minor)
+void* Window::CreateRealRenderContext(void* hdc, int major, int minor)
 {
 	int const format_attribs[] = {
 		WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,    
@@ -195,7 +193,7 @@ HGLRC Window::CreateRealRenderContext(HDC hdc, int major, int minor)
 	int pixel_format = 0;
 	UINT format_count = 0;
 
-	BOOL succeeded = wglChoosePixelFormatARB(hdc,
+	BOOL succeeded = wglChoosePixelFormatARB(reinterpret_cast<HDC>(hdc),
 		format_attribs,
 		nullptr,
 		MAX_PIXEL_FORMATS,
@@ -208,7 +206,7 @@ HGLRC Window::CreateRealRenderContext(HDC hdc, int major, int minor)
 
 	for (unsigned int i = 0; i < format_count; ++i) {
 		pixel_format = formats[i];
-		succeeded = SetPixelFormat(hdc, pixel_format, NULL);
+		succeeded = SetPixelFormat(reinterpret_cast<HDC>(hdc), pixel_format, NULL);
 		if (succeeded) {
 			break;
 		}
@@ -234,7 +232,7 @@ HGLRC Window::CreateRealRenderContext(HDC hdc, int major, int minor)
 		0, 0
 	};
 
-	HGLRC context = wglCreateContextAttribsARB(hdc, NULL, attribs);
+	HGLRC context = wglCreateContextAttribsARB(reinterpret_cast<HDC>(hdc), NULL, attribs);
 	if (context == NULL) {
 		return NULL;
 	}
@@ -243,17 +241,17 @@ HGLRC Window::CreateRealRenderContext(HDC hdc, int major, int minor)
 }
 
 
-void Window::OnCreate(HWND hwnd)
+void Window::OnCreate(void* hwnd)
 {
 	g_GLLibrary = ::LoadLibraryA("opengl32.lib");
-	m_OurWindowHandleToDeviceContext = GetDC(hwnd);
+	m_OurWindowHandleToDeviceContext = GetDC(reinterpret_cast<HWND>(hwnd));
 	
-	HGLRC tempContext = CreateOldRenderContext(m_OurWindowHandleToDeviceContext);
+	HGLRC tempContext = reinterpret_cast<HGLRC>(CreateOldRenderContext(m_OurWindowHandleToDeviceContext));
 	
-	MakeContextCurrent(m_OurWindowHandleToDeviceContext, tempContext);
+	MakeContextCurrent(m_OurWindowHandleToDeviceContext, m_OurWindowHandleToRenderContext);
 	BindNewGLFunctions();
 
-	HGLRC realContext = CreateRealRenderContext(m_OurWindowHandleToDeviceContext, 4, 2);
+	HGLRC realContext = reinterpret_cast<HGLRC>(CreateRealRenderContext(m_OurWindowHandleToDeviceContext, 4, 2));
 
 	MakeContextCurrent(m_OurWindowHandleToDeviceContext, realContext);
 	::wglDeleteContext(tempContext);
@@ -265,16 +263,16 @@ void Window::OnCreate(HWND hwnd)
 
 void Window::OnUpdate()
 {
-	::UpdateWindow(m_Hwnd);
+	::UpdateWindow(reinterpret_cast<HWND>(m_Hwnd));
 }
 
-void Window::OnDestroy(HGLRC rendercontext)
+void Window::OnDestroy(void* rendercontext)
 {
 	m_IsRun = false;
-	wglMakeCurrent(m_OurWindowHandleToDeviceContext, NULL);
-	wglDeleteContext(rendercontext);
-	if (!ReleaseDC(m_Hwnd, m_OurWindowHandleToDeviceContext))
-		MessageBox(m_Hwnd, L"Cannot Release !!", L"ERROR!!", MB_OK);
+	::wglMakeCurrent(reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext), NULL);
+	::wglDeleteContext(reinterpret_cast<HGLRC>(rendercontext));
+	if (!ReleaseDC(reinterpret_cast<HWND>(m_Hwnd), reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext)))
+		MessageBox(reinterpret_cast<HWND>(m_Hwnd), L"Cannot Release !!", L"ERROR!!", MB_OK);
 
 	::FreeLibrary((HMODULE)g_GLLibrary);
 }

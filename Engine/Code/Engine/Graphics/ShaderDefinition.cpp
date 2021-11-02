@@ -1,9 +1,11 @@
 #include "ShaderDefinition.h"
 
-ShaderDefinition::ShaderDefinition(const tinyxml2::XMLElement& element)
+#include "Engine/Core/tinyxmlH.h"
+
+ShaderDefinition::ShaderDefinition(const XMLElement& element)
 	: m_FilePath("Invalid"), m_BlendSRC("Invalid"), m_BlendDST("Invalid"), m_BlendOp("Invalid")
 {
-	const tinyxml2::XMLElement* defElement = element.FirstChildElement("program");
+	const XMLElement* defElement = element.FirstChildElement("program");
 	
 	if (defElement)
 	{
@@ -17,7 +19,7 @@ ShaderDefinition::ShaderDefinition(const tinyxml2::XMLElement& element)
 
 	if (defElement)
 	{
-		const tinyxml2::XMLElement* blendElement = defElement->FirstChildElement("alpha");
+		const XMLElement* blendElement = defElement->FirstChildElement("alpha");
 
 		if (blendElement)
 		{
@@ -34,12 +36,12 @@ ShaderDefinition::~ShaderDefinition()
 {
 }
 
-tinyxml2::XMLElement* ShaderDefinition::InitializeDef(const std::string& path)
+XMLElement* ShaderDefinition::InitializeDef(const std::string& path)
 {
-	tinyxml2::XMLDocument* doc = new tinyxml2::XMLDocument();
+	XMLDocument* doc = new XMLDocument();
 	doc->LoadFile(path.c_str());
 
-	tinyxml2::XMLElement* root = doc->FirstChildElement();
+	XMLElement* root = doc->FirstChildElement();
 
 	return root;
 }

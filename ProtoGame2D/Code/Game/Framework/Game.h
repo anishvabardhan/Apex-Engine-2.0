@@ -11,4 +11,3 @@ public:
 	void Render();
 	void EndFrame();
 };
-

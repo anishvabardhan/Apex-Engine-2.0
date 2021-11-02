@@ -3,11 +3,13 @@
 #include "Engine/Maths/Random.h"
 #include "Engine/Core/DebugSystem.h"
 
-Random random(100, 500);
+extern Random random;
 
 Game::Game()
 	:g_TS(60), g_BulletVelocity(Vec2(7.5f, 7.5f)), g_Renderer(nullptr), g_BulletDisc(nullptr), g_Player(nullptr), g_Objects(nullptr), g_PlayerDisc(nullptr), g_NumOfBullets(0), g_NumOfAstroids(6), g_BulletLife(50.0f), g_IsFiring(false)
 {
+	//random = Random(100, 500);
+
 	for (int i = 0; i < g_NumOfAstroids; i++)
 	{
 		g_Astroid[i] = nullptr;

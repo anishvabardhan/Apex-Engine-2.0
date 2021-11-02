@@ -2,7 +2,9 @@
 
 #include "Engine/Window/Window.h"
 #include "Engine/Graphics/Renderer.h"
-#include "Engine/Graphics/GLFunctions.h"
+//#include "Engine/Graphics/GLFunctions.h"
+//TODO : Remove GLEW
+#include "External/GLEW/include/GL/glew.h"
 #include <Windows.h>
 
 Ship::Ship(Vec2 position)

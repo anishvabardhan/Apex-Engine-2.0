@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Core/CoreIncludes.h"
+#include "Engine/Core/XMLParser.h"
 
 class SpriteDefinition
 {
@@ -10,8 +11,8 @@ public:
 	Vec2 m_Tiles;
 	Vec4 m_Color;
 
-	SpriteDefinition(const tinyxml2::XMLElement& element);
+	SpriteDefinition(const XMLElement& element);
 	~SpriteDefinition();
 
-	static tinyxml2::XMLElement* InitializeDef(const std::string& path);
+	static XMLElement* InitializeDef(const std::string& path);
 };

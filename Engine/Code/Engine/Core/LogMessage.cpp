@@ -1,7 +1,6 @@
-#define WIN32_LEAN_AND_MEAN
-
 #include "LogMessage.h"
-#include <Windows.h>
+
+#include "Engine/Platform/WindowsH.h"
 #include <iostream>
 #include "Logger.h"
 

@@ -187,11 +187,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Engine\Code\Engine\Engine.vcxproj">
-      <Project>{49434db0-e90b-4532-97b2-614e83e0b873}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Code\Astroid.h" />
     <ClInclude Include="Code\Bullet.h" />
     <ClInclude Include="Code\Entity.h" />
@@ -204,6 +199,11 @@
     <ClCompile Include="Code\Game.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Code\Ship.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Engine\Code\Engine\Engine.vcxproj">
+      <Project>{49434db0-e90b-4532-97b2-614e83e0b873}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

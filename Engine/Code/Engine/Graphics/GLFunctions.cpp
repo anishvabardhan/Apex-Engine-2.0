@@ -1,5 +1,7 @@
 #include "Engine/Graphics/GLFunctions.h"
 
+#include "Engine/Core/CoreIncludes.h"
+
 //-----------------------------------------------------------------------------------------------
 // General GL Function pointers
 PFNGLCLEARPROC glClear = nullptr;
@@ -96,6 +98,8 @@ PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
 //
 bool GLCheckError(const char* fileName, int line)
 {
+	UNUSED(fileName);
+	UNUSED(line);
 #if defined(_DEBUG)
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -137,6 +141,8 @@ void BindGLFunctions()
 	GL_BIND_FUNCTION(glReadBuffer);
 	GL_BIND_FUNCTION(glReadPixels);
 	GL_BIND_FUNCTION(glNamedFramebufferReadBuffer);
+	GL_BIND_FUNCTION(glViewport);
+	GL_BIND_FUNCTION(glBlendEquation);
 
 	// Texture Stuff
 	GL_BIND_FUNCTION(glPixelStorei);
@@ -154,6 +160,7 @@ void BindGLFunctions()
 	GL_BIND_FUNCTION(glTexStorage2D);
 	GL_BIND_FUNCTION(glTexSubImage2D);
 	GL_BIND_FUNCTION(glDeleteTextures);
+	GL_BIND_FUNCTION(glGenerateMipmap);
 
 	// Draw Stuff
 	GL_BIND_FUNCTION(glDrawArrays);
@@ -165,6 +172,7 @@ void BindGLFunctions()
 	GL_BIND_FUNCTION(glClearDepthf);
 	GL_BIND_FUNCTION(glGenVertexArrays);
 	GL_BIND_FUNCTION(glBindVertexArray);
+	GL_BIND_FUNCTION(glDeleteVertexArrays);
 	GL_BIND_FUNCTION(glVertexAttribPointer);
 	GL_BIND_FUNCTION(glEnableVertexAttribArray);
 	GL_BIND_FUNCTION(glGetAttribLocation);
@@ -201,6 +209,8 @@ void BindGLFunctions()
 	GL_BIND_FUNCTION(glBindBufferBase);
 	GL_BIND_FUNCTION(glUniformMatrix4fv);
 	GL_BIND_FUNCTION(glUniform1f);
+	GL_BIND_FUNCTION(glUniform1i);
+	GL_BIND_FUNCTION(glUniform4f);
 	GL_BIND_FUNCTION(glUniform1fv);
 	GL_BIND_FUNCTION(glUniform1iv);
 	GL_BIND_FUNCTION(glUniform4fv);
@@ -209,6 +219,7 @@ void BindGLFunctions()
 	GL_BIND_FUNCTION(glBlendEquationSeparate);
 	GL_BIND_FUNCTION(glBlendFuncSeparate);
 	GL_BIND_FUNCTION(glFrontFace);
+	GL_BIND_FUNCTION(glValidateProgram);
 }
 
 //-----------------------------------------------------------------------------------------------

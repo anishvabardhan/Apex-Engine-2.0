@@ -2,8 +2,12 @@
 
 #include "Game.h"
 #include "Engine/Window/Window.h"
-#include "Engine/Graphics/Renderer.h"
-#include "Engine/Core/Logger.h"
+//#include "Engine/Graphics/Renderer.h"
+//#include "Engine/Core/Logger.h"
+
+#ifndef UNUSED
+#define UNUSED(x) (void)x;
+#endif
 
 App* g_App = nullptr;
 
@@ -20,8 +24,8 @@ App::~App()
 void App::Startup()
 {
 	g_Window = new Window();
-	Renderer::CreateInstance();
-	LogStartup();
+	//Renderer::CreateInstance();
+	//LogStartup();
 }
 
 void App::RunFrame()
@@ -38,7 +42,7 @@ void App::BeginFrame()
 
 void App::Update(float deltaseconds)
 {
-
+	UNUSED(deltaseconds);
 }
 
 void App::Render()

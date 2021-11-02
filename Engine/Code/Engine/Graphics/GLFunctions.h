@@ -1,7 +1,9 @@
 #pragma once
-#include "Engine/Graphics/External/GL/glcorearb.h"
-#include "Engine/Graphics/External/GL/wglext.h"
-#include "Engine/Graphics/External/GL/glext.h"
+#include "External/GL/glcorearb.h"
+#include "External/GL/wglext.h"
+#include "External/GL/glext.h"
+
+extern void* g_GLLibrary;
 
 //-----------------------------------------------------------------------------------------------
 // Template for binding GL functions 
@@ -44,6 +46,8 @@ extern PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus;
 extern PFNGLREADBUFFERPROC glReadBuffer;
 extern PFNGLREADPIXELSPROC glReadPixels;
 extern PFNGLNAMEDFRAMEBUFFERREADBUFFERPROC glNamedFramebufferReadBuffer;
+extern PFNGLVIEWPORTPROC glViewport;
+extern PFNGLBLENDEQUATIONPROC glBlendEquation;
 
 //-----------------------------------------------------------------------------------------------
 // Draw functions
@@ -55,6 +59,7 @@ extern PFNGLDEPTHMASKPROC glDepthMask;
 extern PFNGLCLEARDEPTHFPROC glClearDepthf;
 extern PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
 extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
+extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
 extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
 extern PFNGLGETATTRIBLOCATIONPROC glGetAttribLocation;
@@ -88,6 +93,7 @@ extern PFNGLGETTEXIMAGEPROC glGetTexImage;
 extern PFNGLTEXSTORAGE2DPROC glTexStorage2D;
 extern PFNGLTEXSUBIMAGE2DPROC glTexSubImage2D;
 extern PFNGLDELETETEXTURESPROC glDeleteTextures;
+extern PFNGLGENERATEMIPMAPPROC glGenerateMipmap;
 
 //-----------------------------------------------------------------------------------------------
 // Shader functions
@@ -119,6 +125,9 @@ extern PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate;
 extern PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate;
 extern PFNGLFRONTFACEPROC glFrontFace;
 extern PFNGLCULLFACEPROC glCullFace;
+extern PFNGLVALIDATEPROGRAMPROC glValidateProgram;
+extern PFNGLUNIFORM1IPROC glUniform1i;
+extern PFNGLUNIFORM4FPROC glUniform4f;
 
 //-----------------------------------------------------------------------------------------------
 // WGL Functions
