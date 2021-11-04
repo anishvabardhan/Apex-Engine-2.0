@@ -2,7 +2,6 @@
 #include "External/GL/glcorearb.h"
 #include "External/GL/wglext.h"
 #include "External/GL/glext.h"
-
 extern void* g_GLLibrary;
 
 //-----------------------------------------------------------------------------------------------

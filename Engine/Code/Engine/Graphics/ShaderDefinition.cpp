@@ -1,5 +1,6 @@
 #include "ShaderDefinition.h"
 
+#include "Engine/Core/XMLParser.h"
 #include "Engine/Core/tinyxmlH.h"
 
 ShaderDefinition::ShaderDefinition(const XMLElement& element)

@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Engine/Core/CoreIncludes.h"
-#include "Engine/Core/XMLParser.h"
+
+
 
 class ShaderDefinition
 {

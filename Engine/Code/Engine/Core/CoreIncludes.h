@@ -13,9 +13,16 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <unordered_map>
+#include <queue>
 
 #define UNUSED(x) (void)x;
+
+namespace tinyxml2 
+{ 
+	class XMLElement; 
+	class XMLDocument;
+}
+
+using XMLElement = tinyxml2::XMLElement;
+using XMLDocument = tinyxml2::XMLDocument;

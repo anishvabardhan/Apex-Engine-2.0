@@ -1,6 +1,6 @@
-#include "Engine/Graphics/GLFunctions.h"
-
+#include "Engine/Platform/WindowsH.h"
 #include "Engine/Core/CoreIncludes.h"
+#include "Engine/Graphics/GLFunctions.h"
 
 //-----------------------------------------------------------------------------------------------
 // General GL Function pointers
@@ -14,6 +14,8 @@ PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus = nullptr;
 PFNGLREADBUFFERPROC glReadBuffer = nullptr;
 PFNGLREADPIXELSPROC glReadPixels = nullptr;
 PFNGLNAMEDFRAMEBUFFERREADBUFFERPROC glNamedFramebufferReadBuffer = nullptr;
+PFNGLVIEWPORTPROC glViewport = nullptr;
+PFNGLBLENDEQUATIONPROC glBlendEquation = nullptr;
 
 // Draw function Pointers
 PFNGLDRAWARRAYSPROC glDrawArrays = nullptr;
@@ -27,6 +29,7 @@ PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
 PFNGLGETATTRIBLOCATIONPROC glGetAttribLocation = nullptr;
 PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = nullptr;
 PFNGLBINDVERTEXARRAYPROC glBindVertexArray = nullptr;
+PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = nullptr;
 PFNGLBINDBUFFERPROC glBindBuffer = nullptr;
 PFNGLBUFFERDATAPROC glBufferData = nullptr;
 PFNGLDELETEBUFFERSPROC glDeleteBuffers = nullptr;
@@ -56,6 +59,7 @@ PFNGLGETTEXIMAGEPROC glGetTexImage = nullptr;
 PFNGLTEXSUBIMAGE2DPROC glTexSubImage2D = nullptr;
 PFNGLTEXSTORAGE2DPROC glTexStorage2D = nullptr;
 PFNGLDELETETEXTURESPROC glDeleteTextures = nullptr;
+PFNGLGENERATEMIPMAPPROC glGenerateMipmap = nullptr;
 
 // Shader function pointers
 PFNGLCREATESHADERPROC glCreateShader = nullptr;
@@ -86,6 +90,9 @@ PFNGLBLENDEQUATIONSEPARATEPROC glBlendEquationSeparate = nullptr;
 PFNGLBLENDFUNCSEPARATEPROC glBlendFuncSeparate = nullptr;
 PFNGLFRONTFACEPROC glFrontFace = nullptr;
 PFNGLCULLFACEPROC glCullFace = nullptr;
+PFNGLVALIDATEPROGRAMPROC glValidateProgram = nullptr;
+PFNGLUNIFORM1IPROC glUniform1i = nullptr;
+PFNGLUNIFORM4FPROC glUniform4f = nullptr;
 
 //-----------------------------------------------------------------------------------------------
 // WGL Function pointers

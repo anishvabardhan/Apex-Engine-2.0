@@ -2,6 +2,11 @@
 
 #include "ShaderDefinition.h"
 
+#include "Engine/Core/CoreIncludes.h"
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
 Shader::Shader(ShaderDefinition* shaderDef)
 	: m_RendererID(0)
 {

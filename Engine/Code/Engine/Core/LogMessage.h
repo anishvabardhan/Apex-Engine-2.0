@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include "Engine/Core/CoreIncludes.h"
 #include <sstream>
 
 //----------------------------------------------------------------------------------------------------------------------------

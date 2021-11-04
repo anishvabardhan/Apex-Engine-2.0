@@ -1,5 +1,4 @@
 #include "XMLParser.h"
-
 #include "StringTokenizer.h"
 #include "tinyxmlH.h"
 

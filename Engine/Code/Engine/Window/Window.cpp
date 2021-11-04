@@ -1,9 +1,8 @@
 #include "Window.h"
-#include <string>
-#include <iostream>
-#pragma comment(lib, "opengl32")
 #include "Engine/Platform/WindowsH.h"
 #include "Engine/Graphics/GLFunctions.h"
+
+#pragma comment(lib, "opengl32.lib")
 
 Window* g_Window = nullptr;
 void* g_GLLibrary = NULL;
@@ -98,7 +97,7 @@ bool Window::Init()
 	if (!g_Window)
 		g_Window = this;
 
-	m_Hwnd = ::CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"MyWindowClass", L"Apex2D", WS_OVERLAPPEDWINDOW, 0, 0, 1024, 1024, NULL, NULL, NULL, NULL);
+	m_Hwnd = nullptr;//::CreateWindowW( WS_EX_OVERLAPPEDWINDOW , L"MyWindowClass" , L"Apex2D" , WS_OVERLAPPEDWINDOW , 0 , 0 , 1024 , 1024 , NULL , NULL , ::GetModuleHandle(NULL) , NULL );
 
 	if (!m_Hwnd)
 		return false;
@@ -147,7 +146,7 @@ void Window::SwappingBuffers()
 
 bool Window::MakeContextCurrent(void* hdc, void* hglrc)
 {
-	return ::wglMakeCurrent(reinterpret_cast<HDC>(hdc), reinterpret_cast<HGLRC>(hglrc));
+	return wglMakeCurrent(reinterpret_cast<HDC>(hdc), reinterpret_cast<HGLRC>(hglrc));
 }
 
 void* Window::CreateOldRenderContext(void* hdc)
@@ -163,14 +162,14 @@ void* Window::CreateOldRenderContext(void* hdc)
 	pfd.cStencilBits = 0;
 	pfd.iLayerType = PFD_MAIN_PLANE;
 
-	int pixel_format = ::ChoosePixelFormat(reinterpret_cast<HDC>(hdc), &pfd);
+	int pixel_format = ChoosePixelFormat(reinterpret_cast<HDC>(hdc), &pfd);
 	if (pixel_format == NULL)
 		return NULL;
 
-	if (!::SetPixelFormat(reinterpret_cast<HDC>(hdc), pixel_format, &pfd))
+	if (!SetPixelFormat(reinterpret_cast<HDC>(hdc), pixel_format, &pfd))
 		return NULL;
 
-	void* context = ::wglCreateContext(reinterpret_cast<HDC>(hdc));
+	void* context = wglCreateContext(reinterpret_cast<HDC>(hdc));
 	if (context == NULL)
 		return NULL;
 
@@ -254,7 +253,7 @@ void Window::OnCreate(void* hwnd)
 	HGLRC realContext = reinterpret_cast<HGLRC>(CreateRealRenderContext(m_OurWindowHandleToDeviceContext, 4, 2));
 
 	MakeContextCurrent(m_OurWindowHandleToDeviceContext, realContext);
-	::wglDeleteContext(tempContext);
+	wglDeleteContext(tempContext);
 
 	BindGLFunctions();
 
@@ -269,12 +268,12 @@ void Window::OnUpdate()
 void Window::OnDestroy(void* rendercontext)
 {
 	m_IsRun = false;
-	::wglMakeCurrent(reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext), NULL);
-	::wglDeleteContext(reinterpret_cast<HGLRC>(rendercontext));
+	wglMakeCurrent(reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext), NULL);
+	wglDeleteContext(reinterpret_cast<HGLRC>(rendercontext));
 	if (!ReleaseDC(reinterpret_cast<HWND>(m_Hwnd), reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext)))
 		MessageBox(reinterpret_cast<HWND>(m_Hwnd), L"Cannot Release !!", L"ERROR!!", MB_OK);
 
-	::FreeLibrary((HMODULE)g_GLLibrary);
+	FreeLibrary((HMODULE)g_GLLibrary);
 }
 
 Window* Window::GetInstance()

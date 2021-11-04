@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
-#include <queue>
-#include <vector>
+#include "Engine/Core/CoreIncludes.h"
 
 typedef void (*LogCallback)(const std::string& msg);
 

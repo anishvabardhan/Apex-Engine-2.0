@@ -1,9 +1,14 @@
 #include "Framework/App.h"
+#include "Engine/Platform/WindowsH.h"
+#include "Engine/Core/CoreIncludes.h"
 
 extern App* g_App;
 
-int main()
+int WINAPI WinMain( _In_ HINSTANCE applicationInstanceHandle , _In_opt_ HINSTANCE , _In_ LPSTR commandLineString , _In_ int )
 {
+	UNUSED( commandLineString );
+	UNUSED( applicationInstanceHandle );
+
 	g_App = new App();
 
 	g_App->Startup();

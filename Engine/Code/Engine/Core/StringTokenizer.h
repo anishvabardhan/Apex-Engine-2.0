@@ -9,7 +9,7 @@ class StringTokenizer
 	std::string m_Delimiter;
 	std::vector<std::string> m_Tokens;
 public:
-	StringTokenizer(const std::string& input, const std::string& delimiter = "");
+	StringTokenizer(const std::string& input, const std::string& delimiter = std::string());
 	~StringTokenizer();
 
 	void Tokenize();

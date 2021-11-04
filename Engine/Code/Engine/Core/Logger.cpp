@@ -19,9 +19,9 @@ void LogStartup()
 	Logger::CreateInstance();
 
 	std::string logFileName = "Log/";
-	logFileName += "Log";
+	logFileName.append("Log");
 
-	std::string defaultLogFile = logFileName + ".txt";
+	std::string defaultLogFile = logFileName.append(".txt");
 
 	if (!CreateDirectoryA("Log/", NULL))
 	{
