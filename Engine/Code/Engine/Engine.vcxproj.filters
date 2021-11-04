@@ -106,6 +106,12 @@
     <ClCompile Include="Graphics\GLFunctions.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Input\KeyButtonState.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\InputSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\DebugSystem.h" />
@@ -159,5 +165,8 @@
     <ClInclude Include="Graphics\GLFunctions.h" />
     <ClInclude Include="Platform\WindowsH.h" />
     <ClInclude Include="Core\tinyxmlH.h" />
+    <ClInclude Include="Input\KeyButtonState.h" />
+    <ClInclude Include="Input\InputSystem.h" />
+    <ClInclude Include="Core\CoreMACROS.h" />
   </ItemGroup>
 </Project>

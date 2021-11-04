@@ -42,6 +42,8 @@
     <ClCompile Include="Graphics\SpriteDefinition.cpp" />
     <ClCompile Include="Graphics\SpriteSheet.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
+    <ClCompile Include="Input\InputSystem.cpp" />
+    <ClCompile Include="Input\KeyButtonState.cpp" />
     <ClCompile Include="Maths\AABB2.cpp" />
     <ClCompile Include="Maths\Mat4.cpp" />
     <ClCompile Include="Maths\Random.cpp" />
@@ -60,6 +62,7 @@
     <ClInclude Include="..\External\stb_image.h" />
     <ClInclude Include="..\External\tinyxml2.h" />
     <ClInclude Include="Core\CoreIncludes.h" />
+    <ClInclude Include="Core\CoreMACROS.h" />
     <ClInclude Include="Core\DebugSystem.h" />
     <ClInclude Include="Core\EngineUtils.h" />
     <ClInclude Include="Core\Logger.h" />
@@ -86,7 +89,9 @@
     <ClInclude Include="Graphics\SpriteDefinition.h" />
     <ClInclude Include="Graphics\SpriteSheet.h" />
     <ClInclude Include="Graphics\Texture.h" />
+    <ClInclude Include="Input\InputSystem.h" />
     <ClInclude Include="Input\WinKeys.h" />
+    <ClInclude Include="Input\KeyButtonState.h" />
     <ClInclude Include="Maths\AABB2.h" />
     <ClInclude Include="Maths\Mat4.h" />
     <ClInclude Include="Maths\Maths.h" />

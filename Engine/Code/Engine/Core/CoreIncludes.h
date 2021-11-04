@@ -1,9 +1,6 @@
 #pragma once
 
-// Turn off all warnings for Third-Party libs at the start and turn it on at the end
-#define THIRD_PARTY_INCLUDES_BEGIN #pragma warning(push, 0)
-#define THIRD_PARTY_INCLUDES_END #pragma warning(pop)
-
+#include "Engine/Core/CoreMACROS.h"
 #include "Engine/Maths/AABB2.h"
 #include "Engine/Maths/Mat4.h"
 #include "Engine/Maths/Random.h"
@@ -15,8 +12,6 @@
 #include <map>
 #include <unordered_map>
 #include <queue>
-
-#define UNUSED(x) (void)x;
 
 namespace tinyxml2 
 { 

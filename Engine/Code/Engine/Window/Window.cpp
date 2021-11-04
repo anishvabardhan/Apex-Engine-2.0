@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Engine/Platform/WindowsH.h"
 #include "Engine/Graphics/GLFunctions.h"
+#include "Engine/Input/InputSystem.h"
 
 #pragma comment(lib, "opengl32.lib")
 
@@ -18,6 +19,15 @@ Window::~Window()
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
+	Window* myWindow = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+
+	InputSystem* input = nullptr;
+
+	if(myWindow)
+	{
+		input = myWindow->GetInputSystem();
+	}
+
 	switch (msg)
 	{
 	case WM_CREATE:
@@ -34,13 +44,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	}
 	case WM_KEYDOWN:
 	{
-		g_Window->GetKey[wparam] = true;
+		const unsigned char keycode = (unsigned char)wparam;
+		input->HandleKeyDown(keycode);
 		break;
 	}
 
 	case WM_KEYUP:
 	{
-		g_Window->GetKey[wparam] = false;
+		const unsigned char keycode = (unsigned char)wparam;
+		input->HandleKeyUp(keycode);
 		break;
 	}
 
@@ -75,7 +87,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return NULL;
 }
 
-bool Window::Init()
+bool Window::Init(const std::string& appName)
 {
 	WNDCLASSEX wc;
 	wc.cbClsExtra = NULL;
@@ -86,7 +98,6 @@ bool Window::Init()
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hInstance = NULL;
-	wc.lpszClassName = L"MyWindowClass";
 	wc.lpszMenuName = L"";
 	wc.style = NULL;
 	wc.lpfnWndProc = &WndProc;
@@ -97,7 +108,10 @@ bool Window::Init()
 	if (!g_Window)
 		g_Window = this;
 
-	m_Hwnd = nullptr;//::CreateWindowW( WS_EX_OVERLAPPEDWINDOW , L"MyWindowClass" , L"Apex2D" , WS_OVERLAPPEDWINDOW , 0 , 0 , 1024 , 1024 , NULL , NULL , ::GetModuleHandle(NULL) , NULL );
+	WCHAR windowTitle[1024];
+	MultiByteToWideChar(GetACP(), 0, appName.c_str(), -1, windowTitle, sizeof(windowTitle) / sizeof(windowTitle[0]));
+
+	m_Hwnd = ::CreateWindowEx( WS_EX_OVERLAPPEDWINDOW , windowTitle , L"Apex2D" , WS_OVERLAPPEDWINDOW , 0 , 0 , 1024 , 1024 , NULL , NULL , ::GetModuleHandle(NULL) , NULL );
 
 	if (!m_Hwnd)
 		return false;
@@ -128,10 +142,17 @@ bool Window::Broadcast()
 
 bool Window::Release()
 {
-	if (!::DestroyWindow(reinterpret_cast<HWND>(m_Hwnd)))
-		return false;
+	if (m_Hwnd == nullptr)
+	{
+		return true;
+	}
 
-	return true;
+	::DestroyWindow(reinterpret_cast<HWND>(m_Hwnd));
+
+	m_Hwnd = nullptr;
+	m_InputSystem = nullptr;
+
+	return false;
 }
 
 bool Window::IsRun()
