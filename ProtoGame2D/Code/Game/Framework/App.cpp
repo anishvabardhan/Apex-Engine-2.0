@@ -30,11 +30,12 @@ void App::Startup()
 	g_InputSystem->Startup();
 
 	g_Window = new Window();
+	g_Window->Init("ProtoGame2D");
 	g_Window->SetInputSystem(g_InputSystem);
 
-	Renderer::CreateInstance();
+	//Renderer::CreateInstance();
 
-	LogStartup();
+	//LogStartup();
 }
 
 void App::RunFrame()
@@ -48,6 +49,8 @@ void App::RunFrame()
 void App::BeginFrame()
 {
 	g_InputSystem->BeginFrame();
+
+	g_Window->Broadcast();
 }
 
 void App::Update(float deltaseconds)
@@ -55,6 +58,8 @@ void App::Update(float deltaseconds)
 	g_InputSystem->Update(deltaseconds);
 	UpdateFromInput();
 	g_InputSystem->EndFrame();
+
+	g_Window->SwappingBuffers();
 }
 
 void App::Render()
@@ -63,18 +68,31 @@ void App::Render()
 
 void App::EndFrame()
 {
+	m_IsQuitting = g_Window->IsAppQuiting();
 }
 
 void App::Shutdown()
 {
 	g_Window->Release();
+	delete g_Window;
+	g_Window = nullptr;
+
 	g_InputSystem->ShutDown();
+	delete g_InputSystem;
+	g_InputSystem = nullptr;
 }
 
 void App::UpdateFromInput()
 {
 	if(g_InputSystem->WasKeyJustPressed(ESCAPE))
 	{
-		m_IsQuitting = true;
+		g_Window->AppQuitting();
+	}
+
+	if(g_InputSystem->WasKeyJustPressed(R))
+	{
+		const std::wstring title = L"Apex Engine 2.0";
+
+		g_Window->SetTitle(title);
 	}
 }

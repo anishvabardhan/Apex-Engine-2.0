@@ -2,8 +2,6 @@
 
 class KeyButtonState
 {
-	friend class InputSystem;
-
 	bool m_IsPressed = false;
 	bool m_WasPressedLastFrame = false;
 public:
@@ -12,4 +10,6 @@ public:
 	bool WasJustReleased() const;
 	void Reset();
 	void UpdateButtonState(bool isNowPressed);
+private:
+	friend class InputSystem;
 };

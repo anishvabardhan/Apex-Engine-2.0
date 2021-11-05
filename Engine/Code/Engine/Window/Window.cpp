@@ -1,15 +1,19 @@
 #include "Window.h"
+
 #include "Engine/Platform/WindowsH.h"
 #include "Engine/Graphics/GLFunctions.h"
 #include "Engine/Input/InputSystem.h"
+#include "Engine/Core/CoreMACROS.h"
 
-#pragma comment(lib, "opengl32.lib")
+#pragma comment(lib, "opengl32")
 
 Window* g_Window = nullptr;
-void* g_GLLibrary = NULL;
+void* g_GLLibrary = nullptr;
+
+extern InputSystem* g_InputSystem;
 
 Window::Window()
-	:m_IsRun(false), m_Hwnd(NULL), m_OurWindowHandleToDeviceContext(NULL), m_OurWindowHandleToRenderContext(NULL)
+	: m_Hwnd(NULL), m_OurWindowHandleToDeviceContext(NULL), m_OurWindowHandleToRenderContext(NULL)
 {
 }
 
@@ -21,11 +25,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	Window* myWindow = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 
+
 	InputSystem* input = nullptr;
 
 	if(myWindow)
 	{
 		input = myWindow->GetInputSystem();
+	}
+	else
+	{
+		printf("\nWINDOWS NOT FOUND!!\n");
 	}
 
 	switch (msg)
@@ -33,25 +42,27 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_CREATE:
 	{
 		g_Window->OnCreate(hwnd);
+		myWindow = (Window*)lparam;
+		::SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)myWindow);
 		break;
 	}
-
-	case WM_DESTROY:
+	case WM_CLOSE:
 	{
 		g_Window->OnDestroy(g_Window->GetRenderContext());
+		g_Window->AppQuitting();
 		::PostQuitMessage(0);
-		break;
+			return NULL;
 	}
 	case WM_KEYDOWN:
 	{
-		const unsigned char keycode = (unsigned char)wparam;
+		unsigned char keycode = (unsigned char)wparam;
 		input->HandleKeyDown(keycode);
 		break;
 	}
 
 	case WM_KEYUP:
 	{
-		const unsigned char keycode = (unsigned char)wparam;
+		unsigned char keycode = (unsigned char)wparam;
 		input->HandleKeyUp(keycode);
 		break;
 	}
@@ -79,17 +90,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		g_Window->GetMouse[wparam] = false;
 		break;
 	}
-
-	default:
-		return ::DefWindowProc(hwnd, msg, wparam, lparam);
 	}
 
-	return NULL;
+	return ::DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-bool Window::Init(const std::string& appName)
+void Window::Init(const std::string& appName)
 {
+	UNUSED(appName);
+
 	WNDCLASSEX wc;
+	memset(&wc, 0, sizeof(wc));
 	wc.cbClsExtra = NULL;
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.cbWndExtra = NULL;
@@ -98,29 +109,22 @@ bool Window::Init(const std::string& appName)
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 	wc.hInstance = NULL;
-	wc.lpszMenuName = L"";
-	wc.style = NULL;
+	wc.lpszClassName = TEXT("Simple Window Class");
+	wc.style = CS_OWNDC;
 	wc.lpfnWndProc = &WndProc;
 
-	if (!::RegisterClassEx(&wc))
-		return false;
-
-	if (!g_Window)
-		g_Window = this;
+	::RegisterClassEx(&wc);
 
 	WCHAR windowTitle[1024];
 	MultiByteToWideChar(GetACP(), 0, appName.c_str(), -1, windowTitle, sizeof(windowTitle) / sizeof(windowTitle[0]));
 
-	m_Hwnd = ::CreateWindowEx( WS_EX_OVERLAPPEDWINDOW , windowTitle , L"Apex2D" , WS_OVERLAPPEDWINDOW , 0 , 0 , 1024 , 1024 , NULL , NULL , ::GetModuleHandle(NULL) , NULL );
+	m_Hwnd = ::CreateWindowEx( WS_EX_OVERLAPPEDWINDOW , wc.lpszClassName, windowTitle, WS_OVERLAPPEDWINDOW | WS_SYSMENU, 0, 0, 1024, 1024, NULL, NULL, ::GetModuleHandle(NULL), NULL);
 
-	if (!m_Hwnd)
-		return false;
+	::SetWindowLongPtr(reinterpret_cast<HWND>(m_Hwnd), GWLP_USERDATA, (LONG_PTR)this);
 
 	::ShowWindow(reinterpret_cast<HWND>(m_Hwnd), SW_SHOW);
-
-	m_IsRun = true;
-
-	return true;
+	::SetForegroundWindow(reinterpret_cast<HWND>(m_Hwnd));
+	::SetFocus(reinterpret_cast<HWND>(m_Hwnd));
 }
 
 bool Window::Broadcast()
@@ -155,11 +159,6 @@ bool Window::Release()
 	return false;
 }
 
-bool Window::IsRun()
-{
-	return m_IsRun;
-}
-
 void Window::SwappingBuffers()
 {
 	SwapBuffers(reinterpret_cast<HDC>(GetInstance()->GetDeviceContext()));
@@ -178,19 +177,19 @@ void* Window::CreateOldRenderContext(void* hdc)
 	pfd.nVersion = 1;
 	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
 	pfd.iPixelType = PFD_TYPE_RGBA;
-	pfd.cColorBits = 24;
-	pfd.cDepthBits = 32;
-	pfd.cStencilBits = 0;
+	pfd.cColorBits = 32;
+	pfd.cDepthBits = 24;
+	pfd.cStencilBits = 8;
 	pfd.iLayerType = PFD_MAIN_PLANE;
 
-	int pixel_format = ChoosePixelFormat(reinterpret_cast<HDC>(hdc), &pfd);
+	int pixel_format = ::ChoosePixelFormat(reinterpret_cast<HDC>(hdc), &pfd);
 	if (pixel_format == NULL)
 		return NULL;
 
-	if (!SetPixelFormat(reinterpret_cast<HDC>(hdc), pixel_format, &pfd))
+	if (!::SetPixelFormat(reinterpret_cast<HDC>(hdc), pixel_format, &pfd))
 		return NULL;
 
-	void* context = wglCreateContext(reinterpret_cast<HDC>(hdc));
+	void* context = reinterpret_cast<void*>(::wglCreateContext(reinterpret_cast<HDC>(hdc)));
 	if (context == NULL)
 		return NULL;
 
@@ -204,8 +203,10 @@ void* Window::CreateRealRenderContext(void* hdc, int major, int minor)
 		WGL_SUPPORT_OPENGL_ARB, GL_TRUE,    
 		WGL_DOUBLE_BUFFER_ARB, GL_TRUE,     
 		WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
-		WGL_COLOR_BITS_ARB, 24,            			
-		NULL, NULL,
+		WGL_COLOR_BITS_ARB, 24,
+		WGL_DEPTH_BITS_ARB, 24,          
+		WGL_STENCIL_BITS_ARB, 8,
+		NULL, NULL
 	};
 
 	size_t const MAX_PIXEL_FORMATS = 128;
@@ -221,7 +222,7 @@ void* Window::CreateRealRenderContext(void* hdc, int major, int minor)
 		(UINT*)&format_count);
 
 	if (!succeeded) {
-		return NULL;
+		return nullptr;
 	}
 
 	for (unsigned int i = 0; i < format_count; ++i) {
@@ -236,7 +237,7 @@ void* Window::CreateRealRenderContext(void* hdc, int major, int minor)
 	}
 
 	if (!succeeded) {
-		return NULL;
+		return nullptr;
 	}
 
 	int context_flags = 0;
@@ -252,9 +253,9 @@ void* Window::CreateRealRenderContext(void* hdc, int major, int minor)
 		0, 0
 	};
 
-	HGLRC context = wglCreateContextAttribsARB(reinterpret_cast<HDC>(hdc), NULL, attribs);
+	void* context = wglCreateContextAttribsARB(reinterpret_cast<HDC>(hdc), NULL, attribs);
 	if (context == NULL) {
-		return NULL;
+		return nullptr;
 	}
 
 	return context;
@@ -271,14 +272,18 @@ void Window::OnCreate(void* hwnd)
 	MakeContextCurrent(m_OurWindowHandleToDeviceContext, m_OurWindowHandleToRenderContext);
 	BindNewGLFunctions();
 
-	HGLRC realContext = reinterpret_cast<HGLRC>(CreateRealRenderContext(m_OurWindowHandleToDeviceContext, 4, 2));
-
-	MakeContextCurrent(m_OurWindowHandleToDeviceContext, realContext);
-	wglDeleteContext(tempContext);
+	if(tempContext == NULL)
+	{
+		__debugbreak();
+	}
+	//HGLRC realContext = reinterpret_cast<HGLRC>(CreateRealRenderContext(m_OurWindowHandleToDeviceContext, 4, 2));
 
 	BindGLFunctions();
 
-	m_OurWindowHandleToRenderContext = realContext;
+	//MakeContextCurrent(m_OurWindowHandleToDeviceContext, realContext);
+	//wglDeleteContext(tempContext);
+
+	m_OurWindowHandleToRenderContext = tempContext;
 }
 
 void Window::OnUpdate()
@@ -288,13 +293,22 @@ void Window::OnUpdate()
 
 void Window::OnDestroy(void* rendercontext)
 {
-	m_IsRun = false;
 	wglMakeCurrent(reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext), NULL);
 	wglDeleteContext(reinterpret_cast<HGLRC>(rendercontext));
 	if (!ReleaseDC(reinterpret_cast<HWND>(m_Hwnd), reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext)))
 		MessageBox(reinterpret_cast<HWND>(m_Hwnd), L"Cannot Release !!", L"ERROR!!", MB_OK);
 
 	FreeLibrary((HMODULE)g_GLLibrary);
+}
+
+bool Window::IsAppQuiting()
+{
+	return m_IsQuitting;
+}
+
+void Window::SetTitle(const std::wstring& title)
+{
+	SetWindowText(reinterpret_cast<HWND>(m_Hwnd), title.c_str());
 }
 
 Window* Window::GetInstance()
