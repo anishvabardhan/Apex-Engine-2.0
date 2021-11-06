@@ -2,15 +2,19 @@
 #include "MeshBuilder.h"
 #include "Mesh.h"
 #include "Engine/Graphics/GLFunctions.h"
+#pragma comment(lib, "opengl32")
 
 static Renderer* m_Renderer = nullptr;
+
+void* g_GLLibrary = nullptr;
+void* m_OurWindowHandleToDeviceContext = nullptr;
+void* m_OurWindowHandleToRenderContext = nullptr;
 
 //---------------------------------------------------------------------------------------------------------
 // Defining the Constructors/Destructors
 
 Renderer::Renderer()
 {
-	glViewport(0, 0, 1024, 1024);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -21,6 +25,30 @@ Renderer::~Renderer()
 
 //---------------------------------------------------------------------------------------------------------
 // Initializing the Renderer
+
+void Renderer::StartUp()
+{
+	g_GLLibrary = ::LoadLibraryA("opengl32.lib");
+	m_OurWindowHandleToDeviceContext = GetDC(reinterpret_cast<HWND>(Window::GetInstance()->GetHandle()));
+
+	HGLRC tempContext = reinterpret_cast<HGLRC>(CreateOldRenderContext(m_OurWindowHandleToDeviceContext));
+
+	MakeContextCurrent(m_OurWindowHandleToDeviceContext, m_OurWindowHandleToRenderContext);
+	BindNewGLFunctions();
+
+	if (tempContext == NULL)
+	{
+		__debugbreak();
+	}
+	//HGLRC realContext = reinterpret_cast<HGLRC>(CreateRealRenderContext(m_OurWindowHandleToDeviceContext, 4, 2));
+
+	BindGLFunctions();
+
+	//MakeContextCurrent(m_OurWindowHandleToDeviceContext, realContext);
+	//wglDeleteContext(tempContext);
+
+	m_OurWindowHandleToRenderContext = tempContext;
+}
 
 void Renderer::InitRender()
 {
@@ -39,6 +67,121 @@ void Renderer::InitRender()
 	//Specify Clear Values for the Color Buffers
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+}
+
+void Renderer::ShutDown()
+{
+	wglMakeCurrent(reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext), NULL);
+	wglDeleteContext(reinterpret_cast<HGLRC>(m_OurWindowHandleToRenderContext));
+	if (!ReleaseDC(reinterpret_cast<HWND>(Window::GetInstance()->GetHandle()), reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext)))
+		MessageBox(reinterpret_cast<HWND>(Window::GetInstance()->GetHandle()), L"Cannot Release !!", L"ERROR!!", MB_OK);
+
+	m_OurWindowHandleToDeviceContext = nullptr;
+	m_OurWindowHandleToRenderContext = nullptr;
+
+	FreeLibrary((HMODULE)g_GLLibrary);
+}
+
+void Renderer::SwappingBuffers()
+{
+	SwapBuffers(reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext));
+}
+
+bool Renderer::MakeContextCurrent(void* hdc, void* hglrc)
+{
+	return wglMakeCurrent(reinterpret_cast<HDC>(hdc), reinterpret_cast<HGLRC>(hglrc));
+}
+
+void* Renderer::CreateOldRenderContext(void* hdc)
+{
+	PIXELFORMATDESCRIPTOR pfd;
+	memset(&pfd, 0, sizeof(pfd));
+	pfd.nSize = sizeof(pfd);
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = 32;
+	pfd.cDepthBits = 24;
+	pfd.cStencilBits = 8;
+	pfd.iLayerType = PFD_MAIN_PLANE;
+
+	int pixel_format = ::ChoosePixelFormat(reinterpret_cast<HDC>(hdc), &pfd);
+	if (pixel_format == NULL)
+		return NULL;
+
+	if (!::SetPixelFormat(reinterpret_cast<HDC>(hdc), pixel_format, &pfd))
+		return NULL;
+
+	void* context = reinterpret_cast<void*>(::wglCreateContext(reinterpret_cast<HDC>(hdc)));
+	if (context == NULL)
+		return NULL;
+
+	return context;
+}
+
+void* Renderer::CreateRealRenderContext(void* hdc, int major, int minor)
+{
+	int const format_attribs[] = {
+			WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+			WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+			WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+			WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+			WGL_COLOR_BITS_ARB, 24,
+			WGL_DEPTH_BITS_ARB, 24,
+			WGL_STENCIL_BITS_ARB, 8,
+			NULL, NULL
+	};
+
+	size_t const MAX_PIXEL_FORMATS = 128;
+	int formats[MAX_PIXEL_FORMATS];
+	int pixel_format = 0;
+	UINT format_count = 0;
+
+	BOOL succeeded = wglChoosePixelFormatARB(reinterpret_cast<HDC>(hdc),
+		format_attribs,
+		nullptr,
+		MAX_PIXEL_FORMATS,
+		formats,
+		(UINT*)&format_count);
+
+	if (!succeeded) {
+		return nullptr;
+	}
+
+	for (unsigned int i = 0; i < format_count; ++i) {
+		pixel_format = formats[i];
+		succeeded = SetPixelFormat(reinterpret_cast<HDC>(hdc), pixel_format, NULL);
+		if (succeeded) {
+			break;
+		}
+		else {
+			//DWORD error = GetLastError();
+		}
+	}
+
+	if (!succeeded) {
+		return nullptr;
+	}
+
+	int context_flags = 0;
+#if defined(_DEBUG)
+	context_flags |= WGL_CONTEXT_DEBUG_BIT_ARB;
+#endif
+
+	int const attribs[] = {
+		WGL_CONTEXT_MAJOR_VERSION_ARB, major,
+		WGL_CONTEXT_MINOR_VERSION_ARB, minor,
+		WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+		WGL_CONTEXT_FLAGS_ARB, context_flags,
+		0, 0
+	};
+
+	void* context = wglCreateContextAttribsARB(reinterpret_cast<HDC>(hdc), NULL, attribs);
+	if (context == NULL) {
+		return nullptr;
+	}
+
+	return context;
 }
 
 //---------------------------------------------------------------------------------------------------------

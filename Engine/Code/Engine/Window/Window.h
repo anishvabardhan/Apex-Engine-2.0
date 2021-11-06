@@ -1,8 +1,6 @@
 #pragma once
 #include <string>
 
-extern void* g_GLLibrary;
-
 class InputSystem;
 
 class Window
@@ -13,22 +11,15 @@ public:
 	~Window();
 
 	void Init(const std::string& appName);
-	bool Broadcast();
-	bool Release();
+	bool RunMessagePump();
+	bool Destroy();
 
-	void SwappingBuffers();
-	
-	bool MakeContextCurrent(void* hdc, void* hglrc);
-	void* CreateOldRenderContext(void* hdc);
-	void* CreateRealRenderContext(void* hdc, int major, int minor);
-
-	virtual void OnCreate(void* hwnd);
-	virtual void OnUpdate();
-	virtual void OnDestroy(void* rendercontext);
+	void OnUpdate();
 
 	inline void AppQuitting() { m_IsQuitting = true; }
 	bool IsAppQuiting();
 
+	inline void* GetHandle() const { return m_Hwnd; }
 	inline void* GetDeviceContext() const { return m_OurWindowHandleToDeviceContext; }
 	inline void* GetRenderContext() const { return m_OurWindowHandleToRenderContext; }
 
@@ -39,9 +30,9 @@ public:
 
 	static Window* GetInstance();
 protected:
-	void* m_Hwnd;
-	void* m_OurWindowHandleToDeviceContext;
-	void* m_OurWindowHandleToRenderContext;
+	void* m_Hwnd = nullptr;
+	void* m_OurWindowHandleToDeviceContext = nullptr;
+	void* m_OurWindowHandleToRenderContext = nullptr;
 
 	bool m_IsQuitting = false;
 public:

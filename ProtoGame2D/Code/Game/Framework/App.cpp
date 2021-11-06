@@ -33,7 +33,8 @@ void App::Startup()
 	g_Window->Init("ProtoGame2D");
 	g_Window->SetInputSystem(g_InputSystem);
 
-	//Renderer::CreateInstance();
+	Renderer::CreateInstance();
+	Renderer::GetInstance()->StartUp();
 
 	//LogStartup();
 }
@@ -50,7 +51,7 @@ void App::BeginFrame()
 {
 	g_InputSystem->BeginFrame();
 
-	g_Window->Broadcast();
+	g_Window->RunMessagePump();
 }
 
 void App::Update(float deltaseconds)
@@ -59,7 +60,7 @@ void App::Update(float deltaseconds)
 	UpdateFromInput();
 	g_InputSystem->EndFrame();
 
-	g_Window->SwappingBuffers();
+	Renderer::GetInstance()->SwappingBuffers();
 }
 
 void App::Render()
@@ -73,7 +74,10 @@ void App::EndFrame()
 
 void App::Shutdown()
 {
-	g_Window->Release();
+	Renderer::GetInstance()->ShutDown();
+	Renderer::DestroyInstance();
+
+	g_Window->Destroy();
 	delete g_Window;
 	g_Window = nullptr;
 

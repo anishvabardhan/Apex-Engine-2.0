@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/Window/Window.h"
 #include "Engine/Core/CoreIncludes.h"
 #include "Buffers/FrameBuffer.h"
 #include "Font.h"
@@ -58,6 +59,10 @@ static std::map<std::string, APEX_BLEND_OP> ParseBlendOp{
 	{"max", APEX_MAX}
 };
 
+extern void* g_GLLibrary;
+extern void* m_OurWindowHandleToDeviceContext;
+extern void* m_OurWindowHandleToRenderContext;
+
 class Renderer
 {
 	std::map<std::string, Texture*> m_LoadedTextures;
@@ -67,7 +72,15 @@ public:
 	Renderer();
     ~Renderer();
 
+	void StartUp();
 	void InitRender();
+	void ShutDown();
+
+	void SwappingBuffers();
+
+	bool MakeContextCurrent(void* hdc, void* hglrc);
+	void* CreateOldRenderContext(void* hdc);
+	void* CreateRealRenderContext(void* hdc, int major, int minor);
 
 	void Drawtext(const Vec2& position, const Vec4& color, const std::string& asciiText, float quadHeight, Font* font, Shader shader);
 	void DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color, Shader shader);
