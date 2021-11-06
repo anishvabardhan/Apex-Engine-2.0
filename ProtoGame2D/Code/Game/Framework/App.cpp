@@ -36,7 +36,7 @@ void App::Startup()
 	Renderer::CreateInstance();
 	Renderer::GetInstance()->StartUp();
 
-	LogStartup();
+	//LogStartup();
 }
 
 void App::RunFrame()
@@ -74,7 +74,7 @@ void App::EndFrame()
 
 void App::Shutdown()
 {
-	LogShutdown();
+	//LogShutdown();
 
 	Renderer::GetInstance()->ShutDown();
 	Renderer::DestroyInstance();
@@ -100,5 +100,9 @@ void App::UpdateFromInput()
 		const std::wstring title = L"Apex Engine 2.0";
 
 		g_Window->SetTitle(title);
+	}
+
+	if (g_InputSystem->WasKeyJustPressed(SPACEBAR))
+	{
 	}
 }

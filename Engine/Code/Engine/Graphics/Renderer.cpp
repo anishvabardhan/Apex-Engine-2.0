@@ -36,21 +36,21 @@ void Renderer::StartUp()
 
 	HGLRC tempContext = reinterpret_cast<HGLRC>(CreateOldRenderContext(m_OurWindowHandleToDeviceContext));
 
-	MakeContextCurrent(m_OurWindowHandleToDeviceContext, m_OurWindowHandleToRenderContext);
+	MakeContextCurrent(m_OurWindowHandleToDeviceContext, tempContext);
 	BindNewGLFunctions();
 
 	if (tempContext == NULL)
 	{
 		__debugbreak();
 	}
-	//HGLRC realContext = reinterpret_cast<HGLRC>(CreateRealRenderContext(m_OurWindowHandleToDeviceContext, 4, 2));
+	HGLRC realContext = reinterpret_cast<HGLRC>(CreateRealRenderContext(m_OurWindowHandleToDeviceContext, 4, 2));
 
 	BindGLFunctions();
 
-	//MakeContextCurrent(m_OurWindowHandleToDeviceContext, realContext);
-	//wglDeleteContext(tempContext);
+	MakeContextCurrent(m_OurWindowHandleToDeviceContext, realContext);
+	wglDeleteContext(tempContext);
 
-	m_OurWindowHandleToRenderContext = tempContext;
+	m_OurWindowHandleToRenderContext = realContext;
 }
 
 void Renderer::InitRender()
@@ -124,12 +124,12 @@ void* Renderer::CreateOldRenderContext(void* hdc)
 
 void* Renderer::CreateRealRenderContext(void* hdc, int major, int minor)
 {
-	int const format_attribs[] = {
+	const int format_attribs[] = {
 			WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
 			WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
 			WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
 			WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
-			WGL_COLOR_BITS_ARB, 24,
+			WGL_COLOR_BITS_ARB, 32,
 			WGL_DEPTH_BITS_ARB, 24,
 			WGL_STENCIL_BITS_ARB, 8,
 			NULL, NULL
@@ -145,7 +145,7 @@ void* Renderer::CreateRealRenderContext(void* hdc, int major, int minor)
 		nullptr,
 		MAX_PIXEL_FORMATS,
 		formats,
-		(UINT*)&format_count);
+		&format_count);
 
 	if (!succeeded) {
 		return nullptr;
@@ -171,7 +171,7 @@ void* Renderer::CreateRealRenderContext(void* hdc, int major, int minor)
 	context_flags |= WGL_CONTEXT_DEBUG_BIT_ARB;
 #endif
 
-	int const attribs[] = {
+	const int attribs[] = {
 		WGL_CONTEXT_MAJOR_VERSION_ARB, major,
 		WGL_CONTEXT_MINOR_VERSION_ARB, minor,
 		WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
