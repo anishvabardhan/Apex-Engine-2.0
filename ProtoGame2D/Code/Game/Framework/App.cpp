@@ -36,7 +36,7 @@ void App::Startup()
 	Renderer::CreateInstance();
 	Renderer::GetInstance()->StartUp();
 
-	//LogStartup();
+	LogStartup();
 }
 
 void App::RunFrame()
@@ -74,6 +74,8 @@ void App::EndFrame()
 
 void App::Shutdown()
 {
+	LogShutdown();
+
 	Renderer::GetInstance()->ShutDown();
 	Renderer::DestroyInstance();
 

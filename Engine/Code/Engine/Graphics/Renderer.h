@@ -2,11 +2,13 @@
 
 #include "Engine/Window/Window.h"
 #include "Engine/Core/CoreIncludes.h"
-#include "Buffers/FrameBuffer.h"
-#include "Font.h"
-#include "Texture.h"
-#include "Shader.h"
+#include "Engine/Graphics/GLFunctions.h"
 
+class Shader;
+class ShaderDefinition;
+class Texture;
+class Font;
+class FrameBuffer;
 struct Mesh;
 
 enum APEX_BLEND_FACTOR {

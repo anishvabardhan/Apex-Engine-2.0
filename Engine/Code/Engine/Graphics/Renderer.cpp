@@ -1,8 +1,11 @@
 #include "Renderer.h"
 #include "MeshBuilder.h"
 #include "Mesh.h"
-#include "Engine/Graphics/GLFunctions.h"
 #pragma comment(lib, "opengl32")
+#include "Buffers/FrameBuffer.h"
+#include "Font.h"
+#include "Texture.h"
+#include "Shader.h"
 
 static Renderer* m_Renderer = nullptr;
 
