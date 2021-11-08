@@ -217,6 +217,9 @@
     <ClInclude Include="Framework\App.h" />
     <ClInclude Include="Framework\Game.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Log\Log.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,3 +1,5 @@
 <ScreenShaderDefinitions>
-	<program src = "res/Shaders/Code/Screen.shader"/>
+
+	<program src = "../Shaders/Screen.shader"/>
+
 </ScreenShaderDefinitions>

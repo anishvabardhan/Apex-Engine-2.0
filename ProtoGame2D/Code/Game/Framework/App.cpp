@@ -6,6 +6,9 @@
 #include "Engine/Core/Logger.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Input/WinKeys.h"
+#include "Engine/Graphics/Shader.h"
+#include "Engine/Graphics/ShaderDefinition.h"
+#include "Engine/Graphics/Buffers/FrameBuffer.h"
 
 #ifndef UNUSED
 #define UNUSED(x) (void)x;
@@ -36,7 +39,18 @@ void App::Startup()
 	Renderer::CreateInstance();
 	Renderer::GetInstance()->StartUp();
 
-	//LogStartup();
+	LogStartup();
+
+	m_ShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef("Data/Materials/shader.xml"));
+	m_Shader = Renderer::GetInstance()->GetOrCreateShader(m_ShaderDef);
+
+	m_ScreenShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef("Data/Materials/screenShader.xml"));
+	m_ScreenShader = Renderer::GetInstance()->GetOrCreateShader(m_ScreenShaderDef);
+
+	Renderer::GetInstance()->EnableBlend(ParseBlendFac[m_Shader->GetSRC()], ParseBlendFac[m_Shader->GetDST()], ParseBlendOp[m_Shader->GetOP()]);
+
+	m_CurrentBuffer = new FrameBuffer();
+	m_NextBuffer = new FrameBuffer();
 }
 
 void App::RunFrame()
@@ -52,6 +66,15 @@ void App::BeginFrame()
 	g_InputSystem->BeginFrame();
 
 	g_Window->RunMessagePump();
+
+	m_CurrentBuffer->Bind();
+
+	Renderer::GetInstance()->ClearColor();
+	Renderer::GetInstance()->Clear();
+
+	m_Shader->Bind();
+
+	m_Shader->SetUniformMat4f("u_Proj", Mat4::orthographic(0.0f, 1024.0f, 0.0f, 1024.0f, -2.0f, 2.0f));
 }
 
 void App::Update(float deltaseconds)
@@ -74,7 +97,7 @@ void App::EndFrame()
 
 void App::Shutdown()
 {
-	//LogShutdown();
+	LogShutdown();
 
 	Renderer::GetInstance()->ShutDown();
 	Renderer::DestroyInstance();

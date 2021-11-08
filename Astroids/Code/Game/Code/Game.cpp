@@ -48,14 +48,14 @@ void Game::BeginPlay()
 
 void Game::Tick()
 {
-	if (g_App.Init())
+	if (g_App.Init("Astroid"))
 	{
 		//--------------------------------------------------------------------------------------------------
 		//GAME LOOP
 	
-		while (g_App.IsRun())
+		while (!g_App.IsAppQuiting())
 		{
-			g_App.Broadcast();
+			g_App.RunMessagePump();
 
 			g_TS.Update();
 

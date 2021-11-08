@@ -1,9 +1,7 @@
  #include "Astroid.h"
 
 #include "Engine/Graphics/Renderer.h"
-//#include "Engine/Graphics/GLFunctions.h"
-//TODO : Remove GLEW
-#include "External/GLEW/include/GL/glew.h"
+#include "Engine/Graphics/GLFunctions.h"
 #include <Windows.h>
 
 Random random(-100, 100);

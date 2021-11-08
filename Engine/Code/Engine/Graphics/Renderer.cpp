@@ -39,10 +39,6 @@ void Renderer::StartUp()
 	MakeContextCurrent(m_OurWindowHandleToDeviceContext, tempContext);
 	BindNewGLFunctions();
 
-	if (tempContext == NULL)
-	{
-		__debugbreak();
-	}
 	HGLRC realContext = reinterpret_cast<HGLRC>(CreateRealRenderContext(m_OurWindowHandleToDeviceContext, 4, 2));
 
 	BindGLFunctions();
