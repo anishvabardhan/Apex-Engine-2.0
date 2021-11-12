@@ -1,4 +1,5 @@
 #include "Renderer.h"
+
 #include "MeshBuilder.h"
 #include "Mesh.h"
 #pragma comment(lib, "opengl32")
@@ -31,7 +32,7 @@ Renderer::~Renderer()
 
 void Renderer::StartUp()
 {
-	g_GLLibrary = ::LoadLibraryA("opengl32.lib");
+	g_GLLibrary = ::LoadLibraryA("opengl32.dll");
 	m_OurWindowHandleToDeviceContext = GetDC(reinterpret_cast<HWND>(Window::GetInstance()->GetHandle()));
 
 	HGLRC tempContext = reinterpret_cast<HGLRC>(CreateOldRenderContext(m_OurWindowHandleToDeviceContext));
@@ -41,10 +42,10 @@ void Renderer::StartUp()
 
 	HGLRC realContext = reinterpret_cast<HGLRC>(CreateRealRenderContext(m_OurWindowHandleToDeviceContext, 4, 2));
 
-	BindGLFunctions();
-
 	MakeContextCurrent(m_OurWindowHandleToDeviceContext, realContext);
 	wglDeleteContext(tempContext);
+
+	BindGLFunctions();
 
 	m_OurWindowHandleToRenderContext = realContext;
 }

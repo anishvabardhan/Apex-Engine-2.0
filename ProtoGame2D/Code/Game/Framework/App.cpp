@@ -41,12 +41,12 @@ void App::Startup()
 
 	LogStartup();
 
-	m_ShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef("Data/Materials/shader.xml"));
-	m_Shader = Renderer::GetInstance()->GetOrCreateShader(m_ShaderDef);
-
-	m_ScreenShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef("Data/Materials/screenShader.xml"));
+	m_ShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef("../Data/Materials/shader.xml"));
+	m_Shader = new Shader(m_ShaderDef);
+	
+	m_ScreenShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef("../Data/Materials/screenShader.xml"));
 	m_ScreenShader = Renderer::GetInstance()->GetOrCreateShader(m_ScreenShaderDef);
-
+	
 	Renderer::GetInstance()->EnableBlend(ParseBlendFac[m_Shader->GetSRC()], ParseBlendFac[m_Shader->GetDST()], ParseBlendOp[m_Shader->GetOP()]);
 
 	m_CurrentBuffer = new FrameBuffer();
@@ -82,8 +82,6 @@ void App::Update(float deltaseconds)
 	g_InputSystem->Update(deltaseconds);
 	UpdateFromInput();
 	g_InputSystem->EndFrame();
-
-	Renderer::GetInstance()->SwappingBuffers();
 }
 
 void App::Render()
@@ -92,6 +90,17 @@ void App::Render()
 
 void App::EndFrame()
 {
+	m_CurrentBuffer->UnBind();
+
+	Renderer::GetInstance()->ClearColor();
+	Renderer::GetInstance()->Clear();
+
+	m_ScreenShader->Bind();
+
+	Renderer::GetInstance()->CopyFrameBuffer(m_CurrentBuffer, m_NextBuffer);
+
+	Renderer::GetInstance()->SwappingBuffers();
+
 	m_IsQuitting = g_Window->IsAppQuiting();
 }
 
@@ -123,9 +132,5 @@ void App::UpdateFromInput()
 		const std::wstring title = L"Apex Engine 2.0";
 
 		g_Window->SetTitle(title);
-	}
-
-	if (g_InputSystem->WasKeyJustPressed(SPACEBAR))
-	{
 	}
 }
