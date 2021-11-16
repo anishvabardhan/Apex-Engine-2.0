@@ -74,7 +74,9 @@ void App::BeginFrame()
 
 	m_Shader->Bind();
 
-	m_Shader->SetUniformMat4f("u_Proj", Mat4::orthographic(0.0f, 1024.0f, 0.0f, 1024.0f, -2.0f, 2.0f));
+	Mat4 camera = Mat4::orthographic(0.0f, 1024.0f, 0.0f, 1024.0f, -2.0f, 2.0f);
+
+	m_Shader->SetUniformMat4f("u_Proj", camera);
 }
 
 void App::Update(float deltaseconds)
@@ -86,6 +88,7 @@ void App::Update(float deltaseconds)
 
 void App::Render()
 {
+	Renderer::GetInstance()->DrawQuad(Vec2(200.0f, 200.0f), Vec2(100.0f, 50.0f), Vec4(1.0f, 0.0f, 0.0f, 1.0f), "../Data/Textures/stripes.png", *m_Shader);
 }
 
 void App::EndFrame()
@@ -98,6 +101,7 @@ void App::EndFrame()
 	m_ScreenShader->Bind();
 
 	Renderer::GetInstance()->CopyFrameBuffer(m_CurrentBuffer, m_NextBuffer);
+	Renderer::GetInstance()->DrawFrameBuffer(Vec2(0.0f, 0.0f), Vec2(1024.0f, 1024.0f));
 
 	Renderer::GetInstance()->SwappingBuffers();
 

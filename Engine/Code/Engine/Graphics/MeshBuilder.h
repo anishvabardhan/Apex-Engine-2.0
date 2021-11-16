@@ -40,35 +40,36 @@ struct VertexMaster
 	Vec4 m_Color;
 	Vec2 m_UV;
 
-	static int m_Size;
-
-	VertexMaster(Vec3 position, Vec4 color, Vec2 uv);
+	VertexMaster() {}
+	VertexMaster(Vec3 position, Vec4 color, Vec2 uv) : m_Pos(position), m_Color(color), m_UV(uv) {}
 	~VertexMaster();
+};
 
-	void PushPosCoords(Vec3 position);
-	void PushColorCoords(Vec4 color);
-	void PushUVCoords(Vec2 uv);
+struct VertexPCU
+{
+	Vec3 m_Pos;
+	Vec4 m_Color;
+	Vec2 m_UV;
 
-	struct PCU
-	{
-		static std::vector<VertexBufferElement> m_Attributes;
-		static VertexBufferLayout m_Layout;
-	};
+	VertexPCU() {}
+	VertexPCU(Vec3 position, Vec4 color, Vec2 uv);
+	~VertexPCU();
+
+	static std::vector<VertexBufferElement> m_Attributes;
+	static VertexBufferLayout m_Layout;
 };
 
 struct MeshBuilder
 {
-	//std::vector<VertexPCU> m_Vertices;
 	std::vector<VertexMaster> m_Vertices;
 
 	MeshBuilder();
 	~MeshBuilder();
 
-	//void Push(VertexPCU vertex);
 	void Push(VertexMaster vertex);
 
 	template<typename FORMAT>
 	Mesh* CreateMesh();
 };
 
-template Mesh* MeshBuilder::CreateMesh<VertexMaster::PCU>();
+template Mesh* MeshBuilder::CreateMesh<VertexPCU>();

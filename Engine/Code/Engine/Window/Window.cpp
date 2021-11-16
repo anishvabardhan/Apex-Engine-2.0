@@ -1,7 +1,6 @@
 #include "Window.h"
 
 #include "Engine/Platform/WindowsH.h"
-#include "Engine/Graphics/GLFunctions.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Core/CoreMACROS.h"
 

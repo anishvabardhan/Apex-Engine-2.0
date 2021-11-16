@@ -109,6 +109,9 @@
     <ClCompile Include="Input\InputSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Input\Mouse.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\DebugSystem.h" />
@@ -165,5 +168,6 @@
     <ClInclude Include="Input\KeyButtonState.h" />
     <ClInclude Include="Input\InputSystem.h" />
     <ClInclude Include="Core\CoreMACROS.h" />
+    <ClInclude Include="Input\Mouse.h" />
   </ItemGroup>
 </Project>
