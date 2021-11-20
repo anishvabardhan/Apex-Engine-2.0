@@ -385,7 +385,7 @@ void Renderer::Clear() const
 
 void Renderer::ClearColor() const
 {
-	glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 //------------------------------------------------------------------------------------------------------
