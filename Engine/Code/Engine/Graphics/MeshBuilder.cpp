@@ -20,6 +20,11 @@ VertexBufferElement::VertexBufferElement(unsigned int type, unsigned int count, 
 {
 }
 
+VertexPCU::VertexPCU(VertexMaster master)
+	: m_Pos(master.m_Pos), m_Color(master.m_Color), m_UV(master.m_UV)
+{
+}
+
 VertexPCU::VertexPCU(Vec3 position, Vec4 color, Vec2 uv)
 	: m_Pos(position), m_Color(color), m_UV(uv)
 {
@@ -39,7 +44,7 @@ MeshBuilder::~MeshBuilder()
 
 void MeshBuilder::Push(VertexMaster vertex)
 {
-	m_Vertices.push_back(vertex);
+	m_Vertices.push_back(vertex); 
 }
 
 template <typename FORMAT>

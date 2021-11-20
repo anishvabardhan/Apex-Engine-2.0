@@ -42,7 +42,7 @@ struct VertexMaster
 
 	VertexMaster() {}
 	VertexMaster(Vec3 position, Vec4 color, Vec2 uv) : m_Pos(position), m_Color(color), m_UV(uv) {}
-	~VertexMaster();
+	~VertexMaster() {}
 };
 
 struct VertexPCU
@@ -52,6 +52,7 @@ struct VertexPCU
 	Vec2 m_UV;
 
 	VertexPCU() {}
+	VertexPCU(VertexMaster master);
 	VertexPCU(Vec3 position, Vec4 color, Vec2 uv);
 	~VertexPCU();
 
