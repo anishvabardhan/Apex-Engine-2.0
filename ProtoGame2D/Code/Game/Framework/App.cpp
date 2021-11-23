@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "Engine/Window/Window.h"
+#include "Engine/Graphics/Renderer.h"
 #include "Engine/Core/Logger.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Input/WinKeys.h"
@@ -33,6 +34,9 @@ void App::Startup()
 	g_Window->SetInputSystem(g_InputSystem);
 
 	LogStartup();
+	
+	Renderer::CreateInstance();
+	Renderer::GetInstance()->StartUp();
 
 	m_Game = new Game();
 }
@@ -78,10 +82,13 @@ void App::EndFrame()
 
 void App::Shutdown()
 {
-	LogShutdown();
-
 	delete m_Game;
 	m_Game = nullptr;
+	
+	Renderer::GetInstance()->ShutDown();
+	Renderer::DestroyInstance();
+
+	LogShutdown();
 
 	g_Window->Destroy();
 	delete g_Window;

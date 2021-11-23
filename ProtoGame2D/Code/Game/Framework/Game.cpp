@@ -8,9 +8,6 @@
 
 Game::Game()
 {
-	Renderer::CreateInstance();
-	Renderer::GetInstance()->StartUp();
-
 	m_ShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef(SHADER_XML));
 	m_Shader = new Shader(m_ShaderDef);
 	
@@ -25,8 +22,23 @@ Game::Game()
 
 Game::~Game()
 {
-	Renderer::GetInstance()->ShutDown();
-	Renderer::DestroyInstance();
+	delete m_ShaderDef;
+	m_ShaderDef = nullptr;
+	
+	delete m_Shader;
+	m_Shader = nullptr;
+	
+	delete m_ScreenShaderDef;
+	m_ScreenShaderDef = nullptr;
+	
+	delete m_ScreenShader;
+	m_ScreenShader = nullptr;
+	
+	delete m_CurrentBuffer;
+	m_CurrentBuffer = nullptr;
+	
+	delete m_NextBuffer;
+	m_NextBuffer = nullptr;
 }
 
 void Game::BeginFrame()
