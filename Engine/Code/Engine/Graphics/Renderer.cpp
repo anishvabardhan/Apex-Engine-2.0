@@ -1,6 +1,7 @@
 #include "Renderer.h"
 
 #include "MeshBuilder.h"
+#include "Vertex.h"
 #include "Mesh.h"
 #pragma comment(lib, "opengl32")
 #include "Buffers/FrameBuffer.h"

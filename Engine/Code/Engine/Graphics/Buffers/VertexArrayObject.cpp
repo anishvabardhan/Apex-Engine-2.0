@@ -1,6 +1,6 @@
 #include "VertexArrayObject.h"
 
-#include "Engine/Graphics/MeshBuilder.h"
+#include "Engine/Graphics/Vertex.h"
 #include "Engine/Graphics/GLFunctions.h"
 
 VertexArrayObject::VertexArrayObject()

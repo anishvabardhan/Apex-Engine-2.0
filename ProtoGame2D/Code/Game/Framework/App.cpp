@@ -2,13 +2,9 @@
 
 #include "Game.h"
 #include "Engine/Window/Window.h"
-#include "Engine/Graphics/Renderer.h"
 #include "Engine/Core/Logger.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Input/WinKeys.h"
-#include "Engine/Graphics/Shader.h"
-#include "Engine/Graphics/ShaderDefinition.h"
-#include "Engine/Graphics/Buffers/FrameBuffer.h"
 
 #ifndef UNUSED
 #define UNUSED(x) (void)x;
@@ -36,21 +32,9 @@ void App::Startup()
 	g_Window->Init("ProtoGame2D");
 	g_Window->SetInputSystem(g_InputSystem);
 
-	Renderer::CreateInstance();
-	Renderer::GetInstance()->StartUp();
-
 	LogStartup();
 
-	m_ShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef("../Data/Materials/shader.xml"));
-	m_Shader = new Shader(m_ShaderDef);
-	
-	m_ScreenShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef("../Data/Materials/screenShader.xml"));
-	m_ScreenShader = Renderer::GetInstance()->GetOrCreateShader(m_ScreenShaderDef);
-	
-	Renderer::GetInstance()->EnableBlend(ParseBlendFac[m_Shader->GetSRC()], ParseBlendFac[m_Shader->GetDST()], ParseBlendOp[m_Shader->GetOP()]);
-
-	m_CurrentBuffer = new FrameBuffer();
-	m_NextBuffer = new FrameBuffer();
+	m_Game = new Game();
 }
 
 void App::RunFrame()
@@ -67,43 +51,27 @@ void App::BeginFrame()
 
 	g_Window->RunMessagePump();
 
-	m_CurrentBuffer->Bind();
-
-	Renderer::GetInstance()->ClearColor();
-	Renderer::GetInstance()->Clear();
-
-	m_Shader->Bind();
-
-	Mat4 camera = Mat4::orthographic(0.0f, 1024.0f, 0.0f, 1024.0f, -2.0f, 2.0f);
-
-	m_Shader->SetUniformMat4f("u_Proj", camera);
+	m_Game->BeginFrame();
 }
 
 void App::Update(float deltaseconds)
 {
 	g_InputSystem->Update(deltaseconds);
 	UpdateFromInput();
+
+	m_Game->Update();
+
 	g_InputSystem->EndFrame();
 }
 
 void App::Render()
 {
-	Renderer::GetInstance()->DrawQuad(Vec2(200.0f, 200.0f), Vec2(100.0f, 50.0f), Vec4(1.0f, 0.0f, 0.0f, 1.0f), "../Data/Textures/stripes.png", *m_Shader);
+	m_Game->Render();
 }
 
 void App::EndFrame()
 {
-	m_CurrentBuffer->UnBind();
-
-	Renderer::GetInstance()->ClearColor();
-	Renderer::GetInstance()->Clear();
-
-	m_ScreenShader->Bind();
-
-	Renderer::GetInstance()->CopyFrameBuffer(m_CurrentBuffer, m_NextBuffer);
-	Renderer::GetInstance()->DrawFrameBuffer(Vec2(0.0f, 0.0f), Vec2(1024.0f, 1024.0f));
-
-	Renderer::GetInstance()->SwappingBuffers();
+	m_Game->EndFrame();
 
 	m_IsQuitting = g_Window->IsAppQuiting();
 }
@@ -112,8 +80,8 @@ void App::Shutdown()
 {
 	LogShutdown();
 
-	Renderer::GetInstance()->ShutDown();
-	Renderer::DestroyInstance();
+	delete m_Game;
+	m_Game = nullptr;
 
 	g_Window->Destroy();
 	delete g_Window;

@@ -42,6 +42,7 @@
     <ClCompile Include="Graphics\SpriteDefinition.cpp" />
     <ClCompile Include="Graphics\SpriteSheet.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
+    <ClCompile Include="Graphics\Vertex.cpp" />
     <ClCompile Include="Input\InputSystem.cpp" />
     <ClCompile Include="Input\KeyButtonState.cpp" />
     <ClCompile Include="Maths\AABB2.cpp" />
@@ -51,7 +52,6 @@
     <ClCompile Include="Maths\Vec3.cpp" />
     <ClCompile Include="Maths\Vec4.cpp" />
     <ClCompile Include="Maths\Disc2D.cpp" />
-    <ClCompile Include="Input\Mouse.cpp" />
     <ClCompile Include="Window\Window.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -66,6 +66,7 @@
     <ClInclude Include="Core\CoreMACROS.h" />
     <ClInclude Include="Core\DebugSystem.h" />
     <ClInclude Include="Core\EngineUtils.h" />
+    <ClInclude Include="Core\GameCommon.h" />
     <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\LogMessage.h" />
     <ClInclude Include="Core\StringTokenizer.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="Graphics\SpriteDefinition.h" />
     <ClInclude Include="Graphics\SpriteSheet.h" />
     <ClInclude Include="Graphics\Texture.h" />
+    <ClInclude Include="Graphics\Vertex.h" />
     <ClInclude Include="Input\InputSystem.h" />
     <ClInclude Include="Input\WinKeys.h" />
     <ClInclude Include="Input\KeyButtonState.h" />
@@ -102,7 +104,6 @@
     <ClInclude Include="Maths\Vec3.h" />
     <ClInclude Include="Maths\Vec4.h" />
     <ClInclude Include="Maths\Disc2D.h" />
-    <ClInclude Include="Input\Mouse.h" />
     <ClInclude Include="Platform\WindowsH.h" />
     <ClInclude Include="Window\Window.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

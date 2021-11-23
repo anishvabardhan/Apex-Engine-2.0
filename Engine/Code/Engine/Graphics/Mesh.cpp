@@ -3,6 +3,7 @@
 #include "Buffers/VertexArrayObject.h"
 #include "Buffers/IndexBuffer.h"
 #include "MeshBuilder.h"
+#include "Vertex.h"
 
 Mesh::Mesh(const void* data, VertexBufferLayout* layout)
 	: m_VBO(nullptr), m_Layout(layout), m_Data(data)
