@@ -9,7 +9,7 @@
 Game::Game()
 {
 	m_ShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef(APEX_SHADER_XML));
-	m_Shader = new Shader(m_ShaderDef);
+	m_Shader = Renderer::GetInstance()->GetOrCreateShader(m_ShaderDef);
 	
 	m_ScreenShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef(APEX_SCREENSHADER_XML));
 	m_ScreenShader = Renderer::GetInstance()->GetOrCreateShader(m_ScreenShaderDef);
@@ -61,7 +61,7 @@ void Game::Update()
 
 void Game::Render()
 {
-		Renderer::GetInstance()->DrawQuad(Vec2(200.0f, 200.0f), Vec2(100.0f, 50.0f), Vec4(1.0f, 0.0f, 0.0f, 1.0f), APEX_DEFAULT_TEXTURE, *m_Shader);
+		Renderer::GetInstance()->DrawQuad(Vec2(200.0f, 200.0f), Vec2(100.0f, 100.0f), Vec4(1.0f, 1.0f, 0.0f, 1.0f), APEX_DEFAULT_TEXTURE, *m_Shader);
 }
 
 void Game::EndFrame()
