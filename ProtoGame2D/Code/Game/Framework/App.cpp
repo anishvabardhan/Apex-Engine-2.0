@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "Engine/Window/Window.h"
+#include "Engine/Core/Time.h"
 #include "Engine/Graphics/Renderer.h"
 #include "Engine/Core/Logger.h"
 #include "Engine/Input/InputSystem.h"
@@ -38,13 +39,16 @@ void App::Startup()
 	Renderer::CreateInstance();
 	Renderer::GetInstance()->StartUp();
 
+	m_Time = new Time(60);
+	m_Time->SetSeed();
+
 	m_Game = new Game();
 }
 
 void App::RunFrame()
 {
 	BeginFrame();
-	Update(0.0f);
+	Update(m_Time->GetTimeDelta());
 	Render();
 	EndFrame();
 }
@@ -55,6 +59,8 @@ void App::BeginFrame()
 
 	g_Window->RunMessagePump();
 
+	m_Time->Update();
+
 	m_Game->BeginFrame();
 }
 
@@ -63,7 +69,7 @@ void App::Update(float deltaseconds)
 	g_InputSystem->Update(deltaseconds);
 	UpdateFromInput();
 
-	m_Game->Update();
+	m_Game->Update(deltaseconds);
 
 	g_InputSystem->EndFrame();
 }

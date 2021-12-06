@@ -1,9 +1,9 @@
 ﻿#include "Vertex.h"
 
 std::vector<VertexBufferElement> VertexPCU::m_Attributes = {
-	VertexBufferElement(GL_FLOAT, 3, GL_FALSE),
-	VertexBufferElement(GL_FLOAT, 4, GL_FALSE),
-	VertexBufferElement(GL_FLOAT, 2, GL_FALSE)
+	VertexBufferElement(APEX_FLOAT, 3, false),
+	VertexBufferElement(APEX_FLOAT, 4, false),
+	VertexBufferElement(APEX_FLOAT, 2, false)
 };
 
 VertexBufferLayout VertexPCU::m_Layout(VertexPCU::m_Attributes, sizeof(VertexPCU));

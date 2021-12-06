@@ -1,9 +1,11 @@
 #pragma once
 
 class Game;
+class Time;
 
 class App
 {
+	Time* m_Time = nullptr;
 	bool m_IsQuitting = false;
 public:
 	Game* m_Game = nullptr;

@@ -3,6 +3,12 @@
 #include "Engine/Core/CoreIncludes.h"
 #include "Engine/Graphics/GLFunctions.h"
 
+enum DATATYPE {
+	APEX_FLOAT           = GL_FLOAT,
+	APEX_UNSIGNED_INT    = GL_UNSIGNED_INT,
+	APEX_UNSIGNED_BYTE   = GL_UNSIGNED_BYTE
+};
+
 struct VertexBufferElement
 {
 	unsigned int m_Type;
@@ -13,9 +19,9 @@ struct VertexBufferElement
 	{
 		switch (type)
 		{
-		case GL_FLOAT:           return 4;
-		case GL_UNSIGNED_INT:    return 4;
-		case GL_UNSIGNED_BYTE:   return 1;
+		case APEX_FLOAT:           return 4;
+		case APEX_UNSIGNED_INT:    return 4;
+		case APEX_UNSIGNED_BYTE:   return 1;
 		}
 
 		return 0;

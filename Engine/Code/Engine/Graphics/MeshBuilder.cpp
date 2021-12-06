@@ -11,9 +11,28 @@ MeshBuilder::~MeshBuilder()
 {
 }
 
-void MeshBuilder::Push(VertexMaster vertex)
+void MeshBuilder::Color3f(Vec4 color)
 {
-	m_Vertices.push_back(vertex); 
+	m_VertMast = new VertexMaster();
+	m_VertMast->m_Color = color;
+}
+
+void MeshBuilder::TexCoord2f(Vec2 uv)
+{
+	m_VertMast->m_UV = uv;
+}
+
+void MeshBuilder::Position3f(Vec3 position)
+{
+	m_VertMast->m_Pos = position;
+}
+
+void MeshBuilder::Push()
+{
+	m_Vertices.push_back(*m_VertMast);
+
+	delete m_VertMast;
+	m_VertMast = nullptr;
 }
 
 template <typename FORMAT>
@@ -32,6 +51,7 @@ Mesh* MeshBuilder::CreateMesh()
 	mesh = new Mesh(temp, &FORMAT::m_Layout);
 	
 	delete[] temp;
+	temp = nullptr;
 
 	return mesh;
 }

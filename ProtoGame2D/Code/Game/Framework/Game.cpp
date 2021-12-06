@@ -5,6 +5,12 @@
 #include "Engine/Graphics/Shader.h"
 #include "Engine/Graphics/ShaderDefinition.h"
 #include "Engine/Graphics/Buffers/FrameBuffer.h"
+#include "Engine/Input/InputSystem.h"
+#include "Engine/Input/WinKeys.h"
+
+float x = 512.0f;
+
+extern InputSystem* g_InputSystem;
 
 Game::Game()
 {
@@ -16,8 +22,8 @@ Game::Game()
 	
 	Renderer::GetInstance()->EnableBlend(ParseBlendFac[m_Shader->GetSRC()], ParseBlendFac[m_Shader->GetDST()], ParseBlendOp[m_Shader->GetOP()]);
 
-	m_CurrentBuffer = new FrameBuffer();
-	m_NextBuffer = new FrameBuffer();
+	m_SrcBuffer = new FrameBuffer();
+	m_DestBuffer = new FrameBuffer();
 }
 
 Game::~Game()
@@ -34,16 +40,16 @@ Game::~Game()
 	delete m_ScreenShader;
 	m_ScreenShader = nullptr;
 	
-	delete m_CurrentBuffer;
-	m_CurrentBuffer = nullptr;
+	delete m_SrcBuffer;
+	m_SrcBuffer = nullptr;
 	
-	delete m_NextBuffer;
-	m_NextBuffer = nullptr;
+	delete m_DestBuffer;
+	m_DestBuffer = nullptr;
 }
 
 void Game::BeginFrame()
 {
-	m_CurrentBuffer->Bind();
+	m_SrcBuffer->Bind();
 
 	Renderer::GetInstance()->ClearColor();
 	Renderer::GetInstance()->Clear();
@@ -55,25 +61,42 @@ void Game::BeginFrame()
 	m_Shader->SetUniformMat4f("u_Proj", camera);
 }
 
-void Game::Update()
+void Game::Update(float deltaseconds)
 {
+	if(g_InputSystem->IsHeldDown(D))
+	{
+		x += 10.0f * deltaseconds;
+	}
+	else if(g_InputSystem->IsHeldDown(A))
+	{
+		x -= 10.0f * deltaseconds;
+	}
+
+	if(x >= 924.0f)
+	{
+		x = 924.0f;
+	}
+	else if( x <= 0.0f)
+	{
+		x = 0.0f;
+	}
 }
 
 void Game::Render()
 {
-		Renderer::GetInstance()->DrawQuad(Vec2(200.0f, 200.0f), Vec2(100.0f, 100.0f), Vec4(1.0f, 1.0f, 0.0f, 1.0f), APEX_DEFAULT_TEXTURE, *m_Shader);
+	Renderer::GetInstance()->DrawQuad(Vec2(x, 200.0f), Vec2(100.0f, 25.0f), Vec4(0.03f, 0.57f, 0.81f, 1.0f), APEX_DEFAULT_TEXTURE, *m_Shader);
 }
 
 void Game::EndFrame()
 {
-	m_CurrentBuffer->UnBind();
+	m_SrcBuffer->UnBind();
 
 	Renderer::GetInstance()->ClearColor();
 	Renderer::GetInstance()->Clear();
 
 	m_ScreenShader->Bind();
 
-	Renderer::GetInstance()->CopyFrameBuffer(m_CurrentBuffer, m_NextBuffer);
+	Renderer::GetInstance()->CopyFrameBuffer(m_SrcBuffer, m_DestBuffer);
 	Renderer::GetInstance()->DrawFrameBuffer(Vec2(APEX_WINDOW_DIMS.m_X, APEX_WINDOW_DIMS.m_Z), Vec2(APEX_WINDOW_DIMS.m_Y, APEX_WINDOW_DIMS.m_W));
 
 	Renderer::GetInstance()->SwappingBuffers();

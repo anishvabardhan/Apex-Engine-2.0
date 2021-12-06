@@ -6,7 +6,7 @@
 
 FrameBuffer::FrameBuffer()
 {
-	Invalidate();
+	Initialise();
 }
 
 FrameBuffer::~FrameBuffer()
@@ -24,7 +24,7 @@ void FrameBuffer::UnBind()
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-void FrameBuffer::Invalidate()
+void FrameBuffer::Initialise()
 {
 	glGenFramebuffers(1, &m_FrameBufferID);
 

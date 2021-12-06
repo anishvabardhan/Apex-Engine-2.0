@@ -212,12 +212,10 @@
     <ClCompile Include="Framework\App.cpp" />
     <ClCompile Include="Framework\Game.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Code\Paddle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\App.h" />
     <ClInclude Include="Framework\Game.h" />
-    <ClInclude Include="Code\Paddle.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Log\Log.txt" />
