@@ -109,10 +109,17 @@ void Window::Init(const std::string& appName)
 
 	::RegisterClassEx(&wc);
 
+	RECT wr;
+	wr.left = 0;
+	wr.right = 1024;
+	wr.top = 0;
+	wr.bottom = 1024;
+	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+
 	WCHAR windowTitle[1024];
 	MultiByteToWideChar(GetACP(), 0, appName.c_str(), -1, windowTitle, sizeof(windowTitle) / sizeof(windowTitle[0]));
 
-	m_Hwnd = ::CreateWindowEx( WS_EX_OVERLAPPEDWINDOW , wc.lpszClassName, windowTitle, WS_OVERLAPPEDWINDOW | WS_SYSMENU, 0, 0, 1024, 1024, NULL, NULL, ::GetModuleHandle(NULL), NULL);
+	m_Hwnd = ::CreateWindowEx( WS_EX_OVERLAPPEDWINDOW , wc.lpszClassName, windowTitle, WS_OVERLAPPEDWINDOW | WS_SYSMENU, 0, 0, wr.right-wr.left, wr.bottom - wr.top, NULL, NULL, ::GetModuleHandle(NULL), NULL);
 
 	::SetWindowLongPtr(reinterpret_cast<HWND>(m_Hwnd), GWLP_USERDATA, (LONG_PTR)this);
 
