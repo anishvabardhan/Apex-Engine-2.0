@@ -23,7 +23,7 @@
 *.lib
 
 #Compiled Text files
-Log.txt
+*.txt
 
 # Executables
 *.exe
@@ -36,9 +36,10 @@ Log.txt
 *.opensdf
 
 # =========================
-# Temp & .vs folders Folder
+# Temp, .vs and Run folders Folder
 code/.vs/
 temp/
+Run/**.Exe
 
 # =========================
 # Operating System Files

@@ -13,7 +13,7 @@ public:
 	void Bind();
 	void UnBind();
 
-	void Initialise();
+	void Initialize();
 
 	unsigned int GetFrameBufferID() const;
 	unsigned int GetColorAttachmentID() const;

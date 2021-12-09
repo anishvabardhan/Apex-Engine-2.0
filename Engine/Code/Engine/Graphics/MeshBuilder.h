@@ -10,6 +10,7 @@ struct VertexPCU;
 
 struct MeshBuilder
 {
+	Vec4 m_Color;
 	VertexMaster* m_VertMast = nullptr;
 	std::vector<VertexMaster> m_Vertices;
 
@@ -19,7 +20,6 @@ struct MeshBuilder
 	void Color3f(Vec4 color);
 	void TexCoord2f(Vec2 uv);
 	void Position3f(Vec3 position);
-	void Push();
 
 	template<typename FORMAT>
 	Mesh* CreateMesh();

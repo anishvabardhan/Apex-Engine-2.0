@@ -13,22 +13,20 @@ MeshBuilder::~MeshBuilder()
 
 void MeshBuilder::Color3f(Vec4 color)
 {
-	m_VertMast = new VertexMaster();
-	m_VertMast->m_Color = color;
+	m_Color = color;
 }
 
 void MeshBuilder::TexCoord2f(Vec2 uv)
 {
+	m_VertMast = new VertexMaster();
 	m_VertMast->m_UV = uv;
 }
 
 void MeshBuilder::Position3f(Vec3 position)
 {
+	m_VertMast->m_Color = m_Color;
 	m_VertMast->m_Pos = position;
-}
-
-void MeshBuilder::Push()
-{
+	
 	m_Vertices.push_back(*m_VertMast);
 
 	delete m_VertMast;

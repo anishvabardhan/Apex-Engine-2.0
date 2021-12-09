@@ -252,24 +252,17 @@ void Renderer::Drawtext(const Vec2& position, const Vec4& color, const std::stri
 		uvPos = font->GetGlyphUV(asciiText[i]);
 
 		mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
-	    mb->TexCoord2f(Vec2(uvPos.m_Mins.m_X, uvPos.m_Maxs.m_Y));
+		mb->TexCoord2f(Vec2(uvPos.m_Mins.m_X, uvPos.m_Maxs.m_Y));
 	    mb->Position3f(Vec3(quadPos.m_Mins.m_X, quadPos.m_Mins.m_Y, 0.0f));
-	    mb->Push();
 	    
-	    mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
 	    mb->TexCoord2f(Vec2(uvPos.m_Maxs.m_X, uvPos.m_Maxs.m_Y));
 	    mb->Position3f(Vec3(quadPos.m_Maxs.m_X, quadPos.m_Mins.m_Y, 0.0f));
-	    mb->Push();
 	    
-	    mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
 	    mb->TexCoord2f(Vec2(uvPos.m_Maxs.m_X, uvPos.m_Mins.m_Y));
 	    mb->Position3f(Vec3(quadPos.m_Maxs.m_X, quadPos.m_Maxs.m_Y, 0.0f));
-	    mb->Push();
 	    
-	    mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
 	    mb->TexCoord2f(Vec2(uvPos.m_Mins.m_X, uvPos.m_Mins.m_Y));
 	    mb->Position3f(Vec3(quadPos.m_Mins.m_X, quadPos.m_Maxs.m_Y, 0.0f));
-	    mb->Push();
 
 		Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
@@ -298,22 +291,15 @@ void Renderer::DrawQuad(const Vec2& position, const Vec2& dimensions, const Text
 	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
 	mb->TexCoord2f(Vec2(texCoords.m_Mins.m_X, texCoords.m_Maxs.m_Y));
 	mb->Position3f(Vec3(position.m_X, position.m_Y, 0.0f));
-	mb->Push();
 
-	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
 	mb->TexCoord2f(Vec2(texCoords.m_Maxs.m_X, texCoords.m_Maxs.m_Y));
 	mb->Position3f(Vec3(position.m_X + dimensions.m_X, position.m_Y, 0.0f));
-	mb->Push();
 
-	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
 	mb->TexCoord2f(Vec2(texCoords.m_Maxs.m_X, texCoords.m_Mins.m_Y));
 	mb->Position3f(Vec3(position.m_X + dimensions.m_X, position.m_Y + dimensions.m_Y, 0.0f));
-	mb->Push();
 
-	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
 	mb->TexCoord2f(Vec2(texCoords.m_Mins.m_X, texCoords.m_Mins.m_Y));
 	mb->Position3f(Vec3(position.m_X, position.m_Y + dimensions.m_Y, 0.0f));
-	mb->Push();
 	
 	Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
@@ -340,22 +326,15 @@ void Renderer::DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const st
 	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
 	mb->TexCoord2f(Vec2(0.0f, 0.0f));
 	mb->Position3f(Vec3(position.m_X, position.m_Y, 0.0f));
-	mb->Push();
 
-	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
 	mb->TexCoord2f(Vec2(1.0f, 0.0f));
 	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y, 0.0f));
-	mb->Push();
 
-	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
 	mb->TexCoord2f(Vec2(1.0f, 1.0f));
 	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y + meshDim.m_Y, 0.0f));
-	mb->Push();
 
-	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
 	mb->TexCoord2f(Vec2(0.0f, 1.0f));
 	mb->Position3f(Vec3(position.m_X, position.m_Y + meshDim.m_Y, 0.0f));
-	mb->Push();
 	
 	Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
@@ -385,22 +364,15 @@ void Renderer::DrawFrameBuffer(const Vec2& position, Vec2 meshDim)
 	mb->Color3f(Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	mb->TexCoord2f(Vec2(0.0f, 0.0f));
 	mb->Position3f(Vec3(position.m_X, position.m_Y, 0.0f));
-	mb->Push();
 
-	mb->Color3f(Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	mb->TexCoord2f(Vec2(1.0f, 0.0f));
 	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y, 0.0f));
-	mb->Push();
 
-	mb->Color3f(Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	mb->TexCoord2f(Vec2(1.0f, 1.0f));
 	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y + meshDim.m_Y, 0.0f));
-	mb->Push();
 
-	mb->Color3f(Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	mb->TexCoord2f(Vec2(0.0f, 1.0f));
 	mb->Position3f(Vec3(position.m_X, position.m_Y + meshDim.m_Y, 0.0f));
-	mb->Push();
 	
 	Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
