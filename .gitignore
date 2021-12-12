@@ -39,7 +39,7 @@
 # Temp, .vs and Run folders Folder
 code/.vs/
 temp/
-Run/**.Exe
+Run/**.exe
 
 # =========================
 # Operating System Files
