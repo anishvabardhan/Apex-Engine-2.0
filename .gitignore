@@ -113,6 +113,6 @@ $RECYCLE.BIN/
 # !Protogame/Run/*.dll
 **/Temporary/*
 .vs
-!**/Run/*.exe
+**/Run/*.exe
 !**/Run/*.dll
 !**/ThirdParty/**/*.lib
