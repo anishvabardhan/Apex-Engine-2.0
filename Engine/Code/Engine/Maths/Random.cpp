@@ -1,5 +1,6 @@
 #include "Random.h"
 
+#include <ctime>
 #include <stdlib.h>
 
 Random::Random(float minInclusive, float maxInclusive)
@@ -15,6 +16,11 @@ Random::Random(float rangeMinMax)
 float Random::GetRandomInRange()
 {
 	return GetRandomFloatInRange(min, max);
+}
+
+void Random::SetSeed()
+{
+	srand(unsigned int(time(0)));
 }
 
 int Random::GetRandomIntLessThan(int maxNotInclusive)

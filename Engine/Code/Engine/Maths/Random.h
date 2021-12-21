@@ -10,6 +10,8 @@ public:
 	explicit Random(float rangeMinMax);
 
 	float GetRandomInRange();
+
+	void SetSeed();
 	
 	static int GetRandomIntLessThan(int maxNotInclusive);
 	static float GetRandomFloatInRange(float minInclusive, float maxInclusive);

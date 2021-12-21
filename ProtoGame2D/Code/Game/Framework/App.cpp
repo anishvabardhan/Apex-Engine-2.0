@@ -40,7 +40,6 @@ void App::Startup()
 	Renderer::GetInstance()->StartUp();
 
 	m_Time = new Time(60);
-	m_Time->SetSeed();
 
 	m_Game = new Game();
 }
