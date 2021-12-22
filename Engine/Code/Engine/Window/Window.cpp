@@ -21,7 +21,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	Window* myWindow = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 
-
 	InputSystem* input = nullptr;
 
 	if(myWindow)
@@ -89,7 +88,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return ::DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-void Window::Init(const std::string& appName)
+void Window::Init(const std::string& appName, const long clientDims[4])
 {
 	UNUSED(appName);
 
@@ -110,10 +109,10 @@ void Window::Init(const std::string& appName)
 	::RegisterClassEx(&wc);
 
 	RECT wr;
-	wr.left = 0;
-	wr.right = 1024;
-	wr.top = 0;
-	wr.bottom = 1024;
+	wr.left = clientDims[0];
+	wr.right = clientDims[1];
+	wr.top = clientDims[2];
+	wr.bottom = clientDims[3];
 	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
 
 	WCHAR windowTitle[1024];

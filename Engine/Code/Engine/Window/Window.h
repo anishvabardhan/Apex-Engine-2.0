@@ -10,7 +10,7 @@ public:
 	Window();
 	~Window();
 
-	void Init(const std::string& appName);
+	void Init(const std::string& appName, const long clientDims[4]);
 	bool RunMessagePump();
 	bool Destroy();
 

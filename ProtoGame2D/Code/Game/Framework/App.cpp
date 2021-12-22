@@ -17,6 +17,8 @@ App* g_App = nullptr;
 extern Window* g_Window;
 extern InputSystem* g_InputSystem;
 
+const long CLIENT_DIMS[4] = {0, 1024, 0, 1024};
+
 App::App()
 {
 }
@@ -31,7 +33,7 @@ void App::Startup()
 	g_InputSystem->Startup();
 
 	g_Window = new Window();
-	g_Window->Init("ProtoGame2D");
+	g_Window->Init("ProtoGame2D", CLIENT_DIMS);
 	g_Window->SetInputSystem(g_InputSystem);
 
 	LogStartup();
