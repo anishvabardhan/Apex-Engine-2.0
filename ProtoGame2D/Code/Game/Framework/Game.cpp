@@ -7,6 +7,7 @@
 #include "Engine/Graphics/Buffers/FrameBuffer.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Input/WinKeys.h"
+#include "Engine/Core/Color.h"
 
 float x = 512.0f;
 const Mat4 g_Camera = Mat4::orthographic(APEX_WINDOW_DIMS.m_X, APEX_WINDOW_DIMS.m_Y, APEX_WINDOW_DIMS.m_Z, APEX_WINDOW_DIMS.m_W, -2.0f, 2.0f);
@@ -84,7 +85,7 @@ void Game::Render()
 
 	m_Shader->SetUniformMat4f("u_Proj", g_Camera);
 
-	Renderer::GetInstance()->DrawQuad(Vec2(x, 200.0f), Vec2(100.0f, 25.0f), Vec4(0.03f, 0.57f, 0.81f, 1.0f), APEX_DEFAULT_TEXTURE, *m_Shader);
+	Renderer::GetInstance()->DrawQuad(Vec2(x, 200.0f), Vec2(100.0f, 25.0f), Color::CYAN, APEX_DEFAULT_TEXTURE, *m_Shader);
 	
 	m_SrcBuffer->UnBind();
 

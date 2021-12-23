@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\External\stb_image.cpp" />
     <ClCompile Include="..\External\tinyxml2.cpp" />
+    <ClCompile Include="Core\Color.cpp" />
     <ClCompile Include="Core\DebugSystem.cpp" />
     <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\LogMessage.cpp" />
@@ -62,6 +63,7 @@
   <ItemGroup>
     <ClInclude Include="..\External\stb_image.h" />
     <ClInclude Include="..\External\tinyxml2.h" />
+    <ClInclude Include="Core\Color.h" />
     <ClInclude Include="Core\CoreIncludes.h" />
     <ClInclude Include="Core\CoreMACROS.h" />
     <ClInclude Include="Core\DebugSystem.h" />

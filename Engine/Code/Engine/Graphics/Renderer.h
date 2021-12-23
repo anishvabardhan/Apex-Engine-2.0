@@ -87,7 +87,7 @@ public:
 	void Drawtext(const Vec2& position, const Vec4& color, const std::string& asciiText, float quadHeight, Font* font, Shader shader);
 	void DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color, Shader shader);
 	void DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const std::string& path, Shader shader);
-	
+
 	void DrawFrameBuffer(const Vec2& position, Vec2 meshDim);
 	void DrawMesh(Mesh* mesh);
 	void CopyFrameBuffer(FrameBuffer* current, FrameBuffer* next);

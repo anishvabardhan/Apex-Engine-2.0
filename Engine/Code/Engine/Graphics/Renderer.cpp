@@ -353,7 +353,6 @@ void Renderer::DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const st
 	delete mb;
 }
 
-
 //------------------------------------------------------------------------------------------------------
 // Drawing a FramBuffer
 
