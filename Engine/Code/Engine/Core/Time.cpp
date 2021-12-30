@@ -45,8 +45,3 @@ float Time::GetTimeDelta()
 
 	return 1.0f / d;
 }
-
-void Time::SetSeed()
-{
-	srand((unsigned int)time(0));
-}

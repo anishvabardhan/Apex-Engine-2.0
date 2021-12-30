@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\External\stb_image.cpp" />
     <ClCompile Include="..\External\tinyxml2.cpp" />
+    <ClCompile Include="Core\Color.cpp" />
     <ClCompile Include="Core\DebugSystem.cpp" />
     <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\LogMessage.cpp" />
@@ -42,6 +43,7 @@
     <ClCompile Include="Graphics\SpriteDefinition.cpp" />
     <ClCompile Include="Graphics\SpriteSheet.cpp" />
     <ClCompile Include="Graphics\Texture.cpp" />
+    <ClCompile Include="Graphics\Vertex.cpp" />
     <ClCompile Include="Input\InputSystem.cpp" />
     <ClCompile Include="Input\KeyButtonState.cpp" />
     <ClCompile Include="Maths\AABB2.cpp" />
@@ -61,10 +63,12 @@
   <ItemGroup>
     <ClInclude Include="..\External\stb_image.h" />
     <ClInclude Include="..\External\tinyxml2.h" />
+    <ClInclude Include="Core\Color.h" />
     <ClInclude Include="Core\CoreIncludes.h" />
     <ClInclude Include="Core\CoreMACROS.h" />
     <ClInclude Include="Core\DebugSystem.h" />
     <ClInclude Include="Core\EngineUtils.h" />
+    <ClInclude Include="Core\GameCommon.h" />
     <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\LogMessage.h" />
     <ClInclude Include="Core\StringTokenizer.h" />
@@ -89,6 +93,7 @@
     <ClInclude Include="Graphics\SpriteDefinition.h" />
     <ClInclude Include="Graphics\SpriteSheet.h" />
     <ClInclude Include="Graphics\Texture.h" />
+    <ClInclude Include="Graphics\Vertex.h" />
     <ClInclude Include="Input\InputSystem.h" />
     <ClInclude Include="Input\WinKeys.h" />
     <ClInclude Include="Input\KeyButtonState.h" />

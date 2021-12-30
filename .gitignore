@@ -22,6 +22,8 @@
 *.a
 *.lib
 
+#Compiled Text files
+*.txt
 
 # Executables
 *.exe
@@ -34,9 +36,10 @@
 *.opensdf
 
 # =========================
-# Temp & .vs folders Folder
+# Temp, .vs and Run folders Folder
 code/.vs/
 temp/
+Run/**.exe
 
 # =========================
 # Operating System Files
@@ -110,6 +113,5 @@ $RECYCLE.BIN/
 # !Protogame/Run/*.dll
 **/Temporary/*
 .vs
-!**/Run/*.exe
 !**/Run/*.dll
 !**/ThirdParty/**/*.lib

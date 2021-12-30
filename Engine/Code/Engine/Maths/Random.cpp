@@ -17,6 +17,11 @@ float Random::GetRandomInRange()
 	return GetRandomFloatInRange(min, max);
 }
 
+void Random::SetSeed()
+{
+	srand(unsigned int(1234));
+}
+
 int Random::GetRandomIntLessThan(int maxNotInclusive)
 {
 	return rand() % maxNotInclusive;

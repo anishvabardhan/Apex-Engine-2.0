@@ -11,6 +11,4 @@ public:
 	void Reset();
 	void Update();
 	float GetTimeDelta();
-
-	void SetSeed();
 };

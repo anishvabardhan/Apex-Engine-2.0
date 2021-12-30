@@ -109,6 +109,12 @@
     <ClCompile Include="Input\InputSystem.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Vertex.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Color.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\DebugSystem.h" />
@@ -165,5 +171,8 @@
     <ClInclude Include="Input\KeyButtonState.h" />
     <ClInclude Include="Input\InputSystem.h" />
     <ClInclude Include="Core\CoreMACROS.h" />
+    <ClInclude Include="Graphics\Vertex.h" />
+    <ClInclude Include="Core\GameCommon.h" />
+    <ClInclude Include="Core\Color.h" />
   </ItemGroup>
 </Project>

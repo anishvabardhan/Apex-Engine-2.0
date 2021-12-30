@@ -1,11 +1,14 @@
 #include "Renderer.h"
+
 #include "MeshBuilder.h"
+#include "Vertex.h"
 #include "Mesh.h"
 #pragma comment(lib, "opengl32")
 #include "Buffers/FrameBuffer.h"
 #include "Font.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "ShaderDefinition.h"
 
 static Renderer* m_Renderer = nullptr;
 
@@ -31,7 +34,7 @@ Renderer::~Renderer()
 
 void Renderer::StartUp()
 {
-	g_GLLibrary = ::LoadLibraryA("opengl32.lib");
+	g_GLLibrary = ::LoadLibraryA("opengl32.dll");
 	m_OurWindowHandleToDeviceContext = GetDC(reinterpret_cast<HWND>(Window::GetInstance()->GetHandle()));
 
 	HGLRC tempContext = reinterpret_cast<HGLRC>(CreateOldRenderContext(m_OurWindowHandleToDeviceContext));
@@ -41,10 +44,10 @@ void Renderer::StartUp()
 
 	HGLRC realContext = reinterpret_cast<HGLRC>(CreateRealRenderContext(m_OurWindowHandleToDeviceContext, 4, 2));
 
-	BindGLFunctions();
-
 	MakeContextCurrent(m_OurWindowHandleToDeviceContext, realContext);
 	wglDeleteContext(tempContext);
+
+	BindGLFunctions();
 
 	m_OurWindowHandleToRenderContext = realContext;
 }
@@ -249,12 +252,20 @@ void Renderer::Drawtext(const Vec2& position, const Vec4& color, const std::stri
 
 		uvPos = font->GetGlyphUV(asciiText[i]);
 
-		mb->Push(VertexMaster(Vec3(quadPos.m_Mins.m_X, quadPos.m_Mins.m_Y, 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(uvPos.m_Mins.m_X, uvPos.m_Maxs.m_Y)));
-		mb->Push(VertexMaster(Vec3(quadPos.m_Maxs.m_X, quadPos.m_Mins.m_Y, 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(uvPos.m_Maxs.m_X, uvPos.m_Maxs.m_Y)));
-		mb->Push(VertexMaster(Vec3(quadPos.m_Maxs.m_X, quadPos.m_Maxs.m_Y, 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(uvPos.m_Maxs.m_X, uvPos.m_Mins.m_Y)));
-		mb->Push(VertexMaster(Vec3(quadPos.m_Mins.m_X, quadPos.m_Maxs.m_Y, 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(uvPos.m_Mins.m_X, uvPos.m_Mins.m_Y)));
-		
-		Mesh* mesh = mb->CreateMesh<VertexMaster::PCU>();
+		mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
+		mb->TexCoord2f(Vec2(uvPos.m_Mins.m_X, uvPos.m_Maxs.m_Y));
+	    mb->Position3f(Vec3(quadPos.m_Mins.m_X, quadPos.m_Mins.m_Y, 0.0f));
+	    
+	    mb->TexCoord2f(Vec2(uvPos.m_Maxs.m_X, uvPos.m_Maxs.m_Y));
+	    mb->Position3f(Vec3(quadPos.m_Maxs.m_X, quadPos.m_Mins.m_Y, 0.0f));
+	    
+	    mb->TexCoord2f(Vec2(uvPos.m_Maxs.m_X, uvPos.m_Mins.m_Y));
+	    mb->Position3f(Vec3(quadPos.m_Maxs.m_X, quadPos.m_Maxs.m_Y, 0.0f));
+	    
+	    mb->TexCoord2f(Vec2(uvPos.m_Mins.m_X, uvPos.m_Mins.m_Y));
+	    mb->Position3f(Vec3(quadPos.m_Mins.m_X, quadPos.m_Maxs.m_Y, 0.0f));
+
+		Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
 		Mat4 model = Mat4::translation(Vec3(0.0f, 0.0f, 0.0f));
 		shader.SetUniform1i("u_Texture", 0);
@@ -278,12 +289,20 @@ void Renderer::DrawQuad(const Vec2& position, const Vec2& dimensions, const Text
 
 	MeshBuilder* mb = new MeshBuilder();
 
-	mb->Push(VertexMaster(Vec3(position.m_X                 , position.m_Y                 , 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(texCoords.m_Mins.m_X, texCoords.m_Maxs.m_Y)));
-	mb->Push(VertexMaster(Vec3(position.m_X + dimensions.m_X, position.m_Y                 , 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(texCoords.m_Maxs.m_X, texCoords.m_Maxs.m_Y)));
-	mb->Push(VertexMaster(Vec3(position.m_X + dimensions.m_X, position.m_Y + dimensions.m_Y, 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(texCoords.m_Maxs.m_X, texCoords.m_Mins.m_Y)));
-	mb->Push(VertexMaster(Vec3(position.m_X                 , position.m_Y + dimensions.m_Y, 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(texCoords.m_Mins.m_X, texCoords.m_Mins.m_Y)));
+	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
+	mb->TexCoord2f(Vec2(texCoords.m_Mins.m_X, texCoords.m_Maxs.m_Y));
+	mb->Position3f(Vec3(position.m_X, position.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2(texCoords.m_Maxs.m_X, texCoords.m_Maxs.m_Y));
+	mb->Position3f(Vec3(position.m_X + dimensions.m_X, position.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2(texCoords.m_Maxs.m_X, texCoords.m_Mins.m_Y));
+	mb->Position3f(Vec3(position.m_X + dimensions.m_X, position.m_Y + dimensions.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2(texCoords.m_Mins.m_X, texCoords.m_Mins.m_Y));
+	mb->Position3f(Vec3(position.m_X, position.m_Y + dimensions.m_Y, 0.0f));
 	
-	Mesh* mesh = mb->CreateMesh<VertexMaster::PCU>();
+	Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
 	Mat4 model = Mat4::translation(Vec3(0.0f, 0.0f, 0.0f));
 	shader.SetUniform1i("u_Texture", 2);
@@ -305,12 +324,20 @@ void Renderer::DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const st
 	MeshBuilder* mb = new MeshBuilder();
 	Texture* texture = GetOrCreateTexture(path);
 
-	mb->Push(VertexMaster(Vec3(position.m_X              , position.m_Y              , 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(0.0f, 0.0f)));
-	mb->Push(VertexMaster(Vec3(position.m_X + meshDim.m_X, position.m_Y              , 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(1.0f, 0.0f)));
-	mb->Push(VertexMaster(Vec3(position.m_X + meshDim.m_X, position.m_Y + meshDim.m_Y, 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(1.0f, 1.0f)));
-	mb->Push(VertexMaster(Vec3(position.m_X              , position.m_Y + meshDim.m_Y, 0.0f), Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W), Vec2(0.0f, 1.0f)));
+	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
+	mb->TexCoord2f(Vec2(0.0f, 0.0f));
+	mb->Position3f(Vec3(position.m_X, position.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2(1.0f, 0.0f));
+	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2(1.0f, 1.0f));
+	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y + meshDim.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2(0.0f, 1.0f));
+	mb->Position3f(Vec3(position.m_X, position.m_Y + meshDim.m_Y, 0.0f));
 	
-	Mesh* mesh = mb->CreateMesh<VertexMaster::PCU>();
+	Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
 	Mat4 model = Mat4::translation(Vec3(0.0f, 0.0f, 0.0f));
 
@@ -327,20 +354,27 @@ void Renderer::DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const st
 	delete mb;
 }
 
-
 //------------------------------------------------------------------------------------------------------
 // Drawing a FramBuffer
 
-void Renderer::DrawFrameBuffer(const Vec2& position, Vec2 meshDim)
+void Renderer::DrawFullScreenQuad(const Vec2& position, Vec2 meshDim)
 {
 	MeshBuilder* mb = new MeshBuilder();
 
-	mb->Push(VertexMaster(Vec3(position.m_X              , position.m_Y              , 0.0f), Vec4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 0.0f)));
-	mb->Push(VertexMaster(Vec3(position.m_X + meshDim.m_X, position.m_Y              , 0.0f), Vec4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 0.0f)));
-	mb->Push(VertexMaster(Vec3(position.m_X + meshDim.m_X, position.m_Y + meshDim.m_Y, 0.0f), Vec4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 1.0f)));
-	mb->Push(VertexMaster(Vec3(position.m_X              , position.m_Y + meshDim.m_Y, 0.0f), Vec4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 1.0f)));
+	mb->Color3f(Vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	mb->TexCoord2f(Vec2(0.0f, 0.0f));
+	mb->Position3f(Vec3(position.m_X, position.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2(1.0f, 0.0f));
+	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2(1.0f, 1.0f));
+	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y + meshDim.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2(0.0f, 1.0f));
+	mb->Position3f(Vec3(position.m_X, position.m_Y + meshDim.m_Y, 0.0f));
 	
-	Mesh* mesh = mb->CreateMesh<VertexMaster::PCU>();
+	Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
 	mesh->Begin(GL_TRIANGLES);
 	DrawMesh(mesh);
@@ -453,5 +487,22 @@ Shader* Renderer::GetOrCreateShader(ShaderDefinition* shaderDef)
 		m_LoadedShaders[shaderDef] = shader;
 
 		return shader;
+	}
+}
+
+ShaderDefinition* Renderer::GetOrCreateShaderDef(XMLElement* element)
+{
+	if(m_LoadedShaderDefinitions.find(element) != m_LoadedShaderDefinitions.end())
+	{
+		return m_LoadedShaderDefinitions.at(element);
+	}
+	else
+	{
+		ShaderDefinition* shaderDef = new ShaderDefinition(*element);
+		LOG_CHECK(shaderDef != nullptr) << "Data is null";
+
+		m_LoadedShaderDefinitions[element] = shaderDef;
+
+		return shaderDef;
 	}
 }

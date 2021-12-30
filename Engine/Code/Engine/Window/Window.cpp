@@ -1,7 +1,6 @@
 #include "Window.h"
 
 #include "Engine/Platform/WindowsH.h"
-#include "Engine/Graphics/GLFunctions.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Core/CoreMACROS.h"
 
@@ -21,7 +20,6 @@ Window::~Window()
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	Window* myWindow = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-
 
 	InputSystem* input = nullptr;
 
@@ -90,7 +88,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return ::DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-void Window::Init(const std::string& appName)
+void Window::Init(const std::string& appName, const long clientDims[4])
 {
 	UNUSED(appName);
 
@@ -110,10 +108,17 @@ void Window::Init(const std::string& appName)
 
 	::RegisterClassEx(&wc);
 
+	RECT wr;
+	wr.left = clientDims[0];
+	wr.right = clientDims[1];
+	wr.top = clientDims[2];
+	wr.bottom = clientDims[3];
+	AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+
 	WCHAR windowTitle[1024];
 	MultiByteToWideChar(GetACP(), 0, appName.c_str(), -1, windowTitle, sizeof(windowTitle) / sizeof(windowTitle[0]));
 
-	m_Hwnd = ::CreateWindowEx( WS_EX_OVERLAPPEDWINDOW , wc.lpszClassName, windowTitle, WS_OVERLAPPEDWINDOW | WS_SYSMENU, 0, 0, 1024, 1024, NULL, NULL, ::GetModuleHandle(NULL), NULL);
+	m_Hwnd = ::CreateWindowEx( WS_EX_OVERLAPPEDWINDOW , wc.lpszClassName, windowTitle, WS_OVERLAPPEDWINDOW | WS_SYSMENU, 0, 0, wr.right-wr.left, wr.bottom - wr.top, NULL, NULL, ::GetModuleHandle(NULL), NULL);
 
 	::SetWindowLongPtr(reinterpret_cast<HWND>(m_Hwnd), GWLP_USERDATA, (LONG_PTR)this);
 
