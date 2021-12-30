@@ -69,6 +69,7 @@ class Renderer
 {
 	std::map<std::string, Texture*> m_LoadedTextures;
 	std::map<ShaderDefinition*, Shader*> m_LoadedShaders;
+	std::map<XMLElement*, ShaderDefinition*> m_LoadedShaderDefinitions;
 	std::map<std::string, Font*> m_LoadedFonts;
 public:
 	Renderer();
@@ -88,7 +89,7 @@ public:
 	void DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color, Shader shader);
 	void DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const std::string& path, Shader shader);
 
-	void DrawFrameBuffer(const Vec2& position, Vec2 meshDim);
+	void DrawMeshImmediate(const Vec2& position, Vec2 meshDim);
 	void DrawMesh(Mesh* mesh);
 	void CopyFrameBuffer(FrameBuffer* current, FrameBuffer* next);
 	void Clear() const;
@@ -97,6 +98,7 @@ public:
 	Font* GetOrCreateFont(const std::string& path);
 	Texture* GetOrCreateTexture(const std::string& path);
 	Shader* GetOrCreateShader(ShaderDefinition* shaderDef);
+	ShaderDefinition* GetOrCreateShaderDef(XMLElement* element);
 
 	static void CreateInstance();
 	static Renderer* GetInstance();

@@ -2,8 +2,11 @@
 
 #include "Engine/Maths/Random.h"
 #include "Engine/Core/DebugSystem.h"
+#include "Engine/Input/WinKeys.h"
 
 extern Random random;
+
+const long g_ClientDims[4] = {0, 1024, 0, 1024};
 
 Game::Game()
 	:g_TS(60), g_BulletVelocity(Vec2(7.5f, 7.5f)), g_Renderer(nullptr), g_BulletDisc(nullptr), g_Player(nullptr), g_Objects(nullptr), g_PlayerDisc(nullptr), g_NumOfBullets(0), g_NumOfAstroids(6), g_BulletLife(50.0f), g_IsFiring(false)
@@ -27,7 +30,7 @@ Game::~Game()
 
 void Game::BeginPlay()
 {
-	g_TS.SetSeed();
+	Random::SetSeed();
 	
 	//------------------------------------------------------------------------------------------------------
 	//Instatntiating the characters 
@@ -48,7 +51,8 @@ void Game::BeginPlay()
 
 void Game::Tick()
 {
-	if (g_App.Init("Astroid"))
+	g_App.Init("Astroid", g_ClientDims);
+
 	{
 		//--------------------------------------------------------------------------------------------------
 		//GAME LOOP
@@ -110,8 +114,8 @@ void Game::Tick()
 
 			g_Player->Render();
 
-			DebugSystem::DebugCircle(g_PlayerDisc->GetRadius());
-			DebugSystem::DebugLine();
+			//DebugSystem::DebugCircle(g_PlayerDisc->GetRadius());
+			//DebugSystem::DebugLine();
 
 			g_Renderer->Pop();
 
@@ -133,7 +137,7 @@ void Game::Tick()
 
 					g_Astroid[i]->Render();
 
-					DebugSystem::DebugCircle(g_AstroidDisc[i]->GetRadius());
+					//DebugSystem::DebugCircle(g_AstroidDisc[i]->GetRadius());
 
 					g_Renderer->Pop();
 
@@ -168,7 +172,7 @@ void Game::Tick()
 			made up to that point will complete
 			executions in a finite amount time*/
 
-			g_Renderer->Flush();
+			//g_Renderer->Flush();
 
 			//----------------------------------------------------------------------------------------------
 			//Deleting Heap Allocated Memory
@@ -178,7 +182,7 @@ void Game::Tick()
 			//----------------------------------------------------------------------------------------------
 			//Swapping front and back buffers each frame
 
-			g_App.SwappingBuffers();
+			g_Renderer->SwappingBuffers();
 		}
 	}
 }

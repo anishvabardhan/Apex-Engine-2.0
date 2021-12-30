@@ -89,8 +89,11 @@ void App::EndFrame()
 
 void App::Shutdown()
 {
-	delete m_Game;
-	m_Game = nullptr;
+	if(m_Game)
+	{
+		delete m_Game;
+	    m_Game = nullptr;
+	}
 	
 	Renderer::GetInstance()->ShutDown();
 	Renderer::DestroyInstance();

@@ -8,6 +8,7 @@
 #include "Font.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "ShaderDefinition.h"
 
 static Renderer* m_Renderer = nullptr;
 
@@ -356,7 +357,7 @@ void Renderer::DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const st
 //------------------------------------------------------------------------------------------------------
 // Drawing a FramBuffer
 
-void Renderer::DrawFrameBuffer(const Vec2& position, Vec2 meshDim)
+void Renderer::DrawMeshImmediate(const Vec2& position, Vec2 meshDim)
 {
 	MeshBuilder* mb = new MeshBuilder();
 
@@ -486,5 +487,22 @@ Shader* Renderer::GetOrCreateShader(ShaderDefinition* shaderDef)
 		m_LoadedShaders[shaderDef] = shader;
 
 		return shader;
+	}
+}
+
+ShaderDefinition* Renderer::GetOrCreateShaderDef(XMLElement* element)
+{
+	if(m_LoadedShaderDefinitions.find(element) != m_LoadedShaderDefinitions.end())
+	{
+		return m_LoadedShaderDefinitions.at(element);
+	}
+	else
+	{
+		ShaderDefinition* shaderDef = new ShaderDefinition(*element);
+		LOG_CHECK(shaderDef != nullptr) << "Data is null";
+
+		m_LoadedShaderDefinitions[element] = shaderDef;
+
+		return shaderDef;
 	}
 }

@@ -16,10 +16,10 @@ extern InputSystem* g_InputSystem;
 
 Game::Game()
 {
-	m_ShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef(APEX_SHADER_XML));
+	m_ShaderDef = Renderer::GetInstance()->GetOrCreateShaderDef(ShaderDefinition::InitializeDef(APEX_SHADER_XML));
 	m_Shader = Renderer::GetInstance()->GetOrCreateShader(m_ShaderDef);
 	
-	m_ScreenShaderDef = new ShaderDefinition(*ShaderDefinition::InitializeDef(APEX_SCREENSHADER_XML));
+	m_ScreenShaderDef = Renderer::GetInstance()->GetOrCreateShaderDef(ShaderDefinition::InitializeDef(APEX_SCREENSHADER_XML));
 	m_ScreenShader = Renderer::GetInstance()->GetOrCreateShader(m_ScreenShaderDef);
 	
 	Renderer::GetInstance()->EnableBlend(ParseBlendFac[m_Shader->GetSRC()], ParseBlendFac[m_Shader->GetDST()], ParseBlendOp[m_Shader->GetOP()]);
@@ -90,7 +90,7 @@ void Game::Render()
 	m_SrcBuffer->UnBind();
 
 	Renderer::GetInstance()->CopyFrameBuffer(m_SrcBuffer, m_DestBuffer);
-	Renderer::GetInstance()->DrawFrameBuffer(Vec2(APEX_WINDOW_DIMS.m_X, APEX_WINDOW_DIMS.m_Z), Vec2(APEX_WINDOW_DIMS.m_Y, APEX_WINDOW_DIMS.m_W));
+	Renderer::GetInstance()->DrawMeshImmediate(Vec2(APEX_WINDOW_DIMS.m_X, APEX_WINDOW_DIMS.m_Z), Vec2(APEX_WINDOW_DIMS.m_Y, APEX_WINDOW_DIMS.m_W));
 }
 
 void Game::EndFrame()
