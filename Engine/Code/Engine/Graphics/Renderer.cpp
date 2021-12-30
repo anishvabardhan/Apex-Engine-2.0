@@ -357,7 +357,7 @@ void Renderer::DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const st
 //------------------------------------------------------------------------------------------------------
 // Drawing a FramBuffer
 
-void Renderer::DrawMeshImmediate(const Vec2& position, Vec2 meshDim)
+void Renderer::DrawFullScreenQuad(const Vec2& position, Vec2 meshDim)
 {
 	MeshBuilder* mb = new MeshBuilder();
 

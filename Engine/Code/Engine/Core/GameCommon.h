@@ -1,8 +1,9 @@
 #pragma once
 
-#include "CoreIncludes.h"
+//#include "CoreIncludes.h"
+#include <string>
 
-const Vec4 APEX_WINDOW_DIMS = Vec4(0.0f, 1024.0f, 0.0f, 1024.0f);
+const float APEX_WINDOW_DIMS[] = {0.0f, 1024.0f, 0.0f, 1024.0f};
 
 const std::string& APEX_SHADER_XML = "../Data/Materials/shader.xml";
 const std::string& APEX_SCREENSHADER_XML = "../Data/Materials/screenShader.xml";

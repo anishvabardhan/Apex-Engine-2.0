@@ -89,7 +89,7 @@ public:
 	void DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color, Shader shader);
 	void DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const std::string& path, Shader shader);
 
-	void DrawMeshImmediate(const Vec2& position, Vec2 meshDim);
+	void DrawFullScreenQuad(const Vec2& position = Vec2(0.0f, 0.0f), Vec2 meshDim = Vec2(1024.0f, 1024.0f));
 	void DrawMesh(Mesh* mesh);
 	void CopyFrameBuffer(FrameBuffer* current, FrameBuffer* next);
 	void Clear() const;

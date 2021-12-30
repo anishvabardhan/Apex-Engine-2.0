@@ -9,10 +9,11 @@
 #include "Engine/Input/WinKeys.h"
 #include "Engine/Core/Color.h"
 
-float x = 512.0f;
-const Mat4 g_Camera = Mat4::orthographic(APEX_WINDOW_DIMS.m_X, APEX_WINDOW_DIMS.m_Y, APEX_WINDOW_DIMS.m_Z, APEX_WINDOW_DIMS.m_W, -2.0f, 2.0f);
-
+extern const float APEX_WINDOW_DIMS[];
 extern InputSystem* g_InputSystem;
+
+float x = 512.0f;
+const Mat4 g_Camera = Mat4::orthographic(APEX_WINDOW_DIMS[0], APEX_WINDOW_DIMS[1], APEX_WINDOW_DIMS[2], APEX_WINDOW_DIMS[3], -2.0f, 2.0f);
 
 Game::Game()
 {
@@ -90,7 +91,7 @@ void Game::Render()
 	m_SrcBuffer->UnBind();
 
 	Renderer::GetInstance()->CopyFrameBuffer(m_SrcBuffer, m_DestBuffer);
-	Renderer::GetInstance()->DrawMeshImmediate(Vec2(APEX_WINDOW_DIMS.m_X, APEX_WINDOW_DIMS.m_Z), Vec2(APEX_WINDOW_DIMS.m_Y, APEX_WINDOW_DIMS.m_W));
+	Renderer::GetInstance()->DrawFullScreenQuad();
 }
 
 void Game::EndFrame()
