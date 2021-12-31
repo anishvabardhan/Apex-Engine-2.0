@@ -7,6 +7,7 @@
 #include "Engine/Graphics/Buffers/FrameBuffer.h"
 #include "Game/Code/Paddle.h"
 #include "Game/Code/Ball.h"
+#include "Game/Code/Brick.h"
 #include "Engine/Window/Window.h"
 
 extern InputSystem* g_InputSystem;
@@ -14,6 +15,9 @@ extern Shader* g_Shader;
 extern Window* g_Window;
 
 const Mat4 g_Camera = Mat4::orthographic(APEX_WINDOW_DIMS[0], APEX_WINDOW_DIMS[1], APEX_WINDOW_DIMS[2], APEX_WINDOW_DIMS[3], -2.0f, 2.0f);
+
+std::vector<Brick*> g_Bricks;
+Vec2 temp = Vec2(0.0f, 512.0f);
 
 Game::Game()
 {
@@ -27,6 +31,20 @@ Game::Game()
 
 	m_Paddle = new Paddle();
 	m_Ball = new Ball();
+
+	for(int i = 0; i <= 32; i++)
+	{
+		m_Brick = new Brick(temp);
+		g_Bricks.push_back(m_Brick);
+
+		temp.m_X += 128.0f;
+
+		if(i >= 8 && i % 8 == 0)
+		{
+			temp.m_X = 0.0f;
+			temp.m_Y += 32.0f;
+		}
+	}
 }
 
 Game::~Game()
@@ -83,6 +101,11 @@ void Game::Render()
 
 	m_Ball->Render();
 	m_Paddle->Render();
+
+	for(int i = 0; i < g_Bricks.size(); i++)
+	{
+		g_Bricks[i]->Render();
+	}
 
 	m_SrcBuffer->UnBind();
 

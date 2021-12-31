@@ -5,7 +5,7 @@
 class Brick : public Entity
 {
 public:
-	Brick();
+	explicit Brick(const Vec2& position);
 	~Brick();
 
 	virtual void Update(float deltaseconds) override;

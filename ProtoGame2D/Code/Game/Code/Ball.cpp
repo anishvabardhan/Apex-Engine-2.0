@@ -12,7 +12,7 @@ Ball::Ball()
 	: m_Accelaration(Vec2(0.0f, 0.0f)), m_Velocity(Vec2(0.0f, 0.0f))
 {
 	Entity();
-	m_Position = Vec2(552.0f, 227.5f);
+	m_Position = Vec2(502.0f, 227.5f);
 	m_Dims = Vec2(20.0f, 20.0f);
 	m_Color = Color::GREEN;
 }
