@@ -209,13 +209,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Code\Brick.cpp" />
+    <ClCompile Include="Code\Ball.cpp" />
+    <ClCompile Include="Code\Entity.cpp" />
     <ClCompile Include="Framework\App.cpp" />
     <ClCompile Include="Framework\Game.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Code\Paddle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\Brick.h" />
+    <ClInclude Include="Code\Ball.h" />
+    <ClInclude Include="Code\Entity.h" />
     <ClInclude Include="Framework\App.h" />
     <ClInclude Include="Framework\Game.h" />
+    <ClInclude Include="Code\Paddle.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Log\Log.txt" />

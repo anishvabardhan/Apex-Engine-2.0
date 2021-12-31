@@ -85,9 +85,9 @@ public:
 	void* CreateOldRenderContext(void* hdc);
 	void* CreateRealRenderContext(void* hdc, int major, int minor);
 
-	void Drawtext(const Vec2& position, const Vec4& color, const std::string& asciiText, float quadHeight, Font* font, Shader shader);
-	void DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color, Shader shader);
-	void DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const std::string& path, Shader shader);
+	void Drawtext(const Vec2& position, const Vec4& color, const std::string& asciiText, float quadHeight, Font* font);
+	void DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color);
+	void DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const std::string& path);
 
 	void DrawFullScreenQuad(const Vec2& position = Vec2(0.0f, 0.0f), Vec2 meshDim = Vec2(1024.0f, 1024.0f));
 	void DrawMesh(Mesh* mesh);

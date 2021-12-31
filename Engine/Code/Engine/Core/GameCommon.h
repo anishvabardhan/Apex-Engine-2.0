@@ -1,12 +1,9 @@
 #pragma once
 
-//#include "CoreIncludes.h"
-#include <string>
+static const float APEX_WINDOW_DIMS[] = {0.0f, 1024.0f, 0.0f, 1024.0f};
+static const char* APEX_SHADER_XML = "../Data/Materials/shader.xml";
+static const char* APEX_SCREENSHADER_XML = "../Data/Materials/screenShader.xml";
+static const char* APEX_DEFAULT_TEXTURE = "../Data/Textures/Default.png";
+static const char* APEX_FONT_BITMAP = "../Data/Textures/NewFont.png";
 
-const float APEX_WINDOW_DIMS[] = {0.0f, 1024.0f, 0.0f, 1024.0f};
-
-const std::string& APEX_SHADER_XML = "../Data/Materials/shader.xml";
-const std::string& APEX_SCREENSHADER_XML = "../Data/Materials/screenShader.xml";
-const std::string& APEX_DEFAULT_TEXTURE = "../Data/Textures/Default.png";
-const std::string& APEX_STRIPES_TEXTURE = "../Data/Textures/stripes.png";
-const std::string& APEX_FONT_BITMAP = "../Data/Textures/NewFont.png";
+static const char* PROTOGAME2D_BALL_TEXTURE = "../Data/Textures/Ball.png";

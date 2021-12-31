@@ -12,6 +12,9 @@
 #include <map>
 #include <unordered_map>
 #include <queue>
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 namespace tinyxml2 
 { 

@@ -16,6 +16,8 @@ void* g_GLLibrary = nullptr;
 void* m_OurWindowHandleToDeviceContext = nullptr;
 void* m_OurWindowHandleToRenderContext = nullptr;
 
+extern Shader* g_Shader;
+
 //---------------------------------------------------------------------------------------------------------
 // Defining the Constructors/Destructors
 
@@ -231,7 +233,7 @@ void Renderer::DisableBlend()
 //------------------------------------------------------------------------------------------------------
 // Drawing Text on the screen
 
-void Renderer::Drawtext(const Vec2& position, const Vec4& color, const std::string& asciiText, float quadHeight, Font* font, Shader shader)
+void Renderer::Drawtext(const Vec2& position, const Vec4& color, const std::string& asciiText, float quadHeight, Font* font)
 {
 	font->GetSpriteSheet().GetSpriteSheetTexture().Bind(TEXTURESLOT::SLOT0);
 
@@ -268,8 +270,8 @@ void Renderer::Drawtext(const Vec2& position, const Vec4& color, const std::stri
 		Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
 		Mat4 model = Mat4::translation(Vec3(0.0f, 0.0f, 0.0f));
-		shader.SetUniform1i("u_Texture", 0);
-		shader.SetUniformMat4f("u_Model", model);
+		g_Shader->SetUniform1i("u_Texture", 0);
+		g_Shader->SetUniformMat4f("u_Model", model);
 
 		mesh->Begin(GL_TRIANGLES);
 		DrawMesh(mesh);
@@ -283,7 +285,7 @@ void Renderer::Drawtext(const Vec2& position, const Vec4& color, const std::stri
 //------------------------------------------------------------------------------------------------------
 // Drawing a Quad on the screen with a Texture parameter
 
-void Renderer::DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color, Shader shader)
+void Renderer::DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color)
 {
 	texture.Bind(TEXTURESLOT::SLOT2);
 
@@ -305,8 +307,8 @@ void Renderer::DrawQuad(const Vec2& position, const Vec2& dimensions, const Text
 	Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
 	Mat4 model = Mat4::translation(Vec3(0.0f, 0.0f, 0.0f));
-	shader.SetUniform1i("u_Texture", 2);
-	shader.SetUniformMat4f("u_Model", model);
+	g_Shader->SetUniform1i("u_Texture", 2);
+	g_Shader->SetUniformMat4f("u_Model", model);
 
 	mesh->Begin(GL_TRIANGLES);
 	DrawMesh(mesh);
@@ -319,7 +321,7 @@ void Renderer::DrawQuad(const Vec2& position, const Vec2& dimensions, const Text
 //------------------------------------------------------------------------------------------------------
 // Drawing a Quad on the screen a Texture File path parameter
 
-void Renderer::DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const std::string& path, Shader shader)
+void Renderer::DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const std::string& path)
 {
 	MeshBuilder* mb = new MeshBuilder();
 	Texture* texture = GetOrCreateTexture(path);
@@ -343,8 +345,8 @@ void Renderer::DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const st
 
 	texture->Bind(TEXTURESLOT::SLOT1);
 
-	shader.SetUniform1i("u_Texture", 1);
-	shader.SetUniformMat4f("u_Model", model);
+	g_Shader->SetUniform1i("u_Texture", 1);
+	g_Shader->SetUniformMat4f("u_Model", model);
 
 	mesh->Begin(GL_TRIANGLES);
 	DrawMesh(mesh);

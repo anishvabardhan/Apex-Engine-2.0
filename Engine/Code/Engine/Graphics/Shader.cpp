@@ -1,11 +1,9 @@
 #include "Shader.h"
 
 #include "ShaderDefinition.h"
-
 #include "Engine/Core/CoreIncludes.h"
-#include <iostream>
-#include <sstream>
-#include <fstream>
+
+Shader* g_Shader = nullptr;
 
 Shader::Shader(ShaderDefinition* shaderDef)
 	: m_RendererID(0)
