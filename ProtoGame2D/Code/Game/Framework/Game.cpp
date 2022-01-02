@@ -5,10 +5,11 @@
 #include "Engine/Graphics/Shader.h"
 #include "Engine/Graphics/ShaderDefinition.h"
 #include "Engine/Graphics/Buffers/FrameBuffer.h"
+#include "Engine/Window/Window.h"
+
 #include "Game/Code/Paddle.h"
 #include "Game/Code/Ball.h"
 #include "Game/Code/Brick.h"
-#include "Engine/Window/Window.h"
 
 extern InputSystem* g_InputSystem;
 extern Shader* g_Shader;
@@ -17,10 +18,13 @@ extern Window* g_Window;
 const Mat4 g_Camera = Mat4::orthographic(APEX_WINDOW_DIMS[0], APEX_WINDOW_DIMS[1], APEX_WINDOW_DIMS[2], APEX_WINDOW_DIMS[3], -2.0f, 2.0f);
 
 std::vector<Brick*> g_Bricks;
-Vec2 temp = Vec2(0.0f, 512.0f);
+Vec2 temp = Vec2(4.0f, 512.0f);
+//Vec2 temp = Vec2(512.0f, 512.0f);
 
 Game::Game()
 {
+	Random::SetSeed();
+
 	m_ShaderDef = Renderer::GetInstance()->GetOrCreateShaderDef(ShaderDefinition::InitializeDef(APEX_SHADER_XML));
 	g_Shader = Renderer::GetInstance()->GetOrCreateShader(m_ShaderDef);
 	
@@ -34,15 +38,15 @@ Game::Game()
 
 	for(int i = 0; i <= 32; i++)
 	{
-		m_Brick = new Brick(temp);
-		g_Bricks.push_back(m_Brick);
+		Brick* brick = new Brick(temp);
+		g_Bricks.push_back(brick);
 
 		temp.m_X += 128.0f;
 
 		if(i >= 8 && i % 8 == 0)
 		{
-			temp.m_X = 0.0f;
-			temp.m_Y += 32.0f;
+			temp.m_X = 4.0f;
+			temp.m_Y += 48.0f;
 		}
 	}
 }
@@ -77,8 +81,25 @@ void Game::Update(float deltaseconds)
 	        	m_Ball->m_Accelaration.m_Y *= -1;
 	        }
 	    }
+
+		for(int i = 0; i < g_Bricks.size(); i++) 
+		{
+			if(g_Bricks[i] != nullptr)
+			{
+				bool cX = m_Ball->m_Position.m_X >= g_Bricks[i]->m_Position.m_X && m_Ball->m_Position.m_X + m_Ball->m_Dims.m_X <= g_Bricks[i]->m_Position.m_X + g_Bricks[i]->m_Dims.m_X;
+				bool cY = m_Ball->m_Position.m_Y >= g_Bricks[i]->m_Position.m_Y && m_Ball->m_Position.m_Y + m_Ball->m_Dims.m_Y <= g_Bricks[i]->m_Position.m_Y + g_Bricks[i]->m_Dims.m_Y;
+				bool collision = cX && cY;
 		
-		if(m_Ball->m_Position.m_Y < m_Paddle->m_Position.m_Y)
+				if(collision)
+				{
+
+					delete g_Bricks[i];
+					g_Bricks[i] = nullptr;
+				}
+			}
+		}
+		
+		if(m_Ball->m_Position.m_Y < 5.0f)
 		{
 			g_Window->AppQuitting();
 		}
@@ -104,7 +125,10 @@ void Game::Render()
 
 	for(int i = 0; i < g_Bricks.size(); i++)
 	{
-		g_Bricks[i]->Render();
+		if(g_Bricks[i] != nullptr)
+		{
+			g_Bricks[i]->Render();
+		}
 	}
 
 	m_SrcBuffer->UnBind();

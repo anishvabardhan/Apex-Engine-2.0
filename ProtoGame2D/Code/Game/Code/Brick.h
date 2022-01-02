@@ -2,9 +2,13 @@
 
 #include "Entity.h"
 
+class AABB2;
+
 class Brick : public Entity
 {
 public:
+	AABB2 m_CollisionBox;
+
 	explicit Brick(const Vec2& position);
 	~Brick();
 

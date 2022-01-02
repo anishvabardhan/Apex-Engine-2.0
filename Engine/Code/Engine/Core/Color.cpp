@@ -1,5 +1,7 @@
 #include "Color.h"
 
+#include "Engine/Maths/Random.h"
+
 const Vec4 Color::WHITE = Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 const Vec4 Color::RED = Vec4(1.0f, 0.0f, 0.0f, 1.0f);
 const Vec4 Color::GREEN = Vec4(0.0f, 1.0f, 0.0f, 1.0f);

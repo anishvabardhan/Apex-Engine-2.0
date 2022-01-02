@@ -4,7 +4,6 @@ class ShaderDefinition;
 class FrameBuffer;
 class Paddle;
 class Ball;
-class Brick;
 
 class Game
 {
@@ -13,7 +12,6 @@ class Game
 	FrameBuffer* m_DestBuffer = nullptr;
     Paddle* m_Paddle;
     Ball* m_Ball;
-    Brick* m_Brick;
 public:
 	Game();
 	~Game();
