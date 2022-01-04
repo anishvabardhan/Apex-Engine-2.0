@@ -8,7 +8,7 @@ Brick::Brick(const Vec2& position)
 {
 	Entity();
 	m_Position = position;
-	m_Dims = Vec2(128.0f, 48.0f);
+	m_Dims = Vec2(124.0f, 48.0f);
 	m_Color = Color::YELLOW;
 }
 

@@ -25,7 +25,7 @@ void Ball::Update(float deltaseconds)
 {
 	if(g_InputSystem->WasKeyJustPressed(SPACEBAR))
 	{
-		m_Accelaration = Vec2(-550.0f, 2000.0f);
+		m_Accelaration = Vec2(-500.0f, 2000.0f);
 	}
 	else if(m_Accelaration.m_Y == 0.0f)
 	{
@@ -75,7 +75,7 @@ void Ball::Update(float deltaseconds)
 
 void Ball::Render()
 {
-	Renderer::GetInstance()->DrawQuad(m_Position, m_Dims, m_Color, APEX_DEFAULT_TEXTURE);
+	Renderer::GetInstance()->DrawQuad(m_Position, m_Dims, m_Color, PROTOGAME2D_BALL_TEXTURE);
 }
 
 void Ball::Translate(Vec2& translate)

@@ -46,13 +46,28 @@ Game::Game()
 		if(i >= 8 && i % 8 == 0)
 		{
 			temp.m_X = 4.0f;
-			temp.m_Y += 48.0f;
+			temp.m_Y += 52.0f; 
 		}
 	}
 }
 
 Game::~Game()
 {
+	delete m_Ball;
+	m_Ball = nullptr;
+
+	delete m_Paddle;
+	m_Paddle = nullptr;
+
+	for(int i = 0; i < g_Bricks.size(); i++)
+	{
+		if(g_Bricks[i])
+		{
+			delete g_Bricks[i];
+			g_Bricks[i] = nullptr;
+		}
+	}
+
 	delete m_ShaderDef;
 	m_ShaderDef = nullptr;
 	
@@ -86,20 +101,28 @@ void Game::Update(float deltaseconds)
 		{
 			if(g_Bricks[i] != nullptr)
 			{
-				bool cX = m_Ball->m_Position.m_X >= g_Bricks[i]->m_Position.m_X && m_Ball->m_Position.m_X + m_Ball->m_Dims.m_X <= g_Bricks[i]->m_Position.m_X + g_Bricks[i]->m_Dims.m_X;
-				bool cY = m_Ball->m_Position.m_Y >= g_Bricks[i]->m_Position.m_Y && m_Ball->m_Position.m_Y + m_Ball->m_Dims.m_Y <= g_Bricks[i]->m_Position.m_Y + g_Bricks[i]->m_Dims.m_Y;
-				bool collision = cX && cY;
-		
-				if(collision)
-				{
+	            if((m_Ball->m_Position.m_Y < g_Bricks[i]->m_Position.m_Y + g_Bricks[i]->m_Dims.m_Y && m_Ball->m_Position.m_Y + m_Ball->m_Dims.m_Y > g_Bricks[i]->m_Position.m_Y) && (m_Ball->m_Position.m_X > g_Bricks[i]->m_Position.m_X && m_Ball->m_Position.m_X + m_Ball->m_Dims.m_X < g_Bricks[i]->m_Position.m_X + g_Bricks[i]->m_Dims.m_X))
+	            {
+	            	m_Ball->m_Accelaration.m_Y *= -1;
 
 					delete g_Bricks[i];
 					g_Bricks[i] = nullptr;
-				}
+	            }
+			}
+
+			if(g_Bricks[i] != nullptr)
+			{
+				if((m_Ball->m_Position.m_X < g_Bricks[i]->m_Position.m_X + g_Bricks[i]->m_Dims.m_X && m_Ball->m_Position.m_X + m_Ball->m_Dims.m_X > g_Bricks[i]->m_Position.m_X) && (m_Ball->m_Position.m_Y > g_Bricks[i]->m_Position.m_Y && m_Ball->m_Position.m_Y + m_Ball->m_Dims.m_Y < g_Bricks[i]->m_Position.m_Y + g_Bricks[i]->m_Dims.m_Y))
+	            {
+	            	m_Ball->m_Accelaration.m_X *= -1;
+					
+					delete g_Bricks[i];
+					g_Bricks[i] = nullptr;
+	            }
 			}
 		}
 		
-		if(m_Ball->m_Position.m_Y < 5.0f)
+		if(m_Ball->m_Position.m_Y + m_Ball->m_Dims.m_Y < m_Paddle->m_Position.m_Y)
 		{
 			g_Window->AppQuitting();
 		}
