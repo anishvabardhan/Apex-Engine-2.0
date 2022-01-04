@@ -215,6 +215,7 @@ void Renderer::DestroyInstance()
 
 void Renderer::EnableBlend(enum APEX_BLEND_FACTOR src, enum APEX_BLEND_FACTOR dest, enum APEX_BLEND_OP mode)
 {
+	glLineWidth(2.0f);
 	glEnable(GL_BLEND);
 
 	glBlendFunc(src, dest);
