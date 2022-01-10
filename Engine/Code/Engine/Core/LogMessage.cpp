@@ -80,7 +80,6 @@ LogMessageFatal::LogMessageFatal(const char* fileName, int line)
 LogMessageFatal::~LogMessageFatal()
 {
 	Log(FATAL);
-	exit(0);
 }
 
    std::string Stringf(const char* messageText, ...)

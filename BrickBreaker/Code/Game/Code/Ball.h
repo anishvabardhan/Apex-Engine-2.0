@@ -5,8 +5,10 @@
 class Ball : public Entity
 {
 public:
-	Vec2 m_Accelaration;
+	Vec2 m_Translate;
 	Vec2 m_Velocity;
+	Vec2 m_Center;
+	float m_Radius;
 
 	Ball();
 	~Ball();
@@ -14,6 +16,10 @@ public:
 	virtual void Update(float deltaseconds) override;
 	virtual void Render() override;
 
-	void Translate(Vec2& translate);
+	void Translate(const Vec2& translate);
+
+	static void CreateInstance();
+	static Ball* GetInstance();
+	static void DestroyInstance();
 };
 

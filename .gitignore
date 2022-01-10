@@ -4,6 +4,13 @@
 *.o
 *.obj
 
+# Project files
+*.sln
+*.vcxproj
+*.filters
+*.user
+*.editorconfig
+
 # Precompiled Headers
 *.gch
 *.pch

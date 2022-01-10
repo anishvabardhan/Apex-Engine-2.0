@@ -13,7 +13,7 @@ Paddle::Paddle()
 {
 	Entity();
 	m_Position = Vec2(462.0f, 20.0f);
-	m_Dims = Vec2(100.0f, 25.0f);
+	m_Dims = Vec2(200.0f, 25.0f);
 	m_Color = Color::CYAN;
 }
 
@@ -25,11 +25,11 @@ void Paddle::Update(float deltaseconds)
 {
 	if(g_InputSystem->IsHeldDown(D))
 	{
-		m_Accelaration = 1500.0f;
+		m_Accelaration = BB_PADDLE_ACCELARATION;
 	}
 	else if(g_InputSystem->IsHeldDown(A))
 	{
-		m_Accelaration = -1500.0f;
+		m_Accelaration = -BB_PADDLE_ACCELARATION;
 	}
 	else
 	{

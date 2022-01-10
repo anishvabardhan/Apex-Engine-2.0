@@ -15,4 +15,3 @@ public:
 	virtual void Update(float delatseconds);
 	virtual void Render();
 };
-
