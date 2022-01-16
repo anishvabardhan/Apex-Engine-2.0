@@ -1,5 +1,5 @@
 <ScreenShaderDefinitions>
 
-	<program src = "../Data/Shaders/Screen.shader"/>
+	<program src = "E:/Dev/Apex-Engine-2.0/BrickBreaker/Data/Shaders/Screen.shader"/>
 
 </ScreenShaderDefinitions>

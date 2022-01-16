@@ -9,7 +9,7 @@ class Brick : public Entity
 {
 public:
 	AABB2 m_CollisionBox;
-	bool m_IsDestroyed[NUM_OF_BRICKS / 8][NUM_OF_BRICKS / 4];
+	bool m_IsDestroyed[NUM_OF_ROWS][NUM_OF_COLS];
 
 	Brick();
 	explicit Brick(const Vec2& position);

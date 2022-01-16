@@ -17,9 +17,9 @@ public:
 	virtual void Render() override;
 
 	void Translate(const Vec2& translate);
+	bool IsColliding(const Vec2& otherEntity);
 
 	static void CreateInstance();
 	static Ball* GetInstance();
 	static void DestroyInstance();
 };
-

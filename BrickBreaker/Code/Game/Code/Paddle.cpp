@@ -14,7 +14,7 @@ Paddle::Paddle()
 	Entity();
 	m_Position = Vec2(462.0f, 20.0f);
 	m_Dims = Vec2(200.0f, 25.0f);
-	m_Color = Color::CYAN;
+	m_Color = Color::WHITE;
 }
 
 Paddle::~Paddle()
@@ -53,7 +53,7 @@ void Paddle::Update(float deltaseconds)
 
 void Paddle::Render()
 {
-	Renderer::GetInstance()->DrawQuad(m_Position, m_Dims, m_Color, APEX_DEFAULT_TEXTURE);
+	Renderer::GetInstance()->DrawQuad(m_Position, m_Dims, m_Color, BB_PADDLE_TEXTURE);
 }
 
 void Paddle::Translate(Vec2& translate)

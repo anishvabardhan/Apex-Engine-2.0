@@ -75,16 +75,26 @@ void Ball::Update(float deltaseconds)
 	m_Translate = m_Translate * deltaseconds;
 
 	Translate(m_Translate);
+
+	m_Center = Vec2(m_Position.m_X + (m_Dims.m_X / 2), m_Position.m_Y + (m_Dims.m_Y / 2));
 }
 
 void Ball::Render()
 {
-	Renderer::GetInstance()->DrawQuad(m_Position, m_Dims, m_Color, PROTOGAME2D_BALL_TEXTURE);
+	Renderer::GetInstance()->DrawQuad(m_Position, m_Dims, m_Color, BB_BALL_TEXTURE);
 }
 
 void Ball::Translate(const Vec2& translate)
 {
 	m_Position += translate;
+}
+
+bool Ball::IsColliding(const Vec2& otherEntity)
+{
+	bool collision = (((m_Position.m_X + m_Dims.m_X / 2) - (otherEntity.m_X)) * ((m_Position.m_X + m_Dims.m_X / 2) - (otherEntity.m_X)) +
+		((m_Position.m_Y + m_Dims.m_Y / 2) - (otherEntity.m_Y)) * ((m_Position.m_Y + m_Dims.m_Y / 2) - (otherEntity.m_Y))) < (m_Radius * m_Radius);
+
+	return collision;
 }
 
 void Ball::CreateInstance()

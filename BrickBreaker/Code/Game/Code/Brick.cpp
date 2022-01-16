@@ -8,12 +8,12 @@ Brick::Brick()
 {
 	Entity();
 	m_Position = Vec2(0.0f, 0.0f);
-	m_Dims = Vec2(124.0f, 48.0f);
-	m_Color = Color::YELLOW;
+	m_Dims = BRICK_DIMS;
+	m_Color = Color::WHITE;
 
-	for(int i = 0; i < NUM_OF_BRICKS / 8; i++)
+	for(int i = 0; i < NUM_OF_ROWS; i++)
 	{
-		for(int j = 0; j < NUM_OF_BRICKS / 4; j++)
+		for(int j = 0; j < NUM_OF_COLS; j++)
 		{
 			m_IsDestroyed[i][j] = false;
 		}
@@ -25,7 +25,7 @@ Brick::Brick(const Vec2& position)
 	Entity();
 	m_Position = position;
 	m_Dims = Vec2(124.0f, 48.0f);
-	m_Color = Color::YELLOW;
+	m_Color = Color::WHITE;
 }
 
 Brick::~Brick()
@@ -39,13 +39,13 @@ void Brick::Update(float deltaseconds)
 	float x = 0.0f;
 	float y = 0.0f;
 
-	for(int i = 0; i < NUM_OF_BRICKS / 8; i++)
+	for(int i = 0; i < NUM_OF_ROWS; i++)
 	{
-	 	y = BRICK_MAP_SPACE.m_Mins.m_Y + (m_Dims.m_Y + 4.0f) * i;
+	 	y = BRICK_MAP_SPACE.m_Mins.m_Y + (m_Dims.m_Y) * i;
 	 
-	 	for(int j = 0; j < NUM_OF_BRICKS / 4; j++)
+	 	for(int j = 0; j < NUM_OF_COLS; j++)
 	 	{
-	 		x = BRICK_MAP_SPACE.m_Mins.m_X + (m_Dims.m_X + 4.0f) * j;
+	 		x = BRICK_MAP_SPACE.m_Mins.m_X + (m_Dims.m_X) * j;
 	 
 	 		m_Position = Vec2(x, y);
 
@@ -75,13 +75,21 @@ void Brick::Render()
 	float x = 0.0f;
 	float y = 0.0f;
 
-	for(int i = 0; i < NUM_OF_BRICKS / 8; i++)
+	for(int i = 0; i < NUM_OF_ROWS; i++)
 	{
-		 y = BRICK_MAP_SPACE.m_Mins.m_Y + (m_Dims.m_Y + 4.0f) * i;
+		 y = BRICK_MAP_SPACE.m_Mins.m_Y + (m_Dims.m_Y) * i;
 		 
-		 for(int j = 0; j < NUM_OF_BRICKS / 4; j++)
+		 for(int j = 0; j < NUM_OF_COLS; j++)
 		 {
-		 	 x = BRICK_MAP_SPACE.m_Mins.m_X + (m_Dims.m_X + 4.0f) * j;
+			if((i + j) % 2 == 0)
+			{
+				m_Color = Color::YELLOW;
+			}
+			else
+			{
+				m_Color = Color::RED;
+			}
+		 	 x = BRICK_MAP_SPACE.m_Mins.m_X + (m_Dims.m_X) * j;
 		 	 
 		 	 m_Position = Vec2(x, y);
 	 	 

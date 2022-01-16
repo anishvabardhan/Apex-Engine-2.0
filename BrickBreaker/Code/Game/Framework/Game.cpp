@@ -59,15 +59,19 @@ void Game::BeginFrame()
 
 void Game::Update(float deltaseconds)
 {
+	m_Paddle->Update(deltaseconds);
+	Ball::GetInstance()->Update(deltaseconds);
+	m_Bricks->Update(deltaseconds);
+
 	if(Ball::GetInstance()->m_Velocity.m_Y != 0.0f)
 	{
 		if(Ball::GetInstance()->m_Position.m_X > m_Paddle->m_Position.m_X && Ball::GetInstance()->m_Position.m_X + Ball::GetInstance()->m_Dims.m_X < m_Paddle->m_Position.m_X + m_Paddle->m_Dims.m_X)
 	    {
-	    	if((Ball::GetInstance()->m_Center.m_Y - (m_Paddle->m_Position.m_Y + m_Paddle->m_Dims.m_Y)) * (Ball::GetInstance()->m_Center.m_Y - (m_Paddle->m_Position.m_Y + m_Paddle->m_Dims.m_Y)) < Ball::GetInstance()->m_Radius * Ball::GetInstance()->m_Radius)
+	    	if((Ball::GetInstance()->m_Center.m_Y - (m_Paddle->m_Position.m_Y + m_Paddle->m_Dims.m_Y)) < Ball::GetInstance()->m_Radius)
 	        {
 	        	Ball::GetInstance()->m_Velocity.m_Y *= -1;
 
-				Ball::GetInstance()->m_Velocity.m_X = -500.0f * sin((Ball::GetInstance()->m_Position.m_X + (Ball::GetInstance()->m_Dims.m_X * 0.5f)) - (m_Paddle->m_Position.m_X + (m_Paddle->m_Dims.m_X * 0.5f)));
+				Ball::GetInstance()->m_Velocity.m_X = 500.0f * sin((Ball::GetInstance()->m_Position.m_X + (Ball::GetInstance()->m_Dims.m_X * 0.5f)) - (m_Paddle->m_Position.m_X + (m_Paddle->m_Dims.m_X * 0.5f)) / m_Paddle->m_Dims.m_X);
 	        }
 	    }
 		
@@ -76,10 +80,6 @@ void Game::Update(float deltaseconds)
 			g_Window->AppQuitting();
 		}
 	}
-
-	m_Paddle->Update(deltaseconds);
-	Ball::GetInstance()->Update(deltaseconds);
-	m_Bricks->Update(deltaseconds);
 }
 
 void Game::Render()
