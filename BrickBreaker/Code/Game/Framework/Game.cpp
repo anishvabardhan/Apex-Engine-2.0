@@ -10,11 +10,18 @@
 #include "Game/Code/Ball.h"
 #include "Game/Code/Brick.h"
 
+// Declaring Engine Systems
+
 extern InputSystem* g_InputSystem;
 extern Shader* g_Shader;
 extern Window* g_Window;
 
+//--------------------------------------------------------------------------------------------------
+// Creating a Camera
+
 const Mat4 g_Camera = Mat4::orthographic(APEX_WINDOW_DIMS[0], APEX_WINDOW_DIMS[1], APEX_WINDOW_DIMS[2], APEX_WINDOW_DIMS[3], -2.0f, 2.0f);
+
+//--------------------------------------------------------------------------------------------------
 
 Game::Game()
 {
@@ -53,9 +60,15 @@ Game::~Game()
 	m_DestBuffer = nullptr;
 }
 
+//--------------------------------------------------------------------------------------------------
+// Begin Frame function
+
 void Game::BeginFrame()
 {
 }
+
+//--------------------------------------------------------------------------------------------------
+// Updates happening every frame
 
 void Game::Update(float deltaseconds)
 {
@@ -82,6 +95,9 @@ void Game::Update(float deltaseconds)
 	}
 }
 
+//--------------------------------------------------------------------------------------------------
+// Rendering the frame
+
 void Game::Render()
 {
 	m_SrcBuffer->Bind();
@@ -103,7 +119,12 @@ void Game::Render()
 	Renderer::GetInstance()->DrawFullScreenQuad();
 }
 
+//--------------------------------------------------------------------------------------------------
+// Ending the frame
+
 void Game::EndFrame()
 {
 	Renderer::GetInstance()->SwappingBuffers();
 }
+
+//--------------------------------------------------------------------------------------------------
