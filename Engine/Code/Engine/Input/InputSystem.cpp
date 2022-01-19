@@ -23,7 +23,8 @@ void InputSystem::BeginFrame()
 
 void InputSystem::Update(float deltaseconds)
 {
-	UNUSED(deltaseconds)
+	UNUSED(deltaseconds);
+	m_Mouse.UpdateMouse();
 }
 
 void InputSystem::Render()
@@ -55,6 +56,16 @@ bool InputSystem::WasKeyJustPressed(unsigned char KeyCode) const
 bool InputSystem::WasKeyJustReleased(unsigned char KeyCode) const
 {
 	return m_KeyState[KeyCode].WasJustReleased();
+}
+
+Vec2 InputSystem::GetMousePosition()
+{
+	return m_Mouse.GetMouseScreenPosition();
+}
+
+void InputSystem::SetMousePosition(const Vec2& clientPosition)
+{
+	m_Mouse.SetMouseScreenPosition(clientPosition);
 }
 
 bool InputSystem::HandleKeyUp(unsigned char KeyCode)

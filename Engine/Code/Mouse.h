@@ -13,9 +13,7 @@ public:
 	void UpdateMouse();
 
 	Vec2 GetMouseDelta();
-	Vec2 GetMouseScreenPosition() const;
-	Vec2 GetMouseClientPosition() const;
+	Vec2 GetMouseScreenPosition();
 		 
 	void SetMouseScreenPosition( const Vec2& desktopPos );
-	void SetMouseClientPosition( const Vec2& clientPos );
 };

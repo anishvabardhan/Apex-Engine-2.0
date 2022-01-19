@@ -4,7 +4,6 @@
 #include "Engine/Core/Color.h"
 #include "Engine/Core/GameCommon.h"
 #include "Engine/Input/InputSystem.h"
-#include "Engine/Input/WinKeys.h"
 
 extern InputSystem* g_InputSystem;
 
@@ -23,18 +22,7 @@ Paddle::~Paddle()
 
 void Paddle::Update(float deltaseconds)
 {
-	if(g_InputSystem->IsHeldDown(D))
-	{
-		m_Accelaration = BB_PADDLE_ACCELARATION;
-	}
-	else if(g_InputSystem->IsHeldDown(A))
-	{
-		m_Accelaration = -BB_PADDLE_ACCELARATION;
-	}
-	else
-	{
-		m_Accelaration = 0.0f;
-	}
+	UNUSED(deltaseconds);
 
 	if(m_Position.m_X < 0.0f)
 	{
@@ -44,19 +32,17 @@ void Paddle::Update(float deltaseconds)
 	{
 		m_Position.m_X = 1024.0f - m_Dims.m_X;
 	}
-
-	m_Velocity += Vec2(m_Accelaration * deltaseconds, 0.0f);
-	m_Velocity = m_Velocity * deltaseconds;
-
-	Translate(m_Velocity);
+	else if(g_InputSystem->GetMousePosition().m_X <= 1024.0f - m_Dims.m_X / 2)
+	{
+		m_Position.m_X = g_InputSystem->GetMousePosition().m_X - m_Dims.m_X / 2;
+	}
+	else if(g_InputSystem->GetMousePosition().m_X >= m_Dims.m_X / 2)
+	{
+		m_Position.m_X = g_InputSystem->GetMousePosition().m_X - m_Dims.m_X / 2;
+	}
 }
 
 void Paddle::Render()
 {
 	Renderer::GetInstance()->DrawQuad(m_Position, m_Dims, m_Color, BB_PADDLE_TEXTURE);
-}
-
-void Paddle::Translate(Vec2& translate)
-{
-	m_Position += translate;
 }

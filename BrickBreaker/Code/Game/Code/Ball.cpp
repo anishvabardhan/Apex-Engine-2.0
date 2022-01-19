@@ -33,18 +33,18 @@ void Ball::Update(float deltaseconds)
 	}
 	else if(m_Velocity.m_Y == 0.0f)
 	{
-		if(g_InputSystem->IsHeldDown(D))
+		if(g_InputSystem->GetMousePosition().m_X <= 1024.0f - m_Dims.m_X / 2)
 	    {
-		    m_Velocity.m_X = BB_PADDLE_ACCELARATION;
+	    	m_Position.m_X = g_InputSystem->GetMousePosition().m_X - m_Dims.m_X / 2;
 	    }
-	    else if(g_InputSystem->IsHeldDown(A))
+	    else if(g_InputSystem->GetMousePosition().m_X >= m_Dims.m_X / 2)
 	    {
-		    m_Velocity.m_X = -BB_PADDLE_ACCELARATION;
+	    	m_Position.m_X = g_InputSystem->GetMousePosition().m_X - m_Dims.m_X / 2;
 	    }
-	    else
-	    {
-		    m_Velocity.m_X = 0.0f;
-	    }
+		else
+		{
+			m_Position.m_X = g_InputSystem->GetMousePosition().m_X;
+		}
 	}
 
 	if(m_Velocity.m_Y != 0.0f)

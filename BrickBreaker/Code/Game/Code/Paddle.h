@@ -13,7 +13,5 @@ public:
 
 	virtual void Update(float deltaseconds) override;
 	virtual void Render() override;
-
-	void Translate(Vec2& translate);
 };
 
