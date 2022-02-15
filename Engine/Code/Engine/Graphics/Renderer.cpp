@@ -6,9 +6,11 @@
 #pragma comment(lib, "opengl32")
 #include "Buffers/FrameBuffer.h"
 #include "Font.h"
-#include "Texture.h"
 #include "Shader.h"
 #include "ShaderDefinition.h"
+#include "Engine/Core/Color.h"
+#include "Engine/Core/EngineCommon.h"
+#include "External/stb_image.h"
 
 static Renderer* m_Renderer = nullptr;
 
@@ -52,6 +54,8 @@ void Renderer::StartUp()
 	BindGLFunctions();
 
 	m_OurWindowHandleToRenderContext = realContext;
+
+	m_DefaultTexture = CreateTextureFromColor(Color::WHITE);
 }
 
 void Renderer::InitRender()
@@ -60,7 +64,7 @@ void Renderer::InitRender()
 	//--------------------------------------------------------------------------------------------------
 	//Setup OpenGL3 Viewport
 	
-	glViewport(0, 0, 1024, 1024);
+	//glViewport(0, 0, 1024, 1024);
 
 	//--------------------------------------------------------------------------------------------------
 	//Clear Buffers to Preset Values
@@ -71,6 +75,7 @@ void Renderer::InitRender()
 	//Specify Clear Values for the Color Buffers
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	
 }
 
 void Renderer::ShutDown()
@@ -148,17 +153,21 @@ void* Renderer::CreateRealRenderContext(void* hdc, int major, int minor)
 		formats,
 		&format_count);
 
-	if (!succeeded) {
+	if (!succeeded) 
+	{
 		return nullptr;
 	}
 
-	for (unsigned int i = 0; i < format_count; ++i) {
+	for (unsigned int i = 0; i < format_count; ++i) 
+	{
 		pixel_format = formats[i];
 		succeeded = SetPixelFormat(reinterpret_cast<HDC>(hdc), pixel_format, NULL);
-		if (succeeded) {
+		if (succeeded) 
+		{
 			break;
 		}
-		else {
+		else 
+		{
 			//DWORD error = GetLastError();
 		}
 	}
@@ -186,6 +195,31 @@ void* Renderer::CreateRealRenderContext(void* hdc, int major, int minor)
 	}
 
 	return context;
+}
+
+void Renderer::BindFont(const Font* font, int textureSlot)
+{
+	font->GetSpriteSheet().GetSpriteSheetTexture().Bind(m_TextureSlot[textureSlot]);
+
+	g_Shader->SetUniform1i("u_Texture", textureSlot);
+}
+
+void Renderer::BindTexture(const Texture* texture, int textureSlot)
+{
+	texture->Bind(m_TextureSlot[textureSlot]);
+
+	g_Shader->SetUniform1i("u_Texture", textureSlot);
+}
+
+void Renderer::SetCameraUniform(const Mat4& camera)
+{
+	g_Shader->SetUniformMat4f("u_Proj", camera);
+	BindTexture(m_DefaultTexture);
+}
+
+void Renderer::SetModelTranslation(const Mat4& transform)
+{
+	g_Shader->SetUniformMat4f("u_Model", transform);
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -234,28 +268,26 @@ void Renderer::DisableBlend()
 //------------------------------------------------------------------------------------------------------
 // Drawing Text on the screen
 
-void Renderer::Drawtext(const Vec2& position, const Vec4& color, const std::string& asciiText, float quadHeight, Font* font)
+void Renderer::Drawtext(const Vec4& color, const std::string& asciiText, float quadHeight, Font* font)
 {
-	font->GetSpriteSheet().GetSpriteSheetTexture().Bind(TEXTURESLOT::SLOT0);
-
 	float quadWidth = quadHeight;
 
 	AABB2 quadPos;
 	AABB2 uvPos;
 
-	quadPos.m_Mins.m_Y = position.m_Y;
-	quadPos.m_Maxs.m_Y = position.m_Y + quadHeight;
+	quadPos.m_Mins.m_Y = 0.0f;
+	quadPos.m_Maxs.m_Y = quadHeight;
 
 	for (size_t i = 0; i < asciiText.size(); i++)
 	{
 		MeshBuilder* mb = new MeshBuilder();
 
-		quadPos.m_Mins.m_X = (i * quadWidth) + position.m_X;
-		quadPos.m_Maxs.m_X = ((i + 1) * quadWidth) + position.m_X;
+		quadPos.m_Mins.m_X = (i * quadWidth);
+		quadPos.m_Maxs.m_X = ((i + 1) * quadWidth);
 
 		uvPos = font->GetGlyphUV(asciiText[i]);
 
-		mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
+		mb->Color3f(color);
 		mb->TexCoord2f(Vec2(uvPos.m_Mins.m_X, uvPos.m_Maxs.m_Y));
 	    mb->Position3f(Vec3(quadPos.m_Mins.m_X, quadPos.m_Mins.m_Y, 0.0f));
 	    
@@ -270,10 +302,6 @@ void Renderer::Drawtext(const Vec2& position, const Vec4& color, const std::stri
 
 		Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
-		Mat4 model = Mat4::translation(Vec3(0.0f, 0.0f, 0.0f));
-		g_Shader->SetUniform1i("u_Texture", 0);
-		g_Shader->SetUniformMat4f("u_Model", model);
-
 		mesh->Begin(GL_TRIANGLES);
 		DrawMesh(mesh);
 		mesh->End();
@@ -283,33 +311,24 @@ void Renderer::Drawtext(const Vec2& position, const Vec4& color, const std::stri
 	}
 }
 
-//------------------------------------------------------------------------------------------------------
-// Drawing a Quad on the screen with a Texture parameter
-
-void Renderer::DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color)
+void Renderer::DrawAABB2(const AABB2& aabb2, const Vec4& color)
 {
-	texture.Bind(TEXTURESLOT::SLOT2);
-
 	MeshBuilder* mb = new MeshBuilder();
 
 	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
-	mb->TexCoord2f(Vec2(texCoords.m_Mins.m_X, texCoords.m_Maxs.m_Y));
-	mb->Position3f(Vec3(position.m_X, position.m_Y, 0.0f));
+	mb->TexCoord2f(Vec2::ZERO_ZERO);
+	mb->Position3f(Vec3(aabb2.m_Mins.m_X, aabb2.m_Mins.m_Y, 0.0f));
 
-	mb->TexCoord2f(Vec2(texCoords.m_Maxs.m_X, texCoords.m_Maxs.m_Y));
-	mb->Position3f(Vec3(position.m_X + dimensions.m_X, position.m_Y, 0.0f));
+	mb->TexCoord2f(Vec2::ONE_ZERO);
+	mb->Position3f(Vec3(aabb2.m_Maxs.m_X, aabb2.m_Mins.m_Y, 0.0f));
 
-	mb->TexCoord2f(Vec2(texCoords.m_Maxs.m_X, texCoords.m_Mins.m_Y));
-	mb->Position3f(Vec3(position.m_X + dimensions.m_X, position.m_Y + dimensions.m_Y, 0.0f));
+	mb->TexCoord2f(Vec2::ONE_ONE);
+	mb->Position3f(Vec3(aabb2.m_Maxs.m_X, aabb2.m_Maxs.m_Y, 0.0f));
 
-	mb->TexCoord2f(Vec2(texCoords.m_Mins.m_X, texCoords.m_Mins.m_Y));
-	mb->Position3f(Vec3(position.m_X, position.m_Y + dimensions.m_Y, 0.0f));
+	mb->TexCoord2f(Vec2::ZERO_ONE);
+	mb->Position3f(Vec3(aabb2.m_Mins.m_X, aabb2.m_Maxs.m_Y, 0.0f));
 	
 	Mesh* mesh = mb->CreateMesh<VertexPCU>();
-
-	Mat4 model = Mat4::translation(Vec3(0.0f, 0.0f, 0.0f));
-	g_Shader->SetUniform1i("u_Texture", 2);
-	g_Shader->SetUniformMat4f("u_Model", model);
 
 	mesh->Begin(GL_TRIANGLES);
 	DrawMesh(mesh);
@@ -319,35 +338,35 @@ void Renderer::DrawQuad(const Vec2& position, const Vec2& dimensions, const Text
 	delete mb;
 }
 
-//------------------------------------------------------------------------------------------------------
-// Drawing a Quad on the screen a Texture File path parameter
-
-void Renderer::DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const std::string& path)
+void Renderer::DrawLine(Vec2& start, Vec2& end, float thickness, const Vec4& color)
 {
 	MeshBuilder* mb = new MeshBuilder();
-	Texture* texture = GetOrCreateTexture(path);
 
-	mb->Color3f(Vec4(color.m_X, color.m_Y, color.m_Z, color.m_W));
-	mb->TexCoord2f(Vec2(0.0f, 0.0f));
-	mb->Position3f(Vec3(position.m_X, position.m_Y, 0.0f));
+	Vec2 distance = end - start;
+	Vec2 forward = distance.GetNormalised();
 
-	mb->TexCoord2f(Vec2(1.0f, 0.0f));
-	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y, 0.0f));
+	forward.SetLength(thickness / 2.0f);
+	Vec2 left = forward.GetRotated90Degrees();
 
-	mb->TexCoord2f(Vec2(1.0f, 1.0f));
-	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y + meshDim.m_Y, 0.0f));
+	Vec2 endLeft = end + forward + left;
+	Vec2 endRight = end + forward - left;
+	Vec2 startLeft = start - forward + left;
+	Vec2 startRight = start - forward - left;
 
-	mb->TexCoord2f(Vec2(0.0f, 1.0f));
-	mb->Position3f(Vec3(position.m_X, position.m_Y + meshDim.m_Y, 0.0f));
+	mb->Color3f(color);
+	mb->TexCoord2f(Vec2::ZERO_ZERO);
+	mb->Position3f(Vec3(startLeft.m_X, startLeft.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2::ONE_ZERO);
+	mb->Position3f(Vec3(endLeft.m_X, endLeft.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2::ONE_ONE);
+	mb->Position3f(Vec3(endRight.m_X, endRight.m_Y, 0.0f));
+
+	mb->TexCoord2f(Vec2::ZERO_ONE);
+	mb->Position3f(Vec3(startRight.m_X, startRight.m_Y, 0.0f));
 	
 	Mesh* mesh = mb->CreateMesh<VertexPCU>();
-
-	Mat4 model = Mat4::translation(Vec3(0.0f, 0.0f, 0.0f));
-
-	texture->Bind(TEXTURESLOT::SLOT1);
-
-	g_Shader->SetUniform1i("u_Texture", 1);
-	g_Shader->SetUniformMat4f("u_Model", model);
 
 	mesh->Begin(GL_TRIANGLES);
 	DrawMesh(mesh);
@@ -357,34 +376,150 @@ void Renderer::DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const st
 	delete mb;
 }
 
-//------------------------------------------------------------------------------------------------------
-// Drawing a FramBuffer
-
-void Renderer::DrawFullScreenQuad(const Vec2& position, Vec2 meshDim)
+void Renderer::DrawArrow(Vec2& start, Vec2& end, float thickness, const Vec4& color)
 {
-	MeshBuilder* mb = new MeshBuilder();
+	MeshBuilder* mb1 = new MeshBuilder();
 
-	mb->Color3f(Vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	mb->TexCoord2f(Vec2(0.0f, 0.0f));
-	mb->Position3f(Vec3(position.m_X, position.m_Y, 0.0f));
+	Vec2 distance = end - start;
+	Vec2 forward = distance.GetNormalised();
 
-	mb->TexCoord2f(Vec2(1.0f, 0.0f));
-	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y, 0.0f));
+	forward.SetLength(thickness / 2.0f);
+	Vec2 left = forward.GetRotated90Degrees();
 
-	mb->TexCoord2f(Vec2(1.0f, 1.0f));
-	mb->Position3f(Vec3(position.m_X + meshDim.m_X, position.m_Y + meshDim.m_Y, 0.0f));
+	Vec2 endLeft = end - forward + left;
+	Vec2 endRight = end - forward - left;
+	Vec2 startLeft = start - forward + left;
+	Vec2 startRight = start - forward - left;
 
-	mb->TexCoord2f(Vec2(0.0f, 1.0f));
-	mb->Position3f(Vec3(position.m_X, position.m_Y + meshDim.m_Y, 0.0f));
+	mb1->Color3f(color);
+	mb1->TexCoord2f(Vec2::ZERO_ZERO);
+	mb1->Position3f(Vec3(startLeft.m_X, startLeft.m_Y, 0.0f));
+
+	mb1->TexCoord2f(Vec2::ONE_ZERO);
+	mb1->Position3f(Vec3(endLeft.m_X, endLeft.m_Y, 0.0f));
+
+	mb1->TexCoord2f(Vec2::ONE_ONE);
+	mb1->Position3f(Vec3(endRight.m_X, endRight.m_Y, 0.0f));
+
+	mb1->TexCoord2f(Vec2::ZERO_ONE);
+	mb1->Position3f(Vec3(startRight.m_X, startRight.m_Y, 0.0f));
 	
-	Mesh* mesh = mb->CreateMesh<VertexPCU>();
+	Mesh* mesh1 = mb1->CreateMesh<VertexPCU>();
 
-	mesh->Begin(GL_TRIANGLES);
-	DrawMesh(mesh);
-	mesh->End();
+	mesh1->Begin(GL_TRIANGLES);
+	DrawMesh(mesh1);
+	mesh1->End();
 
-	delete mesh;
-	delete mb;
+	delete mesh1;
+	delete mb1;
+
+	MeshBuilder* mb2 = new MeshBuilder();
+	
+	float Orientation = ( end - start ).GetAngleDegrees();
+	Vec2 rightVert = Vec2::MakeFromPolarDegrees( Orientation - 25.f , 3 * thickness );
+	Vec2 leftVert = Vec2::MakeFromPolarDegrees( Orientation + 25.f , 3 * thickness );
+
+	Vec2 top = end - forward;
+	Vec2 bottomLeft = end - leftVert;
+	Vec2 bottomRight = end - rightVert;
+
+	mb2->Color3f(color);
+	mb2->TexCoord2f(Vec2::ZERO_ZERO);
+	mb2->Position3f(Vec3(top.m_X, top.m_Y, 0.0f));
+
+	mb2->TexCoord2f(Vec2::ONE_ZERO);
+	mb2->Position3f(Vec3(bottomLeft.m_X, bottomLeft.m_Y, 0.0f));
+
+	mb2->TexCoord2f(Vec2::HALF_ONE);
+	mb2->Position3f(Vec3(bottomRight.m_X, bottomRight.m_Y, 0.0f));
+
+	Mesh* mesh2 = mb2->CreateMesh<VertexPCU>();
+
+	mesh2->Begin(GL_TRIANGLES);
+	DrawMesh(mesh2);
+	mesh2->End();
+
+	delete mesh2;
+	delete mb2;
+}
+
+void Renderer::DrawDisc(const Vec2& center, const float& radius, const Vec4& color)
+{
+	for(int i = 0; i < NUM_OF_DISC_VERTICES; i++)
+	{
+		MeshBuilder* mb = new MeshBuilder();
+	    
+	    mb->Color3f(color);
+	    mb->TexCoord2f(Vec2(0.0f, 0.0f));
+	    mb->Position3f(Vec3(center.m_X, center.m_Y, 0.0f));
+
+		float startDeg, endDeg;
+		float angle = 360.0f / NUM_OF_DISC_VERTICES;
+		Vec2 start, end;
+
+		startDeg = angle * static_cast<float>(i);
+		endDeg = angle * static_cast<float>(i + 1);
+
+		start = Vec2(center.m_X + cosf(toRadians(startDeg)) * radius, center.m_Y + sinf(toRadians(startDeg)) * radius);
+		end = Vec2(center.m_X + cosf(toRadians(endDeg)) * radius, center.m_Y + sinf(toRadians(endDeg)) * radius);
+
+	    mb->TexCoord2f(Vec2(1.0f, 0.0f));
+	    mb->Position3f(Vec3(start.m_X, start.m_Y, 0.0f));
+	    
+	    mb->TexCoord2f(Vec2(0.5f, 1.0f));
+	    mb->Position3f(Vec3(end.m_X, end.m_Y, 0.0f));
+	    
+	    Mesh* mesh = mb->CreateMesh<VertexPCU>();
+	    mesh->m_Indices = 3;
+	    
+	    mesh->Begin(GL_TRIANGLES);
+	    DrawMesh(mesh);
+	    mesh->End();
+	    
+	    delete mesh;
+	    delete mb;
+	}
+}
+
+void Renderer::DrawRing(const Vec2& center, const float& radius, const Vec4& color)
+{
+	for(int i = 0; i < NUM_OF_DISC_VERTICES; i++)
+	{
+		MeshBuilder* mb = new MeshBuilder();
+	    
+	    mb->Color3f(color);
+
+		float startDeg, endDeg;
+		float angle = 360.0f / NUM_OF_DISC_VERTICES;
+		Vec2 start, end;
+
+		startDeg = angle * static_cast<float>(i);
+		endDeg = angle * static_cast<float>(i + 1);
+
+		start = Vec2(cosf(toRadians(startDeg)) * radius, sinf(toRadians(startDeg)) * radius);
+		end = Vec2(cosf(toRadians(endDeg)) * radius, sinf(toRadians(endDeg)) * radius);
+
+	    mb->TexCoord2f(Vec2(0.0f, 0.0f));
+	    mb->Position3f(Vec3(start.m_X, start.m_Y, 0.0f));
+
+	    mb->TexCoord2f(Vec2(1.0f, 0.0f));
+	    mb->Position3f(Vec3(end.m_X, end.m_Y, 0.0f));
+		
+	    mb->TexCoord2f(Vec2(1.0f, 1.0f));
+	    mb->Position3f(Vec3(end.m_X - (RING_THICKNESS * cosf(toRadians(endDeg))), end.m_Y - (RING_THICKNESS * sinf(toRadians(endDeg))), 0.0f));
+
+		mb->TexCoord2f(Vec2(0.0f, 1.0f));
+	    mb->Position3f(Vec3(start.m_X - (RING_THICKNESS * cosf(toRadians(startDeg))), start.m_Y - (RING_THICKNESS * sinf(toRadians(startDeg))), 0.0f));
+	    
+	    Mesh* mesh = mb->CreateMesh<VertexPCU>();
+	    
+	    mesh->Begin(GL_TRIANGLES);
+	    DrawMesh(mesh);
+	    mesh->End();
+	    
+	    delete mesh;
+	    delete mb;
+	}
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -393,7 +528,91 @@ DrawMesh() function to help minimize the point of error*/
 
 void Renderer::DrawMesh(Mesh* mesh)
 {
-	glDrawElements(mesh->m_DrawType, 6, GL_UNSIGNED_INT, nullptr);
+	if(mesh->m_Indices == 6)
+	{
+		glDrawElements(mesh->m_DrawType, mesh->m_Indices, GL_UNSIGNED_INT, nullptr);
+	}
+	else
+	{
+		glDrawArrays(mesh->m_DrawType, 0, mesh->m_Indices);
+	}
+}
+
+Texture* Renderer::GetDefaultTexture() const
+{
+	return m_DefaultTexture;
+}
+
+void Renderer::CreateTexture(const std::string& texturePath)
+{
+	Texture* texture = new Texture(texturePath);
+
+	stbi_set_flip_vertically_on_load(1);
+	texture->m_LocalBuffer = stbi_load(texturePath.c_str(), &texture->m_Width, &texture->m_Height, &texture->m_Channels, 0);
+
+	GLenum internalFormat = 0;
+	GLenum dataFormat = 0;
+
+	if (texture->m_Channels == 4)
+	{
+		internalFormat = GL_RGBA8;
+		dataFormat = GL_RGBA;
+	}
+	else if (texture->m_Channels == 3)
+	{
+		internalFormat = GL_RGB8;
+		dataFormat = GL_RGB;
+	}
+
+	glGenTextures(1, &texture->m_RendererID);
+	glBindTexture(GL_TEXTURE_2D, texture->m_RendererID);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, texture->m_Width, texture->m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, texture->m_LocalBuffer);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	if (texture->m_LocalBuffer)
+	{
+		stbi_image_free(texture->m_LocalBuffer);
+	}
+
+	m_LoadedTextures[texturePath] = texture;
+
+	texture = nullptr;
+}
+
+Texture* Renderer::CreateTextureFromColor(const Vec4& color)
+{
+	Texture* texture = new Texture();
+
+	GLenum internalFormat = GL_RGBA8;
+	GLenum dataFormat = GL_RGBA;
+
+	texture->m_Width = 1;
+	texture->m_Height = 1;
+	texture->m_Channels = 4;
+	texture->m_LocalBuffer = (unsigned char*)&color.m_X;
+
+	glGenTextures(1, &texture->m_RendererID);
+	glBindTexture(GL_TEXTURE_2D, texture->m_RendererID);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, texture->m_Width, texture->m_Height, 0, dataFormat, GL_FLOAT, texture->m_LocalBuffer);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return texture;
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -401,14 +620,18 @@ void Renderer::DrawMesh(Mesh* mesh)
 
 void Renderer::CopyFrameBuffer(FrameBuffer* current, FrameBuffer* next)
 {
-	glBindTexture(GL_TEXTURE_2D, current->GetColorAttachmentID());
-	glBindTexture(GL_TEXTURE_2D, next->GetColorAttachmentID());
+	Vec2 dims = current->m_Dims;
+
+	if(next)
+	{
+		dims = next->m_Dims;
+	}
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, current->GetFrameBufferID());
 
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, next->GetFrameBufferID());
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, (next ? next->GetFrameBufferID() : NULL));
 
-	glBlitFramebuffer(0, 0, 1024, 1024, 0, 0, 1024, 1024, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	glBlitFramebuffer(0, 0, (GLint)current->m_Dims.m_X, (GLint)current->m_Dims.m_Y, 0, 0, (GLint)dims.m_X, (GLint)dims.m_Y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);

@@ -4,7 +4,8 @@
 
 #include <iostream>
 
-FrameBuffer::FrameBuffer()
+FrameBuffer::FrameBuffer(const Vec2 dimensions)
+	: m_Dims(dimensions)
 {
 	Initialize();
 }
@@ -30,7 +31,7 @@ void FrameBuffer::Initialize()
 
 	glGenTextures(1, &m_ColorAttachment);
 	glBindTexture(GL_TEXTURE_2D, m_ColorAttachment);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 1024, 1024, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, (GLsizei)m_Dims.m_X, (GLsizei)m_Dims.m_Y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

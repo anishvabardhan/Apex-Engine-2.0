@@ -9,6 +9,7 @@ public:
 	Vec2 m_Velocity;
 	Vec2 m_Center;
 	float m_Radius;
+	bool m_HasLaunched = false;
 
 	Ball();
 	~Ball();
@@ -17,7 +18,6 @@ public:
 	virtual void Render() override;
 
 	void Translate(const Vec2& translate);
-	bool IsColliding(const Vec2& otherEntity);
 
 	static void CreateInstance();
 	static Ball* GetInstance();

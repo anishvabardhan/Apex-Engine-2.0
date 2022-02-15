@@ -1,0 +1,9 @@
+<ShaderDefinitions>
+	
+	<program src = "../../Data/Shaders/Basic.shader"/>
+	
+	<blend>
+		<alpha src = "src_alpha" dst = "one_minus_src_alpha" op = "add"/>
+	</blend>
+	
+</ShaderDefinitions>

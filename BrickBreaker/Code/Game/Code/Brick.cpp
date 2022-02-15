@@ -3,6 +3,7 @@
 #include "Engine/Graphics/Renderer.h"
 #include "Engine/Core/Color.h"
 #include "Ball.h"
+#include "Engine/Maths/MathUtils.h"
 
 Brick::Brick()
 {
@@ -26,6 +27,14 @@ Brick::Brick(const Vec2& position)
 	m_Position = position;
 	m_Dims = Vec2(124.0f, 48.0f);
 	m_Color = Color::WHITE;
+
+	for(int i = 0; i < NUM_OF_ROWS; i++)
+	{
+		for(int j = 0; j < NUM_OF_COLS; j++)
+		{
+			m_IsDestroyed[i][j] = false;
+		}
+	}
 }
 
 Brick::~Brick()
@@ -49,22 +58,20 @@ void Brick::Update(float deltaseconds)
 	 
 	 		m_Position = Vec2(x, y);
 
-	        if(!m_IsDestroyed[i][j])
-	        {
-	        	if((Ball::GetInstance()->m_Position.m_Y < m_Position.m_Y + m_Dims.m_Y && Ball::GetInstance()->m_Position.m_Y + Ball::GetInstance()->m_Dims.m_Y > m_Position.m_Y) && (Ball::GetInstance()->m_Position.m_X > m_Position.m_X && Ball::GetInstance()->m_Position.m_X + Ball::GetInstance()->m_Dims.m_X < m_Position.m_X + m_Dims.m_X))
-	            {
-	            	Ball::GetInstance()->m_Velocity.m_Y *= -1;
-	            	m_IsDestroyed[i][j] = true;
-	            }
-	        }
+			AABB2 bounds = AABB2(m_Position, m_Position + m_Dims);
 
-	        if(!m_IsDestroyed[i][j])
+	        if(Ball::GetInstance()->m_HasLaunched && !m_IsDestroyed[i][j])
 	        {
-	        	if((Ball::GetInstance()->m_Position.m_X < m_Position.m_X + m_Dims.m_X && Ball::GetInstance()->m_Position.m_X + Ball::GetInstance()->m_Dims.m_X > m_Position.m_X) && (Ball::GetInstance()->m_Position.m_Y > m_Position.m_Y && Ball::GetInstance()->m_Position.m_Y + Ball::GetInstance()->m_Dims.m_Y < m_Position.m_Y + m_Dims.m_Y))
-	            {
-	                Ball::GetInstance()->m_Velocity.m_X *= -1;
-	                m_IsDestroyed[i][j] = true;
-	            }
+				if(Disc_AABB2Collision(Ball::GetInstance()->m_Center, Ball::GetInstance()->m_Radius, bounds))
+				{
+					m_IsDestroyed[i][j] = true;
+
+					Vec2 refPoint = bounds.GetNearestPoint( Ball::GetInstance()->m_Center );
+				
+		            Vec2 normal = ( Ball::GetInstance()->m_Center - refPoint ).GetNormalised();
+
+		            Ball::GetInstance()->m_Velocity = Ball::GetInstance()->m_Velocity.Reflected( normal );
+				}
 	        }
 	 	}
 	}
@@ -81,21 +88,24 @@ void Brick::Render()
 		 
 		 for(int j = 0; j < NUM_OF_COLS; j++)
 		 {
-			if((i + j) % 2 == 0)
-			{
-				m_Color = Color::YELLOW;
-			}
-			else
-			{
-				m_Color = Color::RED;
-			}
+			 if((i + j) % 2 == 0)
+			 {
+			 	m_Color = Color::YELLOW;
+			 }
+			 else
+			 {
+			 	m_Color = Color::RED;
+			 }
 		 	 x = BRICK_MAP_SPACE.m_Mins.m_X + (m_Dims.m_X) * j;
 		 	 
 		 	 m_Position = Vec2(x, y);
-	 	 
+		     AABB2 aabb2(m_Position, m_Position + m_Dims);
+
+			 Renderer::GetInstance()->SetModelTranslation();
+
 	 	     if(!m_IsDestroyed[i][j])
 	 	     {
-	 	     	Renderer::GetInstance()->DrawQuad(m_Position, m_Dims, m_Color, APEX_DEFAULT_TEXTURE);
+	 	     	Renderer::GetInstance()->DrawAABB2(aabb2, m_Color);
 	 	     }
 		 }
 	}

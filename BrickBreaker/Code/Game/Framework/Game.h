@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Core/GameCommon.h"
+#include "Engine/Core/EngineCommon.h"
 #include "Game/Code/Brick.h"
 
 class ShaderDefinition;
@@ -12,7 +12,6 @@ class Game
 {
 	ShaderDefinition* m_ShaderDef = nullptr;
 	FrameBuffer* m_SrcBuffer = nullptr;
-	FrameBuffer* m_DestBuffer = nullptr;
     Paddle* m_Paddle = nullptr;
 	Brick* m_Bricks = nullptr;
 

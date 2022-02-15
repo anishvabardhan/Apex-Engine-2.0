@@ -9,6 +9,7 @@ class IndexBuffer;
 
 struct Mesh
 {
+	int m_Indices = 6;
 	VertexBuffer* m_VBO;
 	VertexBufferLayout* m_Layout;
 	const void* m_Data;

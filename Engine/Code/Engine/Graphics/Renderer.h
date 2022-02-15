@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Texture.h"
 #include "Engine/Window/Window.h"
 #include "Engine/Core/CoreIncludes.h"
 #include "Engine/Graphics/GLFunctions.h"
@@ -71,26 +72,36 @@ class Renderer
 	std::map<ShaderDefinition*, Shader*> m_LoadedShaders;
 	std::map<XMLElement*, ShaderDefinition*> m_LoadedShaderDefinitions;
 	std::map<std::string, Font*> m_LoadedFonts;
+	Texture* m_DefaultTexture;
 public:
 	Renderer();
     ~Renderer();
+
+	// TODO Resort functions
 
 	void StartUp();
 	void InitRender();
 	void ShutDown();
 
+	// INSTANCE CREATION METHODS
+	static void CreateInstance();
+	static Renderer* GetInstance();
+	static void DestroyInstance();
+
 	void SwappingBuffers();
+
 
 	bool MakeContextCurrent(void* hdc, void* hglrc);
 	void* CreateOldRenderContext(void* hdc);
 	void* CreateRealRenderContext(void* hdc, int major, int minor);
 
-	void Drawtext(const Vec2& position, const Vec4& color, const std::string& asciiText, float quadHeight, Font* font);
-	void DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color);
-	void DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const std::string& path);
+	void BindFont(const Font* font, int textureSlot);
+	void BindTexture(const Texture* texture, int textureSlot = 0);
 
-	void DrawFullScreenQuad(const Vec2& position = Vec2(0.0f, 0.0f), Vec2 meshDim = Vec2(1024.0f, 1024.0f));
-	void DrawMesh(Mesh* mesh);
+	// MVP UNIFORMS UPDATION METHODS
+	void SetCameraUniform(const Mat4& camera);
+	void SetModelTranslation(const Mat4& transform = Mat4::Identity());
+
 	void CopyFrameBuffer(FrameBuffer* current, FrameBuffer* next);
 	void Clear() const;
 	void ClearColor() const;
@@ -100,10 +111,20 @@ public:
 	Shader* GetOrCreateShader(ShaderDefinition* shaderDef);
 	ShaderDefinition* GetOrCreateShaderDef(XMLElement* element);
 
-	static void CreateInstance();
-	static Renderer* GetInstance();
-	static void DestroyInstance();
-
 	static void EnableBlend(enum APEX_BLEND_FACTOR src, enum APEX_BLEND_FACTOR dest, enum APEX_BLEND_OP mode = APEX_BLEND_OP::APEX_FUNC_ADD);
 	static void DisableBlend();
+
+	// DRAW CALL METHODS
+	void Drawtext(const Vec4& color, const std::string& asciiText, float quadHeight, Font* font);
+	void DrawAABB2(const AABB2& aabb2, const Vec4& color);
+	void DrawLine(Vec2& start, Vec2& end, float thickness, const Vec4& color);
+	void DrawArrow(Vec2& start, Vec2& end, float thickness, const Vec4& color);
+	void DrawDisc(const Vec2& center, const float& radius, const Vec4& color);
+	void DrawRing(const Vec2& center, const float& radius, const Vec4& color);
+	void DrawMesh(Mesh* mesh);
+
+	Texture* GetDefaultTexture() const;
+private:
+	void CreateTexture(const std::string& texturePath);
+	Texture* CreateTextureFromColor(const Vec4& color);
 };

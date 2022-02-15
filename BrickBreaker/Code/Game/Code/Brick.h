@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Engine/Core/GameCommon.h"
 #include "Entity.h"
+#include "GameCommon.h"
 
 class AABB2;
 

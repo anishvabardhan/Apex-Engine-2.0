@@ -10,6 +10,11 @@
 #include "Game/Code/Ball.h"
 #include "Game/Code/Brick.h"
 
+#include <stdio.h>
+
+#include "Engine/Core/Color.h"
+#include "Engine/Maths/MathUtils.h"
+
 // Declaring Engine Systems
 
 extern InputSystem* g_InputSystem;
@@ -19,7 +24,7 @@ extern Window* g_Window;
 //--------------------------------------------------------------------------------------------------
 // Creating a Camera
 
-const Mat4 g_Camera = Mat4::orthographic(APEX_WINDOW_DIMS[0], APEX_WINDOW_DIMS[1], APEX_WINDOW_DIMS[2], APEX_WINDOW_DIMS[3], -2.0f, 2.0f);
+const Mat4 g_Camera = Mat4::Orthographic(APEX_WINDOW_DIMS[0], APEX_WINDOW_DIMS[1], APEX_WINDOW_DIMS[2], APEX_WINDOW_DIMS[3], -2.0f, 2.0f);
 
 //--------------------------------------------------------------------------------------------------
 
@@ -32,12 +37,11 @@ Game::Game()
 	
 	Renderer::GetInstance()->EnableBlend(ParseBlendFac[g_Shader->GetSRC()], ParseBlendFac[g_Shader->GetDST()], ParseBlendOp[g_Shader->GetOP()]);
 
-	m_SrcBuffer = new FrameBuffer();
-	m_DestBuffer = new FrameBuffer();
+	m_SrcBuffer = new FrameBuffer(Vec2(1024.0f, 1024.0f));
 
 	m_Paddle = new Paddle();
-	Ball::CreateInstance();
 	m_Bricks = new Brick();
+	Ball::CreateInstance();
 }
 
 Game::~Game() 
@@ -55,9 +59,6 @@ Game::~Game()
 	
 	delete m_SrcBuffer;
 	m_SrcBuffer = nullptr;
-	
-	delete m_DestBuffer;
-	m_DestBuffer = nullptr;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -73,21 +74,13 @@ void Game::BeginFrame()
 void Game::Update(float deltaseconds)
 {
 	m_Paddle->Update(deltaseconds);
-	Ball::GetInstance()->Update(deltaseconds);
 	m_Bricks->Update(deltaseconds);
+	Ball::GetInstance()->Update(deltaseconds);
+
+	AABB2 aabb2(m_Paddle->m_Position, m_Paddle->m_Position + m_Paddle->m_Dims);
 
 	if(Ball::GetInstance()->m_Velocity.m_Y != 0.0f)
 	{
-		if(Ball::GetInstance()->m_Position.m_X > m_Paddle->m_Position.m_X && Ball::GetInstance()->m_Position.m_X + Ball::GetInstance()->m_Dims.m_X < m_Paddle->m_Position.m_X + m_Paddle->m_Dims.m_X)
-	    {
-	    	if((Ball::GetInstance()->m_Center.m_Y - (m_Paddle->m_Position.m_Y + m_Paddle->m_Dims.m_Y)) < Ball::GetInstance()->m_Radius)
-	        {
-	        	Ball::GetInstance()->m_Velocity.m_Y *= -1;
-
-				Ball::GetInstance()->m_Velocity.m_X = 500.0f * sin((Ball::GetInstance()->m_Position.m_X + (Ball::GetInstance()->m_Dims.m_X * 0.5f)) - (m_Paddle->m_Position.m_X + (m_Paddle->m_Dims.m_X * 0.5f)) / m_Paddle->m_Dims.m_X);
-	        }
-	    }
-		
 		if(Ball::GetInstance()->m_Position.m_Y < 0.0f)
 		{
 			g_Window->AppQuitting();
@@ -107,16 +100,15 @@ void Game::Render()
 
 	g_Shader->Bind();
 
-	g_Shader->SetUniformMat4f("u_Proj", g_Camera);
+	Renderer::GetInstance()->SetCameraUniform(g_Camera);
 
-	Ball::GetInstance()->Render();
 	m_Paddle->Render();
 	m_Bricks->Render();
+	Ball::GetInstance()->Render();
 
 	m_SrcBuffer->UnBind();
 
-	Renderer::GetInstance()->CopyFrameBuffer(m_SrcBuffer, m_DestBuffer);
-	Renderer::GetInstance()->DrawFullScreenQuad();
+	Renderer::GetInstance()->CopyFrameBuffer(m_SrcBuffer, nullptr);
 }
 
 //--------------------------------------------------------------------------------------------------
