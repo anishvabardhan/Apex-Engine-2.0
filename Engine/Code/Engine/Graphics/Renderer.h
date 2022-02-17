@@ -96,7 +96,7 @@ public:
 	void* CreateRealRenderContext(void* hdc, int major, int minor);
 
 	void BindFont(const Font* font, int textureSlot);
-	void BindTexture(const Texture* texture, int textureSlot = 0);
+	void BindTexture(const Texture* texture = nullptr, int textureSlot = 0);
 
 	// MVP UNIFORMS UPDATION METHODS
 	void SetCameraUniform(const Mat4& camera);

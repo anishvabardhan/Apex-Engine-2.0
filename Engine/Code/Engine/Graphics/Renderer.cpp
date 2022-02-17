@@ -206,6 +206,9 @@ void Renderer::BindFont(const Font* font, int textureSlot)
 
 void Renderer::BindTexture(const Texture* texture, int textureSlot)
 {
+	if(!texture)
+		texture = m_DefaultTexture;
+
 	texture->Bind(m_TextureSlot[textureSlot]);
 
 	g_Shader->SetUniform1i("u_Texture", textureSlot);
@@ -214,7 +217,6 @@ void Renderer::BindTexture(const Texture* texture, int textureSlot)
 void Renderer::SetCameraUniform(const Mat4& camera)
 {
 	g_Shader->SetUniformMat4f("u_Proj", camera);
-	BindTexture(m_DefaultTexture);
 }
 
 void Renderer::SetModelTranslation(const Mat4& transform)

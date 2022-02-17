@@ -101,6 +101,7 @@ void Game::Render()
 	g_Shader->Bind();
 
 	Renderer::GetInstance()->SetCameraUniform(g_Camera);
+	//Renderer::GetInstance()->BindTexture();
 
 	m_Paddle->Render();
 	m_Bricks->Render();
