@@ -88,7 +88,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return ::DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-void Window::Init(const std::string& appName, const long clientDims[4])
+void Window::Init(const String& appName, const long clientDims[4])
 {
 	UNUSED(appName);
 

@@ -1,6 +1,7 @@
 #include "App.h"
 
 #include "Game.h"
+#include "Engine/Core/EngineCommon.h"
 #include "Engine/Window/Window.h"
 #include "Engine/Core/Time.h"
 #include "Engine/Graphics/Renderer.h"
@@ -16,8 +17,7 @@ App* g_App = nullptr;
 
 extern Window* g_Window;
 extern InputSystem* g_InputSystem;
-
-const long CLIENT_DIMS[4] = {0, 1024, 0, 1024};
+extern Renderer* g_Renderer;
 
 App::App()
 {
@@ -38,8 +38,8 @@ void App::Startup()
 
 	LogStartup();
 	
-	Renderer::CreateInstance();
-	Renderer::GetInstance()->StartUp();
+	g_Renderer = new Renderer();
+	g_Renderer->StartUp();
 
 	m_Time = new Time(60);
 
@@ -67,6 +67,13 @@ void App::BeginFrame()
 
 void App::Update(float deltaseconds)
 {
+	if(m_IsSlowMo)
+	{
+		deltaseconds *= 0.25f;
+	}
+
+	if(m_IsPaused) {deltaseconds = 0.0f;}
+
 	g_InputSystem->Update(deltaseconds);
 	UpdateFromInput();
 
@@ -89,24 +96,19 @@ void App::EndFrame()
 
 void App::Shutdown()
 {
-	if(m_Game)
-	{
-		delete m_Game;
-	    m_Game = nullptr;
-	}
-	
-	Renderer::GetInstance()->ShutDown();
-	Renderer::DestroyInstance();
+	SAFE_DELETE_POINTER(m_Game)
+
+	g_Renderer->ShutDown();
+	SAFE_DELETE_POINTER(g_Renderer)
 
 	LogShutdown();
 
 	g_Window->Destroy();
-	delete g_Window;
-	g_Window = nullptr;
+	SAFE_DELETE_POINTER(g_Window)
 
 	g_InputSystem->ShutDown();
-	delete g_InputSystem;
-	g_InputSystem = nullptr;
+	SAFE_DELETE_POINTER(g_InputSystem)
+
 }
 
 void App::UpdateFromInput()
@@ -114,6 +116,25 @@ void App::UpdateFromInput()
 	if(g_InputSystem->WasKeyJustPressed(ESCAPE))
 	{
 		g_Window->AppQuitting();
+	}
+
+	if(g_InputSystem->WasKeyJustPressed(Q))
+	{
+		m_Game->m_DebugDraw = !m_Game->m_DebugDraw;
+	}
+
+	if(g_InputSystem->IsHeldDown(S))
+	{
+		m_IsSlowMo = true;
+	}
+	else
+	{
+		m_IsSlowMo = false;
+	}
+
+	if(g_InputSystem->WasKeyJustPressed(P))
+	{
+		m_IsPaused = !m_IsPaused;
 	}
 
 	if(g_InputSystem->WasKeyJustPressed(R))

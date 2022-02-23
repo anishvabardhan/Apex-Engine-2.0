@@ -37,7 +37,7 @@ ShaderDefinition::~ShaderDefinition()
 {
 }
 
-XMLElement* ShaderDefinition::InitializeDef(const std::string& path)
+XMLElement* ShaderDefinition::InitializeDef(const String& path)
 {
 	XMLDocument* doc = new XMLDocument();
 	doc->LoadFile(path.c_str());

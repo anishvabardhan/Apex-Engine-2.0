@@ -2,7 +2,7 @@
 
 #include <stdarg.h>
 
-StringTokenizer::StringTokenizer(const std::string& input, const std::string& delimiter)
+StringTokenizer::StringTokenizer(const String& input, const String& delimiter)
 	: m_Input(input), m_Delimiter(delimiter)
 {
 }
@@ -20,9 +20,9 @@ void StringTokenizer::Tokenize()
 
 	currentIndex = m_Input.find_first_of(m_Delimiter, currentIndex);
 
-	while (prevIndex != std::string::npos && prevIndex < m_Input.size())
+	while (prevIndex != String::npos && prevIndex < m_Input.size())
 	{
-		std::string token = m_Input.substr(prevIndex, currentIndex - prevIndex);
+		String token = m_Input.substr(prevIndex, currentIndex - prevIndex);
 
 		if (prevIndex != 0)
 		{
@@ -47,7 +47,7 @@ void StringTokenizer::Tokenize()
 		}
 		else
 		{
-			token = std::string(m_Input, prevIndex, currentIndex - prevIndex);
+			token = String(m_Input, prevIndex, currentIndex - prevIndex);
 			prevIndex = currentIndex;
 			m_Tokens.push_back(token);
 		}

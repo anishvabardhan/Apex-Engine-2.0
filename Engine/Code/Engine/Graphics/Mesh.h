@@ -10,12 +10,12 @@ class IndexBuffer;
 struct Mesh
 {
 	int m_Indices = 6;
-	VertexBuffer* m_VBO;
-	VertexBufferLayout* m_Layout;
-	const void* m_Data;
+	VertexBuffer* m_VBO = nullptr;
+	VertexBufferLayout* m_Layout = nullptr;
+	const void* m_Data = nullptr;
 	GLenum m_DrawType;
-	VertexArrayObject* m_VAO;
-	IndexBuffer* m_IBO;
+	VertexArrayObject* m_VAO = nullptr;
+	IndexBuffer* m_IBO = nullptr;
 
 	Mesh(const void* data, VertexBufferLayout* layout);
 	~Mesh();

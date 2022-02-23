@@ -3,6 +3,7 @@
 // Engine Hard Coded Values-----------------------------------------------------------------------------------------
 
 constexpr float APEX_WINDOW_DIMS[] = {0.0f, 1024.0f, 0.0f, 1024.0f};
+constexpr long CLIENT_DIMS[] = {0, 1024, 0, 1024};
 constexpr char* APEX_SHADER_XML = "../../Data/Materials/shader.xml";
 constexpr char* APEX_SCREENSHADER_XML = "../../Data/Materials/screenShader.xml";
 constexpr char* APEX_DEFAULT_TEXTURE = "../../Data/Textures/Default.png";

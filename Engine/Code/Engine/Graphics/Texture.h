@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 
+#include "Engine/Core/CoreIncludes.h"
 #include "Engine/Graphics/GLFunctions.h"
 
 enum TEXTURESLOT {
@@ -78,14 +79,14 @@ static std::map<int, TEXTURESLOT> m_TextureSlot = {
 class Texture
 {
 	unsigned int m_RendererID;
-	std::string m_FilePath;
+	String m_FilePath;
 	unsigned char* m_LocalBuffer;
 	int m_Width, m_Height, m_Channels;
 public:
 	friend class Renderer;
 
 	Texture();
-	explicit Texture(const std::string& path);
+	explicit Texture(const String& path);
 	~Texture();
 
 	void Bind(TEXTURESLOT slot) const;

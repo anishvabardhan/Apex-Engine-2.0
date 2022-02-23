@@ -7,8 +7,6 @@ struct VertexBufferLayout;
 
 class VertexArrayObject
 {
-// Member Variables-------------------------------------------------------------------------------------
-
 	unsigned int m_RendererID;
 public:
 	VertexArrayObject();

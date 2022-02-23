@@ -6,17 +6,14 @@
 #include "Engine/Core/Color.h"
 #include "Engine/Core/EngineCommon.h"
 #include "Engine/Input/InputSystem.h"
-#include "Engine/Maths/MathUtils.h"
+#include "Game/Framework/Game.h"
 
 extern InputSystem* g_InputSystem;
+extern Renderer* g_Renderer;
 
-Paddle::Paddle()
-	: m_Accelaration(0.0f), m_Velocity(Vec2(0.0f, 0.0f))
+Paddle::Paddle(Game* owner)
+	: Entity(owner, BB_PADDLE_POSITION, BB_PADDLE_DIMS, Color::WHITE), m_Accelaration(0.0f), m_Velocity(Vec2(0.0f, 0.0f))
 {
-	Entity();
-	m_Position = Vec2(462.0f, 20.0f);
-	m_Dims = Vec2(200.0f, 25.0f);
-	m_Color = Color::WHITE;
 }
 
 Paddle::~Paddle()
@@ -39,27 +36,37 @@ void Paddle::Update(float deltaseconds)
 	{
 		m_Position.m_X = APEX_WINDOW_DIMS[0];
 	}
-
-	AABB2 aabb2(m_Position, m_Position + m_Dims);
-
-	if(Ball::GetInstance()->m_HasLaunched && Disc_AABB2Collision(Ball::GetInstance()->m_Center, Ball::GetInstance()->m_Radius, aabb2))
-	{
-		Vec2 refPoint = aabb2.GetNearestPoint( Ball::GetInstance()->m_Center );
-		Vec2 normal = ( Ball::GetInstance()->m_Center - refPoint ).GetNormalised();
-
-		float deviation = RangeMap(refPoint.m_X, m_Position.m_X, m_Position.m_X + m_Dims.m_X, -BB_PADDLE_DEVIATION_RANGE, BB_PADDLE_DEVIATION_RANGE);
-
-		Ball::GetInstance()->m_Velocity = Ball::GetInstance()->m_Velocity.Reflected( normal );
-		
-		float angleDeviated = Ball::GetInstance()->m_Velocity.GetAngleDegrees() - deviation;
-
-		Ball::GetInstance()->m_Velocity = Vec2::MakeFromPolarDegrees(angleDeviated, Ball::GetInstance()->m_Velocity.GetLength());
-	}
 }
 
 void Paddle::Render()
 {
 	AABB2 aabb2(m_Position, m_Position + m_Dims);
-	Renderer::GetInstance()->SetModelTranslation();
-	Renderer::GetInstance()->DrawAABB2(aabb2, m_Color);
+	g_Renderer->SetModelTranslation();
+	g_Renderer->DrawAABB2(aabb2, m_Color);
+
+	if(m_Owner->m_DebugDraw)
+	{
+		 DebugRender();
+	}
+}
+
+void Paddle::DebugRender()
+{
+    AABB2 aabb2(m_Position, m_Position + m_Dims);
+    g_Renderer->SetModelTranslation();
+    g_Renderer->DrawHollowAABB2(aabb2, 5.0f, Color::MAGENTA);
+
+	if(m_Owner->m_IsPaddleBallCollision)
+	{
+		Vec2 refPoint = aabb2.GetNearestPoint( m_Owner->m_Ball.m_Position );
+		Vec2 pos = m_Owner->m_Ball.m_Position;
+		Vec2 normal = ( pos - refPoint ).GetNormalised();
+		
+		Vec2 start = Vec2::ZERO_ZERO;
+		Vec2 end = normal * 100.0f;
+		g_Renderer->SetModelTranslation(Mat4::Translation(Vec3(refPoint.m_X, refPoint.m_Y, 0.0f)));
+		g_Renderer->DrawArrow(start, end, 3.0f, Color::YELLOW);
+
+		m_Owner->m_IsPaddleBallCollision = false;
+	}
 }

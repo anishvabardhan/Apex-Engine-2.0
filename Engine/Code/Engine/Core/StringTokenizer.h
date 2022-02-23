@@ -1,18 +1,17 @@
 #pragma once
 
-#include <string>
-#include <vector>
+#include "CoreIncludes.h"
 
 class StringTokenizer
 {
-	std::string m_Input;
-	std::string m_Delimiter;
-	std::vector<std::string> m_Tokens;
+	String m_Input;
+	String m_Delimiter;
+	Strings m_Tokens;
 public:
-	StringTokenizer(const std::string& input, const std::string& delimiter = std::string());
+	StringTokenizer(const String& input, const String& delimiter = String());
 	~StringTokenizer();
 
 	void Tokenize();
 
-	inline std::vector<std::string> GetTokens() const { return m_Tokens; }
+	inline Strings GetTokens() const { return m_Tokens; }
 };

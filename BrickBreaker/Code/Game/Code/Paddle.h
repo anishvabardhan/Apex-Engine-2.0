@@ -5,13 +5,13 @@
 class Paddle : public Entity
 {
 public:
-	Vec2 m_Velocity;
     float m_Accelaration;
+	Vec2 m_Velocity;
 
-	Paddle();
+	explicit Paddle(Game* owner);
 	~Paddle();
 
 	virtual void Update(float deltaseconds) override;
 	virtual void Render() override;
+	virtual void DebugRender() override;
 };
-

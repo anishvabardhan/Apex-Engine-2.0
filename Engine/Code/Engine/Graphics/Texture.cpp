@@ -7,7 +7,7 @@ Texture::Texture()
 {
 }
 
-Texture::Texture(const std::string& path)
+Texture::Texture(const String& path)
 	: m_RendererID(NULL), m_FilePath(path), m_Width(0), m_Height(0), m_LocalBuffer(nullptr)
 {
 	

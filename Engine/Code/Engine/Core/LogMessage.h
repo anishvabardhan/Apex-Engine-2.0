@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine/Core/CoreIncludes.h"
-#include <sstream>
 
 //----------------------------------------------------------------------------------------------------------------------------
 // Defining the Logging Checks of all severities
@@ -29,12 +28,12 @@ enum SEVERITY {
 unsigned int GetMessageBoxIconForSeverity(SEVERITY severity);
 bool DebuggerPresent();
 
-std::string Stringf(const char* messageText, ...);
+String Stringf(const char* messageText, ...);
 void Debugf(const char* messageText, ...);
-   void LogToIDE(const std::string& msg);
+void LogToIDE(const String& msg);
 
-bool MessageOK(const std::string& messageText, const std::string& severityName, SEVERITY severity);
-bool MessageYesNo(const std::string& messageText, const std::string& severityName, SEVERITY severity);
+bool MessageOK(const String& messageText, const String& severityName, SEVERITY severity);
+bool MessageYesNo(const String& messageText, const String& severityName, SEVERITY severity);
 
 //----------------------------------------------------------------------------------------------------------------------------
 // global variables
@@ -46,22 +45,13 @@ static const char* SeverityNames[] = { "INFO","WARNING", "FATAL" };
 
 class LogMessage : public std::ostringstream 
 {
-	//------------------------------------------------------------------------------------------------------------------------
-	// Member Variables
-
 	SEVERITY m_Severity;
 	const char* m_FileName;
 	int m_Line;
 public:				
-	//------------------------------------------------------------------------------------------------------------------------
-	//Construtor/Destructors
-
 	LogMessage(SEVERITY severity, const char* fileName = nullptr, int line = 0);
 	~LogMessage();
 protected:
-	//------------------------------------------------------------------------------------------------------------------------
-	// Methods
-
     void Log(SEVERITY severity);
 };
 
@@ -71,9 +61,6 @@ protected:
 class LogMessageFatal : public LogMessage 
 {
 public:
-	//------------------------------------------------------------------------------------------------------------------------
-	//Construtor/Destructors
-
 	LogMessageFatal(const char* fileName, int line);
 	~LogMessageFatal();
 };

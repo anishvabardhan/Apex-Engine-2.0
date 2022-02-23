@@ -18,10 +18,10 @@ void LogStartup()
 {
 	Logger::CreateInstance();
 
-	std::string logFileName = "Log/";
+	String logFileName = "Log/";
 	logFileName.append("Log");
 
-	std::string defaultLogFile = logFileName.append(".txt");
+	String defaultLogFile = logFileName.append(".txt");
 
 	if (!CreateDirectoryA("Log/", NULL))
 	{
@@ -52,7 +52,7 @@ void LogPrint(const char* format, ...)
 	s_Logger->AddLogMessage(text);
 }
 
-void LogFLush()
+void LogFlush()
 {
 	s_Logger->Flush();
 }
@@ -74,14 +74,14 @@ void Logger::RemoveSink(LogCallback cb)
 	}
 }
 
-void Logger::AddLogMessage(const std::string& msg)
+void Logger::AddLogMessage(const String& msg)
 {
 	m_LogQueue.push(msg);
 }
 
 void Logger::Flush()
 {
-	std::string msg;
+	String msg;
 
 	while (!m_LogQueue.empty())
 	{
@@ -95,7 +95,7 @@ void Logger::Flush()
 	}
 }
 
-void Logger::LogToFile(const std::string& msg)
+void Logger::LogToFile(const String& msg)
 {
 	fprintf(s_LogFile, "%s", msg.c_str());
 }

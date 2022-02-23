@@ -5,7 +5,6 @@
 #include "Engine/Maths/Mat4.h"
 #include "Engine/Maths/Random.h"
 #include "Engine/Maths/Disc2D.h"
-#include "LogMessage.h"
 
 #include <string>
 #include <vector>
@@ -15,6 +14,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <cstdint>
 
 namespace tinyxml2 
 { 
@@ -24,3 +24,5 @@ namespace tinyxml2
 
 using XMLElement = tinyxml2::XMLElement;
 using XMLDocument = tinyxml2::XMLDocument;
+using String = std::string;
+using Strings = std::vector<std::string>;

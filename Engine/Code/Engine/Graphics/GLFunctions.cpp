@@ -117,17 +117,11 @@ bool GLCheckError(const char* fileName, int line)
 	return false;
 }
 
-//-----------------------------------------------------------------------------------------------
-// Returns false 
-//
 bool GLFailed()
 {
 	return false;
 }
 
-//-----------------------------------------------------------------------------------------------
-// Returns true
-//
 bool GLSucceeded()
 {
 	return !GLFailed();

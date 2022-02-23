@@ -10,15 +10,14 @@
 #include "ShaderDefinition.h"
 #include "Engine/Core/Color.h"
 #include "Engine/Core/EngineCommon.h"
+#include "Engine/Core/LogMessage.h"
 #include "External/stb_image.h"
 
-static Renderer* m_Renderer = nullptr;
+Renderer* g_Renderer = nullptr;
 
 void* g_GLLibrary = nullptr;
 void* m_OurWindowHandleToDeviceContext = nullptr;
 void* m_OurWindowHandleToRenderContext = nullptr;
-
-extern Shader* g_Shader;
 
 //---------------------------------------------------------------------------------------------------------
 // Defining the Constructors/Destructors
@@ -55,31 +54,35 @@ void Renderer::StartUp()
 
 	m_OurWindowHandleToRenderContext = realContext;
 
+	m_DefaultShaderDef = GetOrCreateShaderDef(ShaderDefinition::InitializeDef(APEX_SHADER_XML));
+	m_DefaultShader = GetOrCreateShader(m_DefaultShaderDef);
 	m_DefaultTexture = CreateTextureFromColor(Color::WHITE);
-}
-
-void Renderer::InitRender()
-{
-
-	//--------------------------------------------------------------------------------------------------
-	//Setup OpenGL3 Viewport
-	
-	//glViewport(0, 0, 1024, 1024);
-
-	//--------------------------------------------------------------------------------------------------
-	//Clear Buffers to Preset Values
-
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	
-	//--------------------------------------------------------------------------------------------------
-	//Specify Clear Values for the Color Buffers
-
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	
 }
 
 void Renderer::ShutDown()
 {
+	SAFE_DELETE_POINTER(m_DefaultTexture);
+	
+	for(auto font : m_LoadedFonts)
+	{
+		SAFE_DELETE_POINTER(font.second)
+	}
+	
+	for(auto texture : m_LoadedTextures)
+	{
+		SAFE_DELETE_POINTER(texture.second)
+	}
+	
+	for(auto shader : m_LoadedShaders)
+	{
+		SAFE_DELETE_POINTER(shader.second)
+	}
+
+	for(auto shaderDef : m_LoadedShaderDefinitions)
+	{
+		SAFE_DELETE_POINTER(shaderDef.second)
+	}
+
 	wglMakeCurrent(reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext), NULL);
 	wglDeleteContext(reinterpret_cast<HGLRC>(m_OurWindowHandleToRenderContext));
 	if (!ReleaseDC(reinterpret_cast<HWND>(Window::GetInstance()->GetHandle()), reinterpret_cast<HDC>(m_OurWindowHandleToDeviceContext)))
@@ -197,54 +200,47 @@ void* Renderer::CreateRealRenderContext(void* hdc, int major, int minor)
 	return context;
 }
 
+void Renderer::BindDefaultShader()
+{
+	m_DefaultShader->Bind();
+}
+
 void Renderer::BindFont(const Font* font, int textureSlot)
 {
 	font->GetSpriteSheet().GetSpriteSheetTexture().Bind(m_TextureSlot[textureSlot]);
 
-	g_Shader->SetUniform1i("u_Texture", textureSlot);
+	m_DefaultShader->SetUniform1i("u_Texture", textureSlot);
 }
 
 void Renderer::BindTexture(const Texture* texture, int textureSlot)
 {
 	if(!texture)
-		texture = m_DefaultTexture;
+	{
+		m_DefaultTexture->Bind(m_TextureSlot[textureSlot]);
+		m_DefaultShader->SetUniform1i("u_Texture", textureSlot);
+
+		return;
+	}
 
 	texture->Bind(m_TextureSlot[textureSlot]);
+	m_DefaultShader->SetUniform1i("u_Texture", textureSlot);
+}
 
-	g_Shader->SetUniform1i("u_Texture", textureSlot);
+void Renderer::UnBindDefaultShader()
+{
+	m_DefaultShader->UnBind();
 }
 
 void Renderer::SetCameraUniform(const Mat4& camera)
 {
-	g_Shader->SetUniformMat4f("u_Proj", camera);
+	m_DefaultShader->SetUniformMat4f("u_Proj", camera);
 }
 
 void Renderer::SetModelTranslation(const Mat4& transform)
 {
-	g_Shader->SetUniformMat4f("u_Model", transform);
+	m_DefaultShader->SetUniformMat4f("u_Model", transform);
 }
 
-//---------------------------------------------------------------------------------------------------------
-
-void Renderer::CreateInstance()
-{
-	m_Renderer = new Renderer();
-}
-
-//------------------------------------------------------------------------------------------------------
-
-Renderer* Renderer::GetInstance()
-{
-	return m_Renderer;
-}
-
-//------------------------------------------------------------------------------------------------------
-
-void Renderer::DestroyInstance()
-{
-	delete m_Renderer;
-	m_Renderer = nullptr;
-}
 
 //------------------------------------------------------------------------------------------------------
 // Enabling Blend functionality
@@ -270,22 +266,22 @@ void Renderer::DisableBlend()
 //------------------------------------------------------------------------------------------------------
 // Drawing Text on the screen
 
-void Renderer::Drawtext(const Vec4& color, const std::string& asciiText, float quadHeight, Font* font)
+void Renderer::Drawtext(const Vec2& position, const Vec4& color, const String& asciiText, float quadHeight, Font* font)
 {
 	float quadWidth = quadHeight;
 
 	AABB2 quadPos;
 	AABB2 uvPos;
 
-	quadPos.m_Mins.m_Y = 0.0f;
-	quadPos.m_Maxs.m_Y = quadHeight;
+	quadPos.m_Mins.m_Y = 0.0f + position.m_Y;
+	quadPos.m_Maxs.m_Y = quadHeight + position.m_Y;
 
 	for (size_t i = 0; i < asciiText.size(); i++)
 	{
 		MeshBuilder* mb = new MeshBuilder();
 
-		quadPos.m_Mins.m_X = (i * quadWidth);
-		quadPos.m_Maxs.m_X = ((i + 1) * quadWidth);
+		quadPos.m_Mins.m_X = (i * quadWidth) + position.m_X;
+		quadPos.m_Maxs.m_X = ((i + 1) * quadWidth) + position.m_X;
 
 		uvPos = font->GetGlyphUV(asciiText[i]);
 
@@ -304,6 +300,7 @@ void Renderer::Drawtext(const Vec4& color, const std::string& asciiText, float q
 
 		Mesh* mesh = mb->CreateMesh<VertexPCU>();
 
+		SetModelTranslation();
 		mesh->Begin(GL_TRIANGLES);
 		DrawMesh(mesh);
 		mesh->End();
@@ -340,7 +337,22 @@ void Renderer::DrawAABB2(const AABB2& aabb2, const Vec4& color)
 	delete mb;
 }
 
-void Renderer::DrawLine(Vec2& start, Vec2& end, float thickness, const Vec4& color)
+void Renderer::DrawHollowAABB2(const AABB2& aabb2,  const float& thickness, const Vec4& color)
+{
+	Vec2 vertices[] = {
+		Vec2(aabb2.m_Mins),
+		Vec2(aabb2.m_Maxs.m_X, aabb2.m_Mins.m_Y),
+	    Vec2(aabb2.m_Maxs),
+	    Vec2(aabb2.m_Mins.m_X, aabb2.m_Maxs.m_Y)
+	};
+
+	DrawLine(vertices[0], vertices[1], thickness, color);
+	DrawLine(vertices[1], vertices[2], thickness, color);
+	DrawLine(vertices[2], vertices[3], thickness, color);
+	DrawLine(vertices[3], vertices[0], thickness, color);
+}
+
+void Renderer::DrawLine(Vec2& start, Vec2& end, const float& thickness, const Vec4& color)
 {
 	MeshBuilder* mb = new MeshBuilder();
 
@@ -378,7 +390,7 @@ void Renderer::DrawLine(Vec2& start, Vec2& end, float thickness, const Vec4& col
 	delete mb;
 }
 
-void Renderer::DrawArrow(Vec2& start, Vec2& end, float thickness, const Vec4& color)
+void Renderer::DrawArrow(Vec2& start, Vec2& end, const float& thickness, const Vec4& color)
 {
 	MeshBuilder* mb1 = new MeshBuilder();
 
@@ -498,8 +510,8 @@ void Renderer::DrawRing(const Vec2& center, const float& radius, const Vec4& col
 		startDeg = angle * static_cast<float>(i);
 		endDeg = angle * static_cast<float>(i + 1);
 
-		start = Vec2(cosf(toRadians(startDeg)) * radius, sinf(toRadians(startDeg)) * radius);
-		end = Vec2(cosf(toRadians(endDeg)) * radius, sinf(toRadians(endDeg)) * radius);
+		start = Vec2(center.m_X + cosf(toRadians(startDeg)) * radius, center.m_Y + sinf(toRadians(startDeg)) * radius);
+		end = Vec2(center.m_X + cosf(toRadians(endDeg)) * radius, center.m_Y + sinf(toRadians(endDeg)) * radius);
 
 	    mb->TexCoord2f(Vec2(0.0f, 0.0f));
 	    mb->Position3f(Vec3(start.m_X, start.m_Y, 0.0f));
@@ -540,12 +552,7 @@ void Renderer::DrawMesh(Mesh* mesh)
 	}
 }
 
-Texture* Renderer::GetDefaultTexture() const
-{
-	return m_DefaultTexture;
-}
-
-void Renderer::CreateTexture(const std::string& texturePath)
+void Renderer::CreateTexture(const String& texturePath)
 {
 	Texture* texture = new Texture(texturePath);
 
@@ -644,16 +651,16 @@ void Renderer::Clear() const
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::ClearColor() const
+void Renderer::ClearColor(const Vec4& color /*= Color::CLEAR_COLOR*/) const
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(color.m_X, color.m_Y, color.m_Z, color.m_W);
 }
 
 //------------------------------------------------------------------------------------------------------
 /*Creating a Font if it doesn't exits and storing it 
 inside a map with the key value being its file path*/
 
-Font* Renderer::GetOrCreateFont(const std::string& path)
+Font* Renderer::GetOrCreateFont(const String& path)
 {
 	if (m_LoadedFonts.find(path) != m_LoadedFonts.end())
 	{
@@ -661,7 +668,7 @@ Font* Renderer::GetOrCreateFont(const std::string& path)
 	}
 	else
 	{
-		Texture* texture = new Texture(path);
+		Texture* texture = GetOrCreateTexture(path);
 		LOG_CHECK(texture != nullptr) << "Data is null";
 
 		SpriteSheet* bitMapsheet = new SpriteSheet(*texture, 16, 16);
@@ -680,7 +687,7 @@ Font* Renderer::GetOrCreateFont(const std::string& path)
 /*Creating a Texture if it doesn't exits and storing it
 inside a map with the key value being its file path*/
 
-Texture* Renderer::GetOrCreateTexture(const std::string& path)
+Texture* Renderer::GetOrCreateTexture(const String& path)
 {
 	if (m_LoadedTextures.find(path) != m_LoadedTextures.end())
 	{
@@ -695,6 +702,11 @@ Texture* Renderer::GetOrCreateTexture(const std::string& path)
 
 		return texture;
 	}
+}
+
+Shader* Renderer::GetDefaultShader() const
+{
+	return m_DefaultShader;
 }
 
 //------------------------------------------------------------------------------------------------------

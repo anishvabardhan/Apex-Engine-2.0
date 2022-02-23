@@ -1,6 +1,6 @@
 #include "Font.h"
 
-Font::Font(SpriteSheet glyphSheet)
+Font::Font(const SpriteSheet& glyphSheet)
 	: m_SpriteSheet(glyphSheet)
 {
 }
@@ -16,7 +16,7 @@ AABB2 Font::GetGlyphUV(int glyphAscii)
 	return uv;
 }
 
-float Font::GetStringWidth(const std::string& asciiText, float cellHeight)
+float Font::GetStringWidth(const String& asciiText, float cellHeight)
 {
 	float cellWidth = cellHeight;
 

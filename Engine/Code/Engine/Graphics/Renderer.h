@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Texture.h"
+#include "Engine/Core/Color.h"
 #include "Engine/Window/Window.h"
 #include "Engine/Core/CoreIncludes.h"
 #include "Engine/Graphics/GLFunctions.h"
@@ -29,7 +30,7 @@ enum APEX_BLEND_FACTOR {
 	APEX_ONE_MINUS_CONSTANT_ALPHA  =      GL_ONE_MINUS_CONSTANT_ALPHA
 };
 
-static std::map<std::string, APEX_BLEND_FACTOR> ParseBlendFac{
+static std::map<String, APEX_BLEND_FACTOR> ParseBlendFac{
 	{"zero",                              APEX_ZERO                     },
 	{"one",                               APEX_ONE                      },
 	{"src_color",                         APEX_SRC_COLOR                },
@@ -54,7 +55,7 @@ enum APEX_BLEND_OP {
 	APEX_MAX                       =      GL_MAX
 };
 
-static std::map<std::string, APEX_BLEND_OP> ParseBlendOp{
+static std::map<String, APEX_BLEND_OP> ParseBlendOp{
 	{"add", APEX_FUNC_ADD},
 	{"subtract", APEX_FUNC_SUBTRACT},
 	{"reverse_subtract", APEX_FUNC_REVERSE_SUBTRACT},
@@ -68,35 +69,31 @@ extern void* m_OurWindowHandleToRenderContext;
 
 class Renderer
 {
-	std::map<std::string, Texture*> m_LoadedTextures;
+	std::map<String, Texture*> m_LoadedTextures;
 	std::map<ShaderDefinition*, Shader*> m_LoadedShaders;
 	std::map<XMLElement*, ShaderDefinition*> m_LoadedShaderDefinitions;
-	std::map<std::string, Font*> m_LoadedFonts;
-	Texture* m_DefaultTexture;
+	std::map<String, Font*> m_LoadedFonts;
+	Texture* m_DefaultTexture = nullptr;
+	Shader* m_DefaultShader = nullptr;
+	ShaderDefinition* m_DefaultShaderDef = nullptr;
 public:
 	Renderer();
     ~Renderer();
 
-	// TODO Resort functions
-
 	void StartUp();
-	void InitRender();
 	void ShutDown();
 
-	// INSTANCE CREATION METHODS
-	static void CreateInstance();
-	static Renderer* GetInstance();
-	static void DestroyInstance();
-
 	void SwappingBuffers();
-
 
 	bool MakeContextCurrent(void* hdc, void* hglrc);
 	void* CreateOldRenderContext(void* hdc);
 	void* CreateRealRenderContext(void* hdc, int major, int minor);
 
+	void BindDefaultShader();
 	void BindFont(const Font* font, int textureSlot);
 	void BindTexture(const Texture* texture = nullptr, int textureSlot = 0);
+
+	void UnBindDefaultShader();
 
 	// MVP UNIFORMS UPDATION METHODS
 	void SetCameraUniform(const Mat4& camera);
@@ -104,27 +101,28 @@ public:
 
 	void CopyFrameBuffer(FrameBuffer* current, FrameBuffer* next);
 	void Clear() const;
-	void ClearColor() const;
+	void ClearColor(const Vec4& color = Color::CLEAR_COLOR) const;
 
-	Font* GetOrCreateFont(const std::string& path);
-	Texture* GetOrCreateTexture(const std::string& path);
+	Font* GetOrCreateFont(const String& path);
+	Texture* GetOrCreateTexture(const String& path);
 	Shader* GetOrCreateShader(ShaderDefinition* shaderDef);
+	Shader* GetDefaultShader() const;
 	ShaderDefinition* GetOrCreateShaderDef(XMLElement* element);
 
 	static void EnableBlend(enum APEX_BLEND_FACTOR src, enum APEX_BLEND_FACTOR dest, enum APEX_BLEND_OP mode = APEX_BLEND_OP::APEX_FUNC_ADD);
 	static void DisableBlend();
 
 	// DRAW CALL METHODS
-	void Drawtext(const Vec4& color, const std::string& asciiText, float quadHeight, Font* font);
+	void Drawtext(const Vec2& position, const Vec4& color, const String& asciiText, float quadHeight, Font* font);
 	void DrawAABB2(const AABB2& aabb2, const Vec4& color);
-	void DrawLine(Vec2& start, Vec2& end, float thickness, const Vec4& color);
-	void DrawArrow(Vec2& start, Vec2& end, float thickness, const Vec4& color);
+	void DrawHollowAABB2(const AABB2& aabb2, const float& thickness, const Vec4& color);
+	void DrawLine(Vec2& start, Vec2& end, const float& thickness, const Vec4& color);
+	void DrawArrow(Vec2& start, Vec2& end, const float& thickness, const Vec4& color);
 	void DrawDisc(const Vec2& center, const float& radius, const Vec4& color);
+
 	void DrawRing(const Vec2& center, const float& radius, const Vec4& color);
 	void DrawMesh(Mesh* mesh);
-
-	Texture* GetDefaultTexture() const;
 private:
-	void CreateTexture(const std::string& texturePath);
+	void CreateTexture(const String& texturePath);
 	Texture* CreateTextureFromColor(const Vec4& color);
 };

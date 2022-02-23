@@ -48,7 +48,7 @@ float RangeMap(float inputValue, float inputBegin, float inputEnd, float outputB
 	return outValue;
 }
 
-bool Disc_AABB2Collision(Vec2& center, float radius, AABB2& box)
+bool Disc_AABB2Collision(const Vec2& center, const float& radius, AABB2& box)
 {
 	Vec2 nearestPoint = box.GetNearestPoint(center);
 

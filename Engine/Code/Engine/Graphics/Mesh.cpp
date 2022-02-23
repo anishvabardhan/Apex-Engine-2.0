@@ -6,20 +6,16 @@
 #include "Vertex.h"
 
 Mesh::Mesh(const void* data, VertexBufferLayout* layout)
-	: m_VBO(nullptr), m_Layout(layout), m_Data(data)
+	: m_Layout(layout), m_Data(data)
 {
 	CopyToGPU();
 }
 
 Mesh::~Mesh()
 {
-	delete m_VBO;
-	delete m_VAO;
-
-	if(m_IBO)
-	{
-		delete m_IBO;
-	}
+	SAFE_DELETE_POINTER(m_VBO)
+	SAFE_DELETE_POINTER(m_VAO)
+	SAFE_DELETE_POINTER(m_IBO)
 }
 
 void Mesh::CopyToGPU()

@@ -6,18 +6,17 @@
 #include "Engine/Core/EngineCommon.h"
 #include "Engine/Input/InputSystem.h"
 #include "Engine/Input/WinKeys.h"
+#include "Engine/Maths/MathUtils.h"
+#include "Game/Framework/Game.h"
 
 extern InputSystem* g_InputSystem;
+extern Renderer* g_Renderer;
 
-static Ball* m_Ball = nullptr;
-
-Ball::Ball()
-	: m_Translate(Vec2()), m_Velocity(Vec2()), m_Center(Vec2()), m_Radius(BB_BALL_RADIUS)
+Ball::Ball(Game* owner)
+	: Entity(owner, BB_BALL_POSITION, Vec2::ZERO_ZERO, Color::BLUE),
+      m_Velocity(Vec2::ZERO_ZERO),
+      m_Radius(BB_BALL_RADIUS)
 {
-	//Entity();
-	m_Position = Vec2(552.0f, 55.0f);
-	m_Color = Color::GREEN;
-	m_Center = m_Position;
 }
 
 Ball::~Ball()
@@ -55,7 +54,7 @@ void Ball::Update(float deltaseconds)
 	    	m_Velocity.m_X *= -1;
 	    }
 	    
-	    if(m_Position.m_Y + m_Radius > APEX_WINDOW_DIMS[3])
+	    if(m_Position.m_Y - m_Radius < APEX_WINDOW_DIMS[0] || m_Position.m_Y + m_Radius > APEX_WINDOW_DIMS[3])
 	    {
 	    	m_Velocity.m_Y *= -1;
 	    }
@@ -72,39 +71,34 @@ void Ball::Update(float deltaseconds)
 		}
 	}
 
-	m_Translate += m_Velocity * deltaseconds;
-	m_Translate = m_Translate * deltaseconds;
-
-	Translate(m_Translate);
+	Vec2 velocity = Vec2(Clamp(m_Velocity.m_X, BB_BALL_MIN_VELOCITY, BB_BALL_MAX_VELOCITY), Clamp(m_Velocity.m_Y, BB_BALL_MIN_VELOCITY, BB_BALL_MAX_VELOCITY));
+	
+	Translate(velocity * deltaseconds);
 }
 
 void Ball::Render()
 {
-	Renderer::GetInstance()->SetModelTranslation();
-	Renderer::GetInstance()->DrawDisc(m_Position, m_Radius, m_Color);
+	g_Renderer->SetModelTranslation();
+	g_Renderer->DrawDisc(m_Position, m_Radius, m_Color);
+	
+	if(m_Owner->m_DebugDraw)
+	{
+		DebugRender();
+	}
+}
+
+void Ball::DebugRender()
+{
+	g_Renderer->SetModelTranslation();
+	g_Renderer->DrawRing(m_Position, m_Radius, Color::MAGENTA);
+
+	Vec2 start = Vec2::ZERO_ZERO;
+	Vec2 end = m_Velocity * 0.5f;
+	g_Renderer->SetModelTranslation(Mat4::Translation(Vec3(m_Position.m_X, m_Position.m_Y, 0.0f)));
+	g_Renderer->DrawArrow(start, end, 3.0f, Color::CYAN);
 }
 
 void Ball::Translate(const Vec2& translate)
 {
 	m_Position += translate;
-	m_Center = m_Position;
-}
-
-void Ball::CreateInstance()
-{
-	m_Ball = new Ball();
-}
-
-Ball* Ball::GetInstance()
-{
-	return m_Ball;
-}
-
-void Ball::DestroyInstance()
-{
-	if(m_Ball)
-	{
-		delete m_Ball;
-	    m_Ball = nullptr;
-	}
 }

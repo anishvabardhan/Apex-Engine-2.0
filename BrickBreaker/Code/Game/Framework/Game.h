@@ -1,20 +1,20 @@
 #pragma once
 
-#include "Engine/Core/EngineCommon.h"
-#include "Game/Code/Brick.h"
+#include "Game/Code/Map.h"
+#include "Game/Code/Paddle.h"
+#include "Game/Code/Ball.h"
 
-class ShaderDefinition;
 class FrameBuffer;
-class Paddle;
-class Brick;
 
 class Game
 {
-	ShaderDefinition* m_ShaderDef = nullptr;
 	FrameBuffer* m_SrcBuffer = nullptr;
-    Paddle* m_Paddle = nullptr;
-	Brick* m_Bricks = nullptr;
-
+	Map m_Map;
+public:
+    Paddle m_Paddle;
+	Ball m_Ball;
+	bool m_DebugDraw = false;
+	bool m_IsPaddleBallCollision = false;
 public:
 	Game();
 	~Game();

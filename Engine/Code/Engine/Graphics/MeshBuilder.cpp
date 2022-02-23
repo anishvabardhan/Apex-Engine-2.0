@@ -18,19 +18,27 @@ void MeshBuilder::Color3f(Vec4 color)
 
 void MeshBuilder::TexCoord2f(Vec2 uv)
 {
-	m_VertMast = new VertexMaster();
-	m_VertMast->m_UV = uv;
+	m_VertMast.m_UV = uv;
+}
+
+void MeshBuilder::ResetLocalVertex()
+{
+	memset(&m_VertMast, 0, sizeof(m_VertMast));
 }
 
 void MeshBuilder::Position3f(Vec3 position)
 {
-	m_VertMast->m_Color = m_Color;
-	m_VertMast->m_Pos = position;
+	m_VertMast.m_Color = m_Color;
+	m_VertMast.m_Pos = position;
 	
-	m_Vertices.push_back(*m_VertMast);
+	m_Vertices.push_back(m_VertMast);
 
-	delete m_VertMast;
-	m_VertMast = nullptr;
+	ResetLocalVertex();
+}
+
+void MeshBuilder::Vert(const VertexMaster& master)
+{
+	m_Vertices.emplace_back(master);
 }
 
 template <typename FORMAT>
