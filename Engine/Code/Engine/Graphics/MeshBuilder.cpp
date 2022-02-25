@@ -21,6 +21,8 @@ void MeshBuilder::TexCoord2f(Vec2 uv)
 	m_VertMast.m_UV = uv;
 }
 
+// TODO No Resets, 
+
 void MeshBuilder::ResetLocalVertex()
 {
 	memset(&m_VertMast, 0, sizeof(m_VertMast));

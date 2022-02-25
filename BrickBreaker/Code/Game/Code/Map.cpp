@@ -90,7 +90,7 @@ void Map::Render()
 	            	Vec2 end = normal * 100.0f;
 	            	g_Renderer->SetModelTranslation(Mat4::Translation(Vec3(refPoint.m_X, refPoint.m_Y, 0.0f)));
 	            	g_Renderer->DrawArrow(start, end, 3.0f, Color::YELLOW);
-	            
+
 	            	m_IsBrickBallCollided[i][j] = false;
 	            }
 	    	}
