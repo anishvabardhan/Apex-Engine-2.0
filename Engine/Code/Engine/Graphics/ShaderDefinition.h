@@ -7,13 +7,13 @@
 class ShaderDefinition
 {
 public:
-	std::string m_FilePath;
-	std::string m_BlendOp;
-	std::string m_BlendSRC;
-	std::string m_BlendDST;
+	String m_FilePath;
+	String m_BlendOp;
+	String m_BlendSRC;
+	String m_BlendDST;
 
 	ShaderDefinition(const XMLElement& element);
 	~ShaderDefinition();
 
-	static XMLElement* InitializeDef(const std::string& path);
+	static XMLElement* InitializeDef(const String& path);
 };

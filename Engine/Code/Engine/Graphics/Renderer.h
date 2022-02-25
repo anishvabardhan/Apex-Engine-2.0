@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Texture.h"
+#include "Engine/Core/Color.h"
 #include "Engine/Window/Window.h"
 #include "Engine/Core/CoreIncludes.h"
 #include "Engine/Graphics/GLFunctions.h"
@@ -25,10 +27,10 @@ enum APEX_BLEND_FACTOR {
 	APEX_CONSTANT_COLOR            =      GL_CONSTANT_COLOR,
 	APEX_ONE_MINUS_CONSTANT_COLOR  =      GL_ONE_MINUS_CONSTANT_COLOR,
 	APEX_CONSTANT_ALPHA            =      GL_CONSTANT_ALPHA,
-	APEX_ONE_MINUS_CONSTANT_ALPHA  =      GL_ONE_MINUS_CONSTANT_ALPHA,
+	APEX_ONE_MINUS_CONSTANT_ALPHA  =      GL_ONE_MINUS_CONSTANT_ALPHA
 };
 
-static std::map<std::string, APEX_BLEND_FACTOR> ParseBlendFac{
+static std::map<String, APEX_BLEND_FACTOR> ParseBlendFac{
 	{"zero",                              APEX_ZERO                     },
 	{"one",                               APEX_ONE                      },
 	{"src_color",                         APEX_SRC_COLOR                },
@@ -53,7 +55,7 @@ enum APEX_BLEND_OP {
 	APEX_MAX                       =      GL_MAX
 };
 
-static std::map<std::string, APEX_BLEND_OP> ParseBlendOp{
+static std::map<String, APEX_BLEND_OP> ParseBlendOp{
 	{"add", APEX_FUNC_ADD},
 	{"subtract", APEX_FUNC_SUBTRACT},
 	{"reverse_subtract", APEX_FUNC_REVERSE_SUBTRACT},
@@ -67,16 +69,18 @@ extern void* m_OurWindowHandleToRenderContext;
 
 class Renderer
 {
-	std::map<std::string, Texture*> m_LoadedTextures;
+	std::map<String, Texture*> m_LoadedTextures;
 	std::map<ShaderDefinition*, Shader*> m_LoadedShaders;
 	std::map<XMLElement*, ShaderDefinition*> m_LoadedShaderDefinitions;
-	std::map<std::string, Font*> m_LoadedFonts;
+	std::map<String, Font*> m_LoadedFonts;
+	Texture* m_DefaultTexture = nullptr;
+	Shader* m_DefaultShader = nullptr;
+	ShaderDefinition* m_DefaultShaderDef = nullptr;
 public:
 	Renderer();
     ~Renderer();
 
 	void StartUp();
-	void InitRender();
 	void ShutDown();
 
 	void SwappingBuffers();
@@ -85,25 +89,40 @@ public:
 	void* CreateOldRenderContext(void* hdc);
 	void* CreateRealRenderContext(void* hdc, int major, int minor);
 
-	void Drawtext(const Vec2& position, const Vec4& color, const std::string& asciiText, float quadHeight, Font* font, Shader shader);
-	void DrawQuad(const Vec2& position, const Vec2& dimensions, const Texture& texture, const AABB2& texCoords, const Vec4& color, Shader shader);
-	void DrawQuad(const Vec2& position, Vec2 meshDim, Vec4 color, const std::string& path, Shader shader);
+	void BindDefaultShader();
+	void BindFont(const Font* font, int textureSlot);
+	void BindTexture(const Texture* texture = nullptr, int textureSlot = 0);
 
-	void DrawFullScreenQuad(const Vec2& position = Vec2(0.0f, 0.0f), Vec2 meshDim = Vec2(1024.0f, 1024.0f));
-	void DrawMesh(Mesh* mesh);
+	void UnBindDefaultShader();
+
+	// MVP UNIFORMS UPDATION METHODS
+	void SetCameraUniform(const Mat4& camera);
+	void SetModelTranslation(const Mat4& transform = Mat4::Identity());
+
 	void CopyFrameBuffer(FrameBuffer* current, FrameBuffer* next);
 	void Clear() const;
-	void ClearColor() const;
+	void ClearColor(const Vec4& color = Color::CLEAR_COLOR) const;
 
-	Font* GetOrCreateFont(const std::string& path);
-	Texture* GetOrCreateTexture(const std::string& path);
+	Font* GetOrCreateFont(const String& path);
+	Texture* GetOrCreateTexture(const String& path);
 	Shader* GetOrCreateShader(ShaderDefinition* shaderDef);
+	Shader* GetDefaultShader() const;
 	ShaderDefinition* GetOrCreateShaderDef(XMLElement* element);
-
-	static void CreateInstance();
-	static Renderer* GetInstance();
-	static void DestroyInstance();
 
 	static void EnableBlend(enum APEX_BLEND_FACTOR src, enum APEX_BLEND_FACTOR dest, enum APEX_BLEND_OP mode = APEX_BLEND_OP::APEX_FUNC_ADD);
 	static void DisableBlend();
+
+	// DRAW CALL METHODS
+	void Drawtext(const Vec2& position, const Vec4& color, const String& asciiText, float quadHeight, Font* font);
+	void DrawAABB2(const AABB2& aabb2, const Vec4& color);
+	void DrawHollowAABB2(const AABB2& aabb2, const float& thickness, const Vec4& color);
+	void DrawLine(Vec2& start, Vec2& end, const float& thickness, const Vec4& color);
+	void DrawArrow(Vec2& start, Vec2& end, const float& thickness, const Vec4& color);
+	void DrawDisc(const Vec2& center, const float& radius, const Vec4& color);
+
+	void DrawRing(const Vec2& center, const float& radius, const Vec4& color);
+	void DrawMesh(Mesh* mesh);
+private:
+	void CreateTexture(const String& texturePath);
+	Texture* CreateTextureFromColor(const Vec4& color);
 };

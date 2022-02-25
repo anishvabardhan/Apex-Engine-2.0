@@ -17,7 +17,7 @@ SpriteDefinition::~SpriteDefinition()
 {
 }
 
-XMLElement* SpriteDefinition::InitializeDef(const std::string& path)
+XMLElement* SpriteDefinition::InitializeDef(const String& path)
 {
 	XMLDocument* doc = new XMLDocument();
        doc->LoadFile(path.c_str());

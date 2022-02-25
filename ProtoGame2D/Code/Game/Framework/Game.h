@@ -1,17 +1,17 @@
 #pragma once
 
 class ShaderDefinition;
-class Shader;
 class FrameBuffer;
+class Paddle;
+class Ball;
 
 class Game
 {
 	ShaderDefinition* m_ShaderDef = nullptr;
-	ShaderDefinition* m_ScreenShaderDef = nullptr;
-	Shader* m_Shader = nullptr;
-	Shader* m_ScreenShader = nullptr;
 	FrameBuffer* m_SrcBuffer = nullptr;
 	FrameBuffer* m_DestBuffer = nullptr;
+    Paddle* m_Paddle;
+    Ball* m_Ball;
 public:
 	Game();
 	~Game();

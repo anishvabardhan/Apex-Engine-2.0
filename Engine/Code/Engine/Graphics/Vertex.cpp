@@ -31,3 +31,13 @@ VertexPCU::VertexPCU(const Vec3& position, const Vec4& color, const Vec2& uv)
 VertexPCU::~VertexPCU()
 {
 }
+
+VertexMaster::VertexMaster(const VertexPCU& pcu)
+	:m_Pos(pcu.m_Pos), m_Color(pcu.m_Color), m_UV(pcu.m_UV)
+{
+}
+
+VertexMaster::VertexMaster(const Vec3& position, const Vec4& color, const Vec2& uv)
+    : m_Pos(position), m_Color(color), m_UV(uv)
+{
+}

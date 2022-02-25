@@ -10,7 +10,7 @@ unsigned int GetMessageBoxIconForSeverity(SEVERITY severity)
 	{
 	case WARNING:           return MB_ICONEXCLAMATION;
 	case FATAL:             return MB_ICONHAND;
-	default:                      return MB_ICONEXCLAMATION;
+	default:                return MB_ICONEXCLAMATION;
 	}
 };
 
@@ -19,14 +19,14 @@ LogMessage::LogMessage(SEVERITY severity, const char* fileName, int line)
 {
 }
 
-   LogMessage::~LogMessage()
+LogMessage::~LogMessage()
 {
 	Log(m_Severity);
 }
 
 void LogMessage::Log(SEVERITY severity)
 {
-	std::string messageText;
+	String messageText;
 
 	if (severity == INFO)
 	{
@@ -58,7 +58,7 @@ void LogMessage::Log(SEVERITY severity)
 		{
 			bool isYesNo = MessageYesNo(messageText, SeverityNames[m_Severity], severity);
 
-			LogFLush();
+			LogFlush();
 
 			if (isYesNo)
 			{  
@@ -80,10 +80,9 @@ LogMessageFatal::LogMessageFatal(const char* fileName, int line)
 LogMessageFatal::~LogMessageFatal()
 {
 	Log(FATAL);
-	exit(0);
 }
 
-   std::string Stringf(const char* messageText, ...)
+String Stringf(const char* messageText, ...)
 {
 	char text[2048];
 	va_list VAList;
@@ -92,7 +91,7 @@ LogMessageFatal::~LogMessageFatal()
 	va_end(VAList);
 	text[2047] = '\0';
 
-	return std::string(text);
+	return String(text);
 }
 
 void Debugf(const char* messageText, ...)
@@ -107,7 +106,7 @@ void Debugf(const char* messageText, ...)
 	LogPrint(text);
 }
 
-void LogToIDE(const std::string& msg)
+void LogToIDE(const String& msg)
 {
 	if (DebuggerPresent())
 	{
@@ -134,7 +133,7 @@ bool DebuggerPresent()
 	return isDebuggerAvailable == TRUE;
 }
 
-bool MessageOK(const std::string& messageText, const std::string& severityName, SEVERITY severity)
+bool MessageOK(const String& messageText, const String& severityName, SEVERITY severity)
 {
 	bool isOK = true;
 
@@ -145,7 +144,7 @@ bool MessageOK(const std::string& messageText, const std::string& severityName, 
 	return isOK;
 }
 
-bool MessageYesNo(const std::string& messageText, const std::string& severityName, SEVERITY severity)
+bool MessageYesNo(const String& messageText, const String& severityName, SEVERITY severity)
 {
 	bool isYes = true;
 

@@ -9,6 +9,8 @@ enum DATATYPE {
 	APEX_UNSIGNED_BYTE   = GL_UNSIGNED_BYTE
 };
 
+struct VertexPCU;
+
 struct VertexBufferElement
 {
 	unsigned int m_Type;
@@ -45,7 +47,8 @@ struct VertexMaster
 	Vec2 m_UV;
 
 	VertexMaster() {}
-	VertexMaster(const Vec3& position, const Vec4& color, const Vec2& uv) : m_Pos(position), m_Color(color), m_UV(uv) {}
+	VertexMaster(const VertexPCU& pcu);
+	VertexMaster(const Vec3& position, const Vec4& color, const Vec2& uv);
 	~VertexMaster() {}
 };
 

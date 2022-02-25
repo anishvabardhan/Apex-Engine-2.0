@@ -1,26 +1,8 @@
 #include "Mat4.h"
 
-Mat4::Mat4()
-{
-	for (int i = 0; i < 4 * 4; i++)
-	{
-		elements[i] = 0.0f;
-	}
-}
 
-Mat4 Mat4::identity()
-{
-	Mat4 result;
 
-	result.elements[0 + 0 * 4] = 1.0f;
-	result.elements[1 + 1 * 4] = 1.0f;
-	result.elements[2 + 2 * 4] = 1.0f;
-	result.elements[3 + 3 * 4] = 1.0f;
-
-	return result;
-}
-
-Mat4 Mat4::inverse(const Mat4& matrix)
+Mat4 Mat4::Inverse(const Mat4& matrix)
 {
 	Mat4 result;
 	double det;
@@ -215,22 +197,22 @@ bool Mat4::operator!=(const Mat4& other)
 	return false;
 }
 
-Mat4 Mat4::orthographic(float left, float right, float bottom, float top, float near, float far)
+Mat4 Mat4::Orthographic(float left, float right, float bottom, float top, float near, float far)
 {
 	Mat4 result;
 
-	result.elements[0] = 2 / (right - left);
-	result.elements[5] = 2 / (top - bottom);
-	result.elements[10] = 2 / (near - far);
+	result.elements[0] = 2.0f / (right - left);
+	result.elements[5] = 2.0f / (top - bottom);
+	result.elements[10] = 2.0f / (far - near);
 	result.elements[12] = (right + left) / (left - right);
 	result.elements[13] = (top + bottom) / (bottom - top);
-	result.elements[14] = (far + near) / (far - near);
-	result.columns[3].m_W = 1;
+	result.elements[14] = (far + near) / (near - far);
+	result.elements[15] = 1.0f;
 
 	return result;
 }
 
-Mat4 Mat4::perspective(float fov, float aspectRatio, float near, float far)
+Mat4 Mat4::Perspective(float fov, float aspectRatio, float near, float far)
 {
 	Mat4 result;
 
@@ -248,14 +230,11 @@ Mat4 Mat4::perspective(float fov, float aspectRatio, float near, float far)
 	return result;
 }
 
-Mat4 Mat4::translation(const Vec3& translation)
+Mat4 Mat4::Translation(const Vec3& translation)
 {
 	Mat4 result;
-
-	result.columns[0].m_X = 1.0f;
-	result.columns[1].m_Y = 1.0f;
-	result.columns[2].m_Z = 1.0f;
-	result.columns[3].m_W = 1.0f;
+	result = Identity();
+	
 	result.elements[12] = translation.m_X;
 	result.elements[13] = translation.m_Y;
 	result.elements[14] = translation.m_Z;
@@ -263,28 +242,22 @@ Mat4 Mat4::translation(const Vec3& translation)
 	return result;
 }
 
-Mat4 Mat4::rotation(float angle, const Vec3& axis)
+Mat4 Mat4::Rotation2D(float angle)
 {
 	Mat4 result;
 
-	result.elements[0] = axis.m_X * (1.0f - cos(toRadians(angle))) + cos(toRadians(angle));
-	result.elements[1] = axis.m_Y * axis.m_X * (1.0f - cos(toRadians(angle))) + axis.m_Z * sin(toRadians(angle));
-	result.elements[2] = axis.m_X * axis.m_Z * (1.0f - cos(toRadians(angle))) - axis.m_Y * sin(toRadians(angle));
+	result = Mat4::Identity();
 
-	result.elements[4] = axis.m_X * axis.m_Y * (1.0f - cos(toRadians(angle))) - axis.m_Z * sin(toRadians(angle));
-	result.elements[5] = axis.m_Y * (1.0f - cos(toRadians(angle))) + cos(toRadians(angle));
-	result.elements[6] = axis.m_Y * axis.m_Z * (1.0f - cos(toRadians(angle))) + axis.m_X * sin(toRadians(angle));
-
-	result.elements[8] = axis.m_X * axis.m_Z * (1.0f - cos(toRadians(angle))) + axis.m_Y * sin(toRadians(angle));
-	result.elements[9] = axis.m_Y * axis.m_Z * (1.0f - cos(toRadians(angle))) - axis.m_X * sin(toRadians(angle));
-	result.elements[10] = axis.m_Z * (1.0f - cos(toRadians(angle))) + cos(toRadians(angle));
-
-	result.elements[15] = 1.0f;
+	result.elements[0] =  cosf(toRadians(angle));
+	result.elements[1] =  sinf(toRadians(angle));
+						  
+	result.elements[4] =  -sinf(toRadians(angle));
+	result.elements[5] =  cosf(toRadians(angle));
 
 	return result;
 }
 
-Mat4 Mat4::scale(const Vec3& scale)
+Mat4 Mat4::Scale(const Vec3& scale)
 {
 	Mat4 result;
 

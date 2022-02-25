@@ -1,8 +1,6 @@
 #include "Time.h"
 
-#include <ctime>
 #include "Engine/Platform/WindowsH.h"
-#include <cstdlib>
 
 Time::Time(float fps)
 	:m_FPS(fps)

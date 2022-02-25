@@ -2,7 +2,7 @@
 
 #include "Engine/Core/CoreIncludes.h"
 
-typedef void (*LogCallback)(const std::string& msg);
+typedef void (*LogCallback)(const String& msg);
 
 //----------------------------------------------------------------------------------------------
 // SystemFunctions
@@ -10,13 +10,13 @@ typedef void (*LogCallback)(const std::string& msg);
 void LogStartup();
 void LogShutdown();
 void LogPrint(const char* format, ...);
-void LogFLush();
+void LogFlush();
 
 //----------------------------------------------------------------------------------------------
 //Class Declaration
 
 class Logger {
-	std::queue<std::string> m_LogQueue;
+	std::queue<String> m_LogQueue;
 	std::vector<LogCallback> m_Sinks;
 public:
 	//----------------------------------------------------------------------------------------------
@@ -30,13 +30,13 @@ public:
 
 	void AddSink(LogCallback cb);
 	void RemoveSink(LogCallback cb);
-	void AddLogMessage(const std::string& msg);
+	void AddLogMessage(const String& msg);
 	void Flush();
 
 	//----------------------------------------------------------------------------------------------
 	//Static Methods
 
-	static void LogToFile(const std::string& msg);
+	static void LogToFile(const String& msg);
 	static Logger* CreateInstance();
 	static void DestroyInstance();
 };

@@ -1,5 +1,6 @@
 #pragma once
-#include <string>
+
+#include "Engine/Core/CoreIncludes.h"
 
 class InputSystem;
 
@@ -10,7 +11,7 @@ public:
 	Window();
 	~Window();
 
-	void Init(const std::string& appName, const long clientDims[4]);
+	void Init(const String& appName, const long clientDims[4]);
 	bool RunMessagePump();
 	bool Destroy();
 

@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
+#include <map>
 
+#include "Engine/Core/CoreIncludes.h"
 #include "Engine/Graphics/GLFunctions.h"
 
 enum TEXTURESLOT {
@@ -39,14 +41,52 @@ enum TEXTURESLOT {
 	SLOT31 = GL_TEXTURE31
 };
 
+static std::map<int, TEXTURESLOT> m_TextureSlot = {
+	{0 , SLOT0 },
+	{1 , SLOT1 },
+	{2 , SLOT2 },
+	{3 , SLOT3 },
+	{4 , SLOT4 },
+	{5 , SLOT5 },
+	{6 , SLOT6 },
+	{7 , SLOT7 },
+	{8 , SLOT8 },
+	{9 , SLOT9 },
+	{10, SLOT10},
+	{11, SLOT11},
+	{12, SLOT12},
+	{13, SLOT13},
+	{14, SLOT14},
+	{15, SLOT15},
+	{16, SLOT16},
+	{17, SLOT17},
+	{18, SLOT18},
+	{19, SLOT19},
+	{20, SLOT20},
+	{21, SLOT21},
+	{22, SLOT22},
+	{23, SLOT23},
+	{24, SLOT24},
+	{25, SLOT25},
+	{26, SLOT26},
+	{27, SLOT27},
+	{28, SLOT28},
+	{29, SLOT29},
+	{30, SLOT30},
+	{31, SLOT31}
+};
+
 class Texture
 {
 	unsigned int m_RendererID;
-	std::string m_FilePath;
+	String m_FilePath;
 	unsigned char* m_LocalBuffer;
 	int m_Width, m_Height, m_Channels;
 public:
-	explicit Texture(const std::string& path);
+	friend class Renderer;
+
+	Texture();
+	explicit Texture(const String& path);
 	~Texture();
 
 	void Bind(TEXTURESLOT slot) const;

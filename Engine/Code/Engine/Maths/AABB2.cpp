@@ -1,22 +1,11 @@
 #include "AABB2.h"
 
-#include "Maths_Func.h"
+#include "MathUtils.h"
+#include "Engine/Core/CoreMACROS.h"
 
-AABB2::AABB2()
-{
-}
-
-AABB2::AABB2(float minX, float minY, float maxX, float maxY)
-{
-	m_Mins = Vec2(minX, minY);
-	m_Maxs = Vec2(maxX, maxY);
-}
-
-AABB2::AABB2(const Vec2& mins, const Vec2& maxs)
-{
-	this->m_Mins = mins;
-	this->m_Maxs = maxs;
-}
+STATIC const AABB2 AABB2::ZERO_TO_ONE = AABB2(0.0f, 0.0f, 1.0f, 1.0f);
+STATIC const AABB2 AABB2::CENTER_PIVOT_UNIT_AABB = AABB2(-0.5f, -0.5f, 0.5f, 0.5f);
+STATIC const AABB2 AABB2::CENTER_PIVOT_AABB = AABB2(-10.0f, -10.0f, 10.0f, 10.0f);
 
 AABB2::AABB2(const Vec2& center, float radiusX, float radiusY)
 {
@@ -27,8 +16,22 @@ AABB2::AABB2(const Vec2& center, float radiusX, float radiusY)
 	m_Mins.m_Y = center.m_Y - radiusY;
 }
 
+AABB2::AABB2(const AABB2& aabb)
+	:m_Mins(aabb.m_Mins), m_Maxs(aabb.m_Maxs)
+{
+
+}
+
 AABB2::~AABB2()
 {
+}
+
+Vec2 AABB2::GetNearestPoint(const Vec2& position)
+{
+	float x = Clamp(position.m_X, m_Mins.m_X, m_Maxs.m_X);
+	float y = Clamp(position.m_Y, m_Mins.m_Y, m_Maxs.m_Y);
+
+	return Vec2(x, y);
 }
 
 Vec2 AABB2::GetDimensions() const

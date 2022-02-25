@@ -7,3 +7,7 @@
 //-----------------------------------------------------------------------------------
 
 #define UNUSED(x) (void)x;
+#define STATIC
+#define INLINE
+#define NOT_IN_USE
+#define SAFE_DELETE_POINTER(ptr) if(nullptr != ptr) {delete ptr; ptr = nullptr;}

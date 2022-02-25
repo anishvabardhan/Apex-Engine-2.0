@@ -14,5 +14,5 @@ public:
 	SpriteDefinition(const XMLElement& element);
 	~SpriteDefinition();
 
-	static XMLElement* InitializeDef(const std::string& path);
+	static XMLElement* InitializeDef(const String& path);
 };
